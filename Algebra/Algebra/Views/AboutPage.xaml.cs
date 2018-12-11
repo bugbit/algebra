@@ -25,8 +25,11 @@ namespace Algebra.Views
             canvas.Clear();
 
             float strokeWidth = 50;
-            float xRadius = (info.Width - strokeWidth) / 2;
-            float yRadius = (info.Height - strokeWidth) / 2;
+            //float xRadius = (info.Width - strokeWidth) / 2;
+            //float yRadius = (info.Height - strokeWidth) / 2;
+
+            float xRadius = 1000;
+            float yRadius = 1000;
 
             SKPaint paint = new SKPaint
             {
