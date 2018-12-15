@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // La información general de un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada con un ensamblado.
-[assembly: AssemblyTitle("Algebra.GTK")]
+[assembly: AssemblyTitle("Algebra")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Algebra.GTK")]
+[assembly: AssemblyProduct("Algebra")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // El siguiente GUID sirve como id. de typelib si este proyecto se expone a COM.
-[assembly: Guid("c4bfaf1a-93b3-4d7b-b0c1-3f3d307d9194")]
+[assembly: Guid("375a03c6-ff54-4ab3-8958-56de42dcf627")]
 
 // La información de versión de un ensamblado consta de los cuatro valores siguientes:
 //
