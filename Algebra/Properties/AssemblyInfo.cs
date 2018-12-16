@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada con un ensamblado.
 [assembly: AssemblyTitle("Algebra")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Software free CAS")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Algebra")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyCopyright("Copyright © 2018 Óscar Hernández Bañó")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
