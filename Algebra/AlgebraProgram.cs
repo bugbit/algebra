@@ -21,10 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Algebra
 {
@@ -38,6 +38,7 @@ namespace Algebra
             mArgs = argArgs;
         }
 
+        [STAThread]
         static int Main(string[] args)
         {
             PrepareConsoleForLocalization();
@@ -47,10 +48,11 @@ namespace Algebra
 
         public int Run()
         {
-            DisplayHeader();
             ParseCommandLine();
             if (mShowHelp)
                 return DisplayUsage();
+
+            Application.Run(new FrmAlgebraPad());
 
             return 0;
         }
@@ -69,24 +71,6 @@ namespace Algebra
             }
         }
 
-
-        private void DisplayHeader()
-        {
-            var pAssembly = Assembly.GetExecutingAssembly();
-            var pName = pAssembly.GetCustomAttribute<AssemblyTitleAttribute>().Title;
-            var pVersion = pAssembly.GetName().Version.ToString();
-            var pDescription = pAssembly.GetCustomAttribute<AssemblyDescriptionAttribute>().Description;
-            var pLicense = pAssembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
-
-            Console.WriteLine($"{pName} Version {pVersion}");
-            Console.WriteLine(pDescription);
-            Console.WriteLine(@"https://github.com/bugbit/algebra");
-            Console.WriteLine();
-            Console.WriteLine(pLicense);
-            Console.WriteLine("GNU GENERAL PUBLIC LICENSE");
-            Console.WriteLine();
-        }
-
         private void ParseCommandLine()
         {
             for (int i = 0; i < mArgs.Length; i++)
@@ -100,7 +84,7 @@ namespace Algebra
 
         private int DisplayUsage()
         {
-            Console.WriteLine(Properties.Resources.UsageText.ToParam());
+            MessageBox.Show(Properties.Resources.UsageText.ToParam(), "Algebra");
 
             return 0;
         }
