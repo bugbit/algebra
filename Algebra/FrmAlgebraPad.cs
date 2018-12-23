@@ -34,8 +34,18 @@ namespace Algebra
         public FrmAlgebraPad()
         {
             InitializeComponent();
+            InitFrmName();
             AddOutputHeader();
             padExpression1.FocusExpression();
+        }
+
+        private void InitFrmName()
+        {
+            var pAssembly = Assembly.GetExecutingAssembly();
+            var pName = pAssembly.GetCustomAttribute<AssemblyTitleAttribute>().Title;
+            var pVersion = pAssembly.GetName().Version.ToString();
+
+            Text = $"{pName} {pVersion}";
         }
 
         private void AddOutputHeader()
@@ -48,8 +58,7 @@ namespace Algebra
 
             padExpression1.AddOutput
             (
-                $@"
-/*
+                $@"/*
     {pName} Version {pVersion}
     {pDescription}
     https://github.com/bugbit/algebra
