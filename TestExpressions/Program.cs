@@ -6,29 +6,31 @@ using System.Text;
 
 namespace TestExpressions
 {
-    class Algoritmos<T>
+    class ExpressionCAS<T>
     {
-        public static bool IsNumberPrime(Expression<Func<T>> e)
+        public static Expression IsNumberPrime(Expression<Func<T>> e)
         {
-            return false;
+            return Expression.Constant(false);
         }
     }
-    class UserExpression : Algoritmos<int>
+    class UserExpression : ExpressionCAS<int>
     {
-        public Expression RunExpression()
-        {
-            var ispn = IsNumberPrime(() => 10);
+        public Expression Expr1 { get; private set; }
 
-            return Expression.Constant(ispn);
+        public void Evaluate()
+        {
+            Expr1 = IsNumberPrime(() => 10);
         }
     }
     class Program
     {
         static void Main(string[] args)
         {
-            var e = new UserExpression().RunExpression();
+            var e = new UserExpression();
 
-            Console.WriteLine(e);
+            e.Evaluate();
+
+            Console.WriteLine(e.Expr1);
         }
     }
 }
