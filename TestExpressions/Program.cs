@@ -1,12 +1,11 @@
-﻿using System;
+﻿//#define ROSLYN
+// <package id="Microsoft.CodeAnalysis.CSharp" version="1.3.2" targetFramework="net45" />
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace TestExpressions
 {
@@ -19,17 +18,46 @@ namespace TestExpressions
     }
     class UserExpression : ExpressionCAS<int>
     {
+#if ROSLYN
         public Expression Expr1 { get; private set; }
 
         public void Evaluate()
         {
             Expr1 = IsNumberPrime(() => 10);
         }
+#endif
+
+        public Expression<Func<object>> Expr
+        {
+            get
+            {
+                return () => IsNumberPrime(() => 10);
+            }
+        }
+
+        public Expression<Func<object>> Expr1
+        {
+            get
+            {
+                return () => new { a = 20, b = IsNumberPrime(() => 10) };
+            }
+        }
+
+        public object Evaluate1()
+        {
+            return IsNumberPrime(() => 10);
+        }
+
+        public object Evaluate2()
+        {
+            return new { a = 20, b = IsNumberPrime(() => 10) };
+        }
     }
     class Program
     {
         static void Main(string[] args)
         {
+#if ROSLYN
             var exprs = new[]
             {
                 "()=>10",
@@ -47,15 +75,27 @@ namespace TestExpressions
             //var node3 = SyntaxFactory.ParseSyntaxTree("a=10;b=20;").GetRoot();
             //var node4 = SyntaxFactory.ParseSyntaxTree("a=10");
             //var node5 = SyntaxFactory.ParseSyntaxTree("10");
-            //var e = new UserExpression();
+#endif
 
-            //e.Evaluate();
+            var expr = new UserExpression();
 
-            //Console.WriteLine(e.Expr1);
+#if ROSLYN
+            expr.Evaluate();
+
+            Console.WriteLine(expr.Expr1);
+#endif
+            Console.WriteLine(expr.Evaluate1());
+            Console.WriteLine(expr.Evaluate2());
+            Console.WriteLine(expr.Expr);
+            Console.WriteLine(expr.Expr.Compile().Invoke());
+            Console.WriteLine(expr.Expr1);
+            Console.WriteLine(expr.Expr1.Compile().Invoke());
         }
+
+#if ROSLYN
         static void evaluate(string e)
         {
-            var n = SyntaxFactory.ParseExpression(e);
+            var n = Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseExpression(e);
 
             if (!n.ContainsDiagnostics && n.FullSpan.Length == e.Length)
             {
@@ -64,22 +104,23 @@ namespace TestExpressions
                 return;
             }
 
-            evaluate(SyntaxFactory.ParseSyntaxTree(e).GetRoot());
+            evaluate(Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseSyntaxTree(e).GetRoot());
         }
 
-        static void evaluate(SyntaxNode n)
+        static void evaluate(Microsoft.CodeAnalysis.SyntaxNode n)
         {
-            if (n is AssignmentExpressionSyntax)
+            if (n is Microsoft.CodeAnalysis.CSharp.Syntax.AssignmentExpressionSyntax)
             {
 
             }
-            else if (n is CompilationUnitSyntax)
+            else if (n is Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax)
             {
-                evaluate(((CompilationUnitSyntax)n).SyntaxTree.GetRoot());
+                evaluate(((Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax)n).SyntaxTree.GetRoot());
             }
-            else if (n is ExpressionSyntax)
+            else if (n is Microsoft.CodeAnalysis.CSharp.Syntax.ExpressionSyntax)
             {
             }
         }
+#endif
     }
 }

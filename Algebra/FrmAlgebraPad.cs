@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CAS = Algebra.ExpressionCAS;
 
 namespace Algebra
 {
@@ -35,6 +36,7 @@ namespace Algebra
         {
             InitializeComponent();
             InitFrmName();
+            InitPrecisions();
             AddOutputHeader();
             padExpression1.FocusExpression();
         }
@@ -46,6 +48,12 @@ namespace Algebra
             var pVersion = pAssembly.GetName().Version.ToString();
 
             Text = $"{pName} {pVersion}";
+        }
+
+        private void InitPrecisions()
+        {
+            precisionToolStripMenuItem.DropDownItems.AddRange((from p in CAS.Precisions.PrecisionsNames select new ToolStripMenuItem { Text = p.Value, Tag = p.Key }).ToArray());
+            ((ToolStripMenuItem)precisionToolStripMenuItem.DropDownItems[0]).Checked = true;
         }
 
         private void AddOutputHeader()

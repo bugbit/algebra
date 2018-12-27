@@ -36,7 +36,9 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.expressionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.precisionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.evaluateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -104,7 +106,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.precisionToolStripMenuItem});
+            this.expressionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1019, 24);
@@ -126,11 +128,27 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // expressionToolStripMenuItem
+            // 
+            this.expressionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.evaluateToolStripMenuItem,
+            this.precisionToolStripMenuItem});
+            this.expressionToolStripMenuItem.Name = "expressionToolStripMenuItem";
+            this.expressionToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.expressionToolStripMenuItem.Text = "Expression";
+            // 
             // precisionToolStripMenuItem
             // 
             this.precisionToolStripMenuItem.Name = "precisionToolStripMenuItem";
-            this.precisionToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.precisionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.precisionToolStripMenuItem.Text = "Precision";
+            // 
+            // evaluateToolStripMenuItem
+            // 
+            this.evaluateToolStripMenuItem.Name = "evaluateToolStripMenuItem";
+            this.evaluateToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.evaluateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.evaluateToolStripMenuItem.Text = "Evaluate";
             // 
             // FrmAlgebraPad
             // 
@@ -165,6 +183,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem expressionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem evaluateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem precisionToolStripMenuItem;
     }
 }
