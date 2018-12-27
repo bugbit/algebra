@@ -35,6 +35,7 @@ namespace TestExpressions
                 "()=>10",
                 "x=>20",
                 "a=()=>20",
+                "{ a=()=>20; b=()=>IsNumberPrimer(()=>10); }",
                 "a=()=>20; b=()=>IsNumberPrimer(()=>10);"
             };
 
@@ -74,7 +75,7 @@ namespace TestExpressions
             }
             else if (n is CompilationUnitSyntax)
             {
-                evaluate(((CompilationUnitSyntax)n).EndOfFileToken.SyntaxTree.GetRoot());
+                evaluate(((CompilationUnitSyntax)n).SyntaxTree.GetRoot());
             }
             else if (n is ExpressionSyntax)
             {
