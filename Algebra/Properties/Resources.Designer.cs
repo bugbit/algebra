@@ -61,6 +61,15 @@ namespace Algebra.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Expression{0}.
+        /// </summary>
+        internal static string NonameExpression {
+            get {
+                return ResourceManager.GetString("NonameExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Usage:\nalgebra [/?,-h,--help] [expressions]\n\n   /?,-h|help\t\tshow help.
         /// </summary>
         internal static string UsageText {

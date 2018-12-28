@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CAS = Algebra.ExpressionCAS;
@@ -32,14 +33,28 @@ namespace Algebra
 {
     public partial class FrmAlgebraPad : Form
     {
+        private int mNumNonameExpression = 0;
+
         public FrmAlgebraPad()
         {
             InitializeComponent();
             InitFrmName();
             InitPrecisions();
-            AddOutputHeader();
-            padExpression1.FocusExpression();
         }
+
+        public PadControl NewPad(string argName = null)
+        {
+            var pName = argName ?? string.Format(Properties.Resources.NonameExpression, Interlocked.Increment(ref mNumNonameExpression));
+            var pPage = new TabPage { Text = pName };
+            var pPad = new PadControl();
+
+            pPage.Controls.Add(pPad);
+            tabPads.TabPages.Add(pPage);
+
+            return pPad;
+        }
+
+        private PadControl PadActive => tabPads.SelectedTab?.Controls.OfType<PadControl>().FirstOrDefault();
 
         private void InitFrmName()
         {
@@ -56,31 +71,14 @@ namespace Algebra
             ((ToolStripMenuItem)precisionToolStripMenuItem.DropDownItems[0]).Checked = true;
         }
 
-        private void AddOutputHeader()
-        {
-            var pAssembly = Assembly.GetExecutingAssembly();
-            var pName = pAssembly.GetCustomAttribute<AssemblyTitleAttribute>().Title;
-            var pVersion = pAssembly.GetName().Version.ToString();
-            var pDescription = pAssembly.GetCustomAttribute<AssemblyDescriptionAttribute>().Description;
-            var pLicense = pAssembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
-
-            padExpression1.AddOutput
-            (
-                $@"/*
-    {pName} Version {pVersion}
-    {pDescription}
-    https://github.com/bugbit/algebra
-
-    {pLicense}
-    GNU GENERAL PUBLIC LICENSE
-*/
-                "
-            );
-        }
-
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void FrmAlgebraPad_Load(object sender, EventArgs e)
+        {
+            PadActive.FocusExpression();
         }
     }
 }

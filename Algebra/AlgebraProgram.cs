@@ -52,7 +52,10 @@ namespace Algebra
             if (mShowHelp)
                 return DisplayUsage();
 
-            Application.Run(new FrmAlgebraPad());
+            FrmAlgebraPad pFrm = new FrmAlgebraPad();
+
+            pFrm.NewPad();
+            Application.Run(pFrm);
 
             return 0;
         }

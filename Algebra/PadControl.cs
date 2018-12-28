@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace Algebra
 {
@@ -33,6 +34,7 @@ namespace Algebra
         public PadControl()
         {
             InitializeComponent();
+            AddOutputHeader();
         }
 
         public void AddOutput(string argText)
@@ -42,7 +44,30 @@ namespace Algebra
 
         public void FocusExpression()
         {
+            Select();
             txtExpression.Focus();
+        }
+
+        private void AddOutputHeader()
+        {
+            var pAssembly = Assembly.GetExecutingAssembly();
+            var pName = pAssembly.GetCustomAttribute<AssemblyTitleAttribute>().Title;
+            var pVersion = pAssembly.GetName().Version.ToString();
+            var pDescription = pAssembly.GetCustomAttribute<AssemblyDescriptionAttribute>().Description;
+            var pLicense = pAssembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
+
+            AddOutput
+            (
+                $@"/*
+    {pName} Version {pVersion}
+    {pDescription}
+    https://github.com/bugbit/algebra
+
+    {pLicense}
+    GNU GENERAL PUBLIC LICENSE
+*/
+                "
+            );
         }
     }
 }
