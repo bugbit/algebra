@@ -54,7 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlgebraProgram.cs" />
+    <Compile Include="ExpressionCAS\Evaluate\GenerateClassUserExpression.cs" />
+    <Compile Include="ExpressionCAS\ExpressionCAS.cs" />
+    <Compile Include="ExpressionCAS\IUserExpression.cs" />
+    <Compile Include="ExpressionCAS\PadContext.cs" />
     <Compile Include="ExpressionCAS\Precisions.cs" />
+    <Compile Include="ExpressionCAS\UserExpression.cs" />
     <Compile Include="Extensions\StringsExtensions.cs" />
     <Compile Include="FrmAlgebraPad.cs">
       <SubType>Form</SubType>

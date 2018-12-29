@@ -41,7 +41,7 @@ namespace Algebra
         [STAThread]
         static int Main(string[] args)
         {
-            PrepareConsoleForLocalization();
+            //PrepareConsoleForLocalization();
 
             return new AlgebraProgram(args).Run();
         }
@@ -52,7 +52,7 @@ namespace Algebra
             if (mShowHelp)
                 return DisplayUsage();
 
-            FrmAlgebraPad pFrm = new FrmAlgebraPad();
+            var pFrm = new FrmAlgebraPad();
 
             pFrm.NewPad();
             Application.Run(pFrm);
@@ -60,6 +60,7 @@ namespace Algebra
             return 0;
         }
 
+        /*
         /// <summary>
         /// Prepares the console for localization.
         /// </summary>
@@ -73,6 +74,7 @@ namespace Algebra
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
             }
         }
+        */
 
         private void ParseCommandLine()
         {

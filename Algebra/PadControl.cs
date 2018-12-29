@@ -26,15 +26,35 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
+using CAS = Algebra.ExpressionCAS;
 
 namespace Algebra
 {
     public partial class PadControl : UserControl
     {
+        private string mNameExpression;
+        private CAS.PadContext mExprCASContext = new CAS.PadContext();
+
         public PadControl()
         {
             InitializeComponent();
             AddOutputHeader();
+        }
+
+        public string NameExpression
+        {
+            get => mNameExpression;
+            set
+            {
+                mNameExpression = value;
+                UpdateNameExpressionInParent();
+            }
+        }
+
+        public string ExpressionString
+        {
+            get => txtExpression.Text;
+            set => txtExpression.Text = value;
         }
 
         public void AddOutput(string argText)
@@ -46,6 +66,26 @@ namespace Algebra
         {
             Select();
             txtExpression.Focus();
+        }
+
+        public void Evaluate(Type argTypePrecision)
+        {
+            var pExpr = CAS.UserExpression.Evaluate(argTypePrecision, mExprCASContext, ExpressionString);
+
+            if (pExpr == null)
+                return;
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            UpdateNameExpressionInParent();
+        }
+
+        private void UpdateNameExpressionInParent()
+        {
+            if (Parent != null)
+                Parent.Text = mNameExpression;
         }
 
         private void AddOutputHeader()

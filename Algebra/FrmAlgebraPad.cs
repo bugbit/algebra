@@ -45,8 +45,8 @@ namespace Algebra
         public PadControl NewPad(string argName = null)
         {
             var pName = argName ?? string.Format(Properties.Resources.NonameExpression, Interlocked.Increment(ref mNumNonameExpression));
-            var pPage = new TabPage { Text = pName };
-            var pPad = new PadControl();
+            var pPage = new TabPage();
+            var pPad = new PadControl { NameExpression = pName };
 
             pPage.Controls.Add(pPad);
             tabPads.TabPages.Add(pPage);
@@ -54,7 +54,34 @@ namespace Algebra
             return pPad;
         }
 
+        public void Evaluate()
+        {
+            var pPad = PadActive;
+
+            if (pPad == null)
+                return;
+
+            var pTypePrecision = TypePrecisionActive;
+
+            if (pTypePrecision == null)
+                return;
+
+            pPad.Evaluate(pTypePrecision);
+        }
+
         private PadControl PadActive => tabPads.SelectedTab?.Controls.OfType<PadControl>().FirstOrDefault();
+        private Type TypePrecisionActive
+        {
+            get
+            {
+                var pItem = precisionToolStripMenuItem.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Checked);
+
+                if (pItem == null)
+                    return null;
+
+                return CAS.Precisions.PrecicionsTypes[(CAS.Precisions.EPrecisions)pItem.Tag];
+            }
+        }
 
         private void InitFrmName()
         {
@@ -79,6 +106,11 @@ namespace Algebra
         private void FrmAlgebraPad_Load(object sender, EventArgs e)
         {
             PadActive.FocusExpression();
+        }
+
+        private void evaluateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Evaluate();
         }
     }
 }

@@ -117,13 +117,14 @@
             // 
             this.evaluateToolStripMenuItem.Name = "evaluateToolStripMenuItem";
             this.evaluateToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.evaluateToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.evaluateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.evaluateToolStripMenuItem.Text = "Evaluate";
+            this.evaluateToolStripMenuItem.Click += new System.EventHandler(this.evaluateToolStripMenuItem_Click);
             // 
             // precisionToolStripMenuItem
             // 
             this.precisionToolStripMenuItem.Name = "precisionToolStripMenuItem";
-            this.precisionToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.precisionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.precisionToolStripMenuItem.Text = "Precision";
             // 
             // FrmAlgebraPad

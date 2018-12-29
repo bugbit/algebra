@@ -76,19 +76,25 @@
         '\"',
         '\'',
         '\''};
+            this.txtExpression.AutoIndentCharsPatterns = "\r\n^\\s*[\\w\\.]+(\\s\\w+)?\\s*(?<range>=)\\s*(?<range>[^;]+);\r\n^\\s*(case|default)\\s*[^:]" +
+    "*(?<range>:)\\s*(?<range>[^;]+);\r\n";
             this.txtExpression.AutoScrollMinSize = new System.Drawing.Size(27, 14);
             this.txtExpression.BackBrush = null;
+            this.txtExpression.BracketsHighlightStrategy = FastColoredTextBoxNS.BracketsHighlightStrategy.Strategy2;
             this.txtExpression.CharHeight = 14;
             this.txtExpression.CharWidth = 8;
             this.txtExpression.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtExpression.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.txtExpression.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtExpression.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.txtExpression.IsReplaceMode = false;
             this.txtExpression.Language = FastColoredTextBoxNS.Language.CSharp;
+            this.txtExpression.LeftBracket = '(';
+            this.txtExpression.LeftBracket2 = '{';
             this.txtExpression.Location = new System.Drawing.Point(0, 0);
             this.txtExpression.Name = "txtExpression";
             this.txtExpression.Paddings = new System.Windows.Forms.Padding(0);
+            this.txtExpression.RightBracket = ')';
+            this.txtExpression.RightBracket2 = '}';
             this.txtExpression.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.txtExpression.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("txtExpression.ServiceColors")));
             this.txtExpression.Size = new System.Drawing.Size(1025, 89);
@@ -108,22 +114,29 @@
         '\"',
         '\'',
         '\''};
-            this.txtOutput.AutoScrollMinSize = new System.Drawing.Size(27, 14);
+            this.txtOutput.AutoIndentCharsPatterns = "\r\n^\\s*[\\w\\.]+(\\s\\w+)?\\s*(?<range>=)\\s*(?<range>[^;]+);\r\n^\\s*(case|default)\\s*[^:]" +
+    "*(?<range>:)\\s*(?<range>[^;]+);\r\n";
+            this.txtOutput.AutoScrollMinSize = new System.Drawing.Size(2, 14);
             this.txtOutput.BackBrush = null;
+            this.txtOutput.BracketsHighlightStrategy = FastColoredTextBoxNS.BracketsHighlightStrategy.Strategy2;
             this.txtOutput.CharHeight = 14;
             this.txtOutput.CharWidth = 8;
             this.txtOutput.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtOutput.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtOutput.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.txtOutput.IsReplaceMode = false;
             this.txtOutput.Language = FastColoredTextBoxNS.Language.CSharp;
+            this.txtOutput.LeftBracket = '(';
+            this.txtOutput.LeftBracket2 = '{';
             this.txtOutput.Location = new System.Drawing.Point(0, 0);
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.Paddings = new System.Windows.Forms.Padding(0);
             this.txtOutput.ReadOnly = true;
+            this.txtOutput.RightBracket = ')';
+            this.txtOutput.RightBracket2 = '}';
             this.txtOutput.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.txtOutput.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("txtOutput.ServiceColors")));
+            this.txtOutput.ShowLineNumbers = false;
             this.txtOutput.Size = new System.Drawing.Size(1025, 423);
             this.txtOutput.TabIndex = 1;
             this.txtOutput.Zoom = 100;
