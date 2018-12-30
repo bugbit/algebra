@@ -4,6 +4,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,32 +29,27 @@ namespace Algebra.ExpressionCAS.Evaluate
             "return"
         };
 
-        private IProgress<PadProgress> mProgress;
-        private CancellationToken mCancelToken;
-        private Type mTypePrecision;
-        private PadContext mContext;
-        private PadProgress mPadProgress;
+        private EvaluateContext mContext;
         private IndentedTextWriter mWriter;
         private int mLineAct;
 
-        public GenerateClassUserExpression(IProgress<PadProgress> argProgress, CancellationToken argCancelToken, Type argTypePrecision, PadContext argContext)
+        public GenerateClassUserExpression(EvaluateContext argContext)
         {
-            mProgress = argProgress;
-            mCancelToken = argCancelToken;
-            mTypePrecision = argTypePrecision;
             mContext = argContext;
-            mPadProgress = new PadProgress { Name = Properties.Resources.Evaluating, Maximum = 2 };
         }
+
+        public List<string> Assembles => new List<string>(new[] { "System.dll", "System.Core.dll", Assembly.GetExecutingAssembly().Location });
 
         public async Task Generate(TextWriter argWriter, IList<string> argExpr)
         {
-            ReportProgress();
+            mContext.PadProgress.Maximum += 2;
+            mContext.ReportProgress();
             using (mWriter = new IndentedTextWriter(argWriter))
             {
                 mLineAct = 1;
-                IncProgress();
+                mContext.IncProgress();
                 await WriteUsings();
-                await WriteLine($"class {Guid.NewGuid().ToClassName()} : UserExpresion<{mTypePrecision.FullName}>");
+                await WriteLine($"class {Guid.NewGuid().ToClassName()} : UserExpresion<{mContext.TypePrecision.FullName}>");
                 await WriteLine("{");
                 mWriter.Indent++;
                 await WriteExpr(argExpr);
@@ -61,17 +57,6 @@ namespace Algebra.ExpressionCAS.Evaluate
                 mWriter.Indent--;
                 await WriteLine("}");
             }
-        }
-
-        private void ReportProgress()
-        {
-            mProgress.Report(mPadProgress);
-        }
-
-        private void IncProgress()
-        {
-            mPadProgress.Progress++;
-            ReportProgress();
         }
 
         private async Task WriteLine(string argStr)
@@ -82,12 +67,12 @@ namespace Algebra.ExpressionCAS.Evaluate
 
         private async Task WriteLines(ICollection<string> argStrs)
         {
-            mPadProgress.Maximum += argStrs.Count;
+            mContext.PadProgress.Maximum += argStrs.Count;
             foreach (var s in argStrs)
             {
-                mCancelToken.ThrowIfCancellationRequested();
+                mContext.CancelToken.ThrowIfCancellationRequested();
                 await WriteLine(s);
-                IncProgress();
+                mContext.IncProgress();
             }
         }
 

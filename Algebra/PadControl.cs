@@ -87,7 +87,8 @@ namespace Algebra
 
             using (var pCancel = CancellationTokenSource.CreateLinkedTokenSource(mFrmAlgebraCancel.Token, mPadCancel.Token))
             {
-                var pExpr = await CAS.UserExpression.Evaluate(mPadProgress, pCancel.Token, argTypePrecision, mExprCASContext, ExpressionLines);
+                var pEvaluator = new CAS.Evaluate.Evaluator(mPadProgress, pCancel.Token, argTypePrecision, mExprCASContext);
+                var pExpr = await pEvaluator.Evaluate(ExpressionLines);
 
                 if (pExpr == null)
                     return;

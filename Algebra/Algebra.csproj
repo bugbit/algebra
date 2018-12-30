@@ -54,7 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlgebraProgram.cs" />
+    <Compile Include="ExpressionCAS\Evaluate\EvaluateContext.cs" />
     <Compile Include="ExpressionCAS\Evaluate\EvaluateResult.cs" />
+    <Compile Include="ExpressionCAS\Evaluate\Evaluator.cs" />
     <Compile Include="ExpressionCAS\Evaluate\GenerateClassUserExpression.cs" />
     <Compile Include="ExpressionCAS\ExpressionCAS.cs" />
     <Compile Include="ExpressionCAS\IUserExpression.cs" />
