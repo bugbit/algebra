@@ -34,6 +34,7 @@ namespace Algebra
     public partial class FrmAlgebraPad : Form
     {
         private int mNumNonameExpression = 0;
+        private CancellationTokenSource mCancelToken = new CancellationTokenSource();
 
         public FrmAlgebraPad()
         {
@@ -46,7 +47,7 @@ namespace Algebra
         {
             var pName = argName ?? string.Format(Properties.Resources.NonameExpression, Interlocked.Increment(ref mNumNonameExpression));
             var pPage = new TabPage();
-            var pPad = new PadControl { NameExpression = pName };
+            var pPad = new PadControl(mCancelToken) { NameExpression = pName };
 
             pPage.Controls.Add(pPad);
             tabPads.TabPages.Add(pPage);
@@ -54,7 +55,7 @@ namespace Algebra
             return pPad;
         }
 
-        public void Evaluate()
+        public async Task Evaluate()
         {
             var pPad = PadActive;
 
@@ -66,7 +67,13 @@ namespace Algebra
             if (pTypePrecision == null)
                 return;
 
-            pPad.Evaluate(pTypePrecision);
+            await pPad.Evaluate(pTypePrecision);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            mCancelToken.Cancel();
         }
 
         private PadControl PadActive => tabPads.SelectedTab?.Controls.OfType<PadControl>().FirstOrDefault();
@@ -105,12 +112,17 @@ namespace Algebra
 
         private void FrmAlgebraPad_Load(object sender, EventArgs e)
         {
-            PadActive.FocusExpression();
+            PadActive?.FocusExpression();
         }
 
-        private void evaluateToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void evaluateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Evaluate();
+            await Evaluate();
+        }
+
+        private void cancelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PadActive?.CancelEvaluate();
         }
     }
 }

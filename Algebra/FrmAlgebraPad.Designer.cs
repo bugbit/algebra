@@ -37,6 +37,7 @@
             this.expressionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.evaluateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.precisionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cancelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -108,6 +109,7 @@
             // 
             this.expressionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.evaluateToolStripMenuItem,
+            this.cancelToolStripMenuItem,
             this.precisionToolStripMenuItem});
             this.expressionToolStripMenuItem.Name = "expressionToolStripMenuItem";
             this.expressionToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
@@ -126,6 +128,14 @@
             this.precisionToolStripMenuItem.Name = "precisionToolStripMenuItem";
             this.precisionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.precisionToolStripMenuItem.Text = "Precision";
+            // 
+            // cancelToolStripMenuItem
+            // 
+            this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
+            this.cancelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
+            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cancelToolStripMenuItem.Text = "Cancel";
+            this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
             // 
             // FrmAlgebraPad
             // 
@@ -160,5 +170,6 @@
         private System.Windows.Forms.ToolStripMenuItem expressionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem evaluateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem precisionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cancelToolStripMenuItem;
     }
 }

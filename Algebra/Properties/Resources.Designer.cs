@@ -61,11 +61,29 @@ namespace Algebra.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Evaluating ....
+        /// </summary>
+        internal static string Evaluating {
+            get {
+                return ResourceManager.GetString("Evaluating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Expression{0}.
         /// </summary>
         internal static string NonameExpression {
             get {
                 return ResourceManager.GetString("NonameExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Ready.
+        /// </summary>
+        internal static string Ready {
+            get {
+                return ResourceManager.GetString("Ready", resourceCulture);
             }
         }
         

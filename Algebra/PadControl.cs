@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using CAS = Algebra.ExpressionCAS;
+using System.Threading;
 
 namespace Algebra
 {
@@ -34,10 +35,16 @@ namespace Algebra
     {
         private string mNameExpression;
         private CAS.PadContext mExprCASContext = new CAS.PadContext();
+        private IProgress<PadProgress> mPadProgress;
+        private CancellationTokenSource mFrmAlgebraCancel;
+        private CancellationTokenSource mPadCancel = null;
 
-        public PadControl()
+        public PadControl(CancellationTokenSource argFrmAlgebraCancel = null)
         {
+            mFrmAlgebraCancel = argFrmAlgebraCancel;
             InitializeComponent();
+            tlProcesoName.Text = Properties.Resources.Ready;
+            mPadProgress = new Progress<PadProgress>(ProgressChanged);
             AddOutputHeader();
         }
 
@@ -57,6 +64,11 @@ namespace Algebra
             set => txtExpression.Text = value;
         }
 
+        public IList<string> ExpressionLines
+        {
+            get => txtExpression.Lines;
+        }
+
         public void AddOutput(string argText)
         {
             txtOutput.AppendText(argText);
@@ -68,12 +80,23 @@ namespace Algebra
             txtExpression.Focus();
         }
 
-        public void Evaluate(Type argTypePrecision)
+        public async Task Evaluate(Type argTypePrecision)
         {
-            var pExpr = CAS.UserExpression.Evaluate(argTypePrecision, mExprCASContext, ExpressionString);
+            mPadCancel?.Dispose();
+            mPadCancel = new CancellationTokenSource();
 
-            if (pExpr == null)
-                return;
+            using (var pCancel = CancellationTokenSource.CreateLinkedTokenSource(mFrmAlgebraCancel.Token, mPadCancel.Token))
+            {
+                var pExpr = await CAS.UserExpression.Evaluate(mPadProgress, pCancel.Token, argTypePrecision, mExprCASContext, ExpressionLines);
+
+                if (pExpr == null)
+                    return;
+            }
+        }
+
+        public void CancelEvaluate()
+        {
+            mPadCancel?.Cancel();
         }
 
         protected override void OnParentChanged(EventArgs e)
@@ -108,6 +131,20 @@ namespace Algebra
 */
                 "
             );
+        }
+
+        private void ProgressChanged(PadProgress argProgress)
+        {
+            if (!string.Equals(tlProcesoName.Text, argProgress.Name))
+                tlProcesoName.Text = argProgress.Name;
+            if (tgProcess.Visible != argProgress.Visible)
+                tgProcess.Visible = argProgress.Visible;
+            if (tgProcess.Minimum != argProgress.Minimum)
+                tgProcess.Minimum = argProgress.Minimum;
+            if (tgProcess.Maximum != argProgress.Maximum)
+                tgProcess.Maximum = argProgress.Maximum;
+            if (tgProcess.Value != argProgress.Progress)
+                tgProcess.Value = argProgress.Progress;
         }
     }
 }

@@ -39,7 +39,9 @@ namespace TestExpressions
         {
             get
             {
-                return () => new { a = 20, b = IsNumberPrime(() => 10) };
+                return
+                    () => new { a = 20, b = IsNumberPrime(() => 10) }
+                    ;
             }
         }
 
