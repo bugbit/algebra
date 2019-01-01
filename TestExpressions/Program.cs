@@ -15,6 +15,8 @@ namespace TestExpressions
         {
             return Expression.Constant(false);
         }
+        public static Expression Solver(Expression e) => e;
+        public static Expression E(Expression<Func<T, T>> e) => e;
     }
     class UserExpression : ExpressionCAS<int>
     {
@@ -42,6 +44,16 @@ namespace TestExpressions
                 return
                     () => new { a = 20, b = IsNumberPrime(() => 10) }
                     ;
+            }
+        }
+
+        public Expression<Func<object>> Expr2
+        {
+            get
+            {
+                return
+                    () => Solver(E(x => x));
+                ;
             }
         }
 

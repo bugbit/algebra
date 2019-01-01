@@ -31,6 +31,8 @@ using System.Threading;
 
 namespace Algebra
 {
+    public delegate void ChangeIsEvaluateHandler(PadControl argPad, bool argIsValidate);
+
     public partial class PadControl : UserControl
     {
         private string mNameExpression;
@@ -47,6 +49,8 @@ namespace Algebra
             mPadProgress = new Progress<PadProgress>(ProgressChanged);
             AddOutputHeader();
         }
+
+        public event ChangeIsEvaluateHandler ChangeIsEvaluate;
 
         public string NameExpression
         {
@@ -82,19 +86,28 @@ namespace Algebra
 
         public async Task Evaluate(Type argTypePrecision)
         {
-            mPadCancel?.Dispose();
-            mPadCancel = new CancellationTokenSource();
-
-            using (var pCancel = CancellationTokenSource.CreateLinkedTokenSource(mFrmAlgebraCancel.Token, mPadCancel.Token))
+            ChangeIsEvaluate?.Invoke(this, true);
+            try
             {
-                var pEvaluator = new CAS.Evaluate.Evaluator(mPadProgress, pCancel.Token, argTypePrecision, mExprCASContext);
-                var pExpr = await pEvaluator.Evaluate(ExpressionLines);
+                mPadCancel?.Dispose();
+                mPadCancel = new CancellationTokenSource();
 
-                if (pExpr == null)
-                    return;
+                using (var pCancel = CancellationTokenSource.CreateLinkedTokenSource(mFrmAlgebraCancel.Token, mPadCancel.Token))
+                {
+                    var pEvaluator = new CAS.Evaluate.Evaluator(mPadProgress, pCancel.Token, argTypePrecision, mExprCASContext);
+                    var pExpr = await pEvaluator.Evaluate(ExpressionLines);
+
+                    if (pExpr == null)
+                        return;
+                }
+            }
+            finally
+            {
+                ChangeIsEvaluate?.Invoke(this, true);
+                mPadCancel?.Dispose();
+                mPadCancel = null;
             }
         }
-
         public void CancelEvaluate()
         {
             mPadCancel?.Cancel();
