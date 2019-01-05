@@ -21,4 +21,13 @@ namespace Algebra.ExpressionCAS
 
         public abstract Expression<Func<object>> Expr { get; }
     }
+
+    public class PruebaUserExpression : UserExpression<int>
+    {
+        public PruebaUserExpression(PadContext argContext) : base(argContext)
+        {
+        }
+
+        public override Expression<Func<object>> Expr => throw new NotImplementedException();
+    }
 }

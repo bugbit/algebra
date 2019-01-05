@@ -118,15 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Evaluating" xml:space="preserve">
-    <value>Evaluating ...</value>
+    <value>Evaluando ...</value>
   </data>
   <data name="NonameExpression" xml:space="preserve">
-    <value>Expression{0}</value>
+    <value>Expresión{0}</value>
   </data>
   <data name="Ready" xml:space="preserve">
-    <value>Ready</value>
+    <value>Listo</value>
   </data>
   <data name="UsageText" xml:space="preserve">
     <value>Usage:\nalgebra [/?,-h,--help] [expressions]\n\n   /?,-h|help\t\tshow help</value>
+  </data>
+  <data name="ErrorEvaluate" xml:space="preserve">
+    <value>Error al evaluar la expresión</value>
+  </data>
+  <data name="EvaluateSuccess" xml:space="preserve">
+    <value>Expresión evaluada en {0} segundos</value>
   </data>
 </root>

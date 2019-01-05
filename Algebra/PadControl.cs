@@ -84,8 +84,9 @@ namespace Algebra
             txtExpression.Focus();
         }
 
-        public async Task Evaluate(Type argTypePrecision)
+        public async Task Evaluate(CAS.Precisions.Info argPrecisionInfo)
         {
+            // Controlar isevaluate
             ChangeIsEvaluate?.Invoke(this, true);
             try
             {
@@ -94,7 +95,7 @@ namespace Algebra
 
                 using (var pCancel = CancellationTokenSource.CreateLinkedTokenSource(mFrmAlgebraCancel.Token, mPadCancel.Token))
                 {
-                    var pEvaluator = new CAS.Evaluate.Evaluator(mPadProgress, pCancel.Token, argTypePrecision, mExprCASContext);
+                    var pEvaluator = new CAS.Evaluate.Evaluator(mPadProgress, pCancel.Token, argPrecisionInfo, mExprCASContext);
                     var pExpr = await pEvaluator.Evaluate(ExpressionLines);
 
                     if (pExpr == null)

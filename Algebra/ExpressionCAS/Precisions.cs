@@ -11,19 +11,31 @@ namespace Algebra.ExpressionCAS
     {
         public enum EPrecisions
         {
-            Integer, BigInteger, Float, Double, Decimal, BigDecimal
+            Integer, Long, BigInteger, Float, Double, Decimal, BigDecimal
         }
 
-        public static readonly IDictionary<EPrecisions, Type> PrecicionsTypes = new Dictionary<EPrecisions, Type>
+        public class Info
         {
-            [EPrecisions.Integer] = typeof(int),
-            [EPrecisions.BigInteger] = typeof(BigInteger),
-            [EPrecisions.Float] = typeof(float),
-            [EPrecisions.Double] = typeof(double),
-            [EPrecisions.Decimal] = typeof(decimal),
-            [EPrecisions.BigDecimal] = typeof(BigDecimal)
-        };
+            public Info() { }
+            public Info(Type argType)
+            {
+                TypePrecision = argType;
+                Name = argType.Name;
+            }
 
-        public static readonly IDictionary<EPrecisions, string> PrecisionsNames = PrecicionsTypes.ToDictionary(d => d.Key, d => d.Value.Name);
+            public string Name { get; set; }
+            public Type TypePrecision { get; set; }
+        }
+
+        public static readonly IDictionary<EPrecisions, Info> PrecicionsInfo = new Dictionary<EPrecisions, Info>
+        {
+            [EPrecisions.Integer] = new Info(typeof(int)),
+            [EPrecisions.Long] = new Info(typeof(long)),
+            [EPrecisions.BigInteger] = new Info(typeof(BigInteger)),
+            [EPrecisions.Float] = new Info(typeof(float)),
+            [EPrecisions.Double] = new Info(typeof(double)),
+            [EPrecisions.Decimal] = new Info(typeof(decimal)),
+            [EPrecisions.BigDecimal] = new Info(typeof(BigDecimal))
+        };
     }
 }

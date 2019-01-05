@@ -13,21 +13,7 @@ namespace Algebra.ExpressionCAS.Evaluate
 {
     class GenerateClassUserExpression
     {
-        private static readonly string[] mUsing = new[] { "System.Linq.Expressions", "CAS = Algebra.ExpressionCAS" };
-        private static readonly string[] mExprPart1 = new[]
-        {
-            "public Expression<Func<object>> Expr",
-            "{"
-        };
-        private static readonly string[] mExprPart2 = new[]
-        {
-            "get",
-            "{"
-        };
-        private static readonly string[] mExprPart3 = new[]
-        {
-            "return"
-        };
+        private static readonly string[] mUsing = new[] { "System.Linq.Expressions", "CAS = Algebra.ExpressionCAS", "static System.Math" };
 
         private EvaluateContext mContext;
         private IndentedTextWriter mWriter;
@@ -40,20 +26,28 @@ namespace Algebra.ExpressionCAS.Evaluate
 
         public List<string> Assembles => new List<string>(new[] { "System.dll", "System.Core.dll", Assembly.GetExecutingAssembly().Location });
 
+        public int LineExprStart { get; private set; }
+        public int LineExprEnd { get; private set; }
+
         public async Task Generate(TextWriter argWriter, IList<string> argExpr)
         {
-            mContext.PadProgress.Maximum += 2;
-            mContext.ReportProgress();
             using (mWriter = new IndentedTextWriter(argWriter))
             {
+                var pTypeUserExpression = typeof(UserExpression<>);
+
                 mLineAct = 1;
-                mContext.IncProgress();
                 await WriteUsings();
-                await WriteLine($"class {Guid.NewGuid().ToClassName()} : UserExpresion<{mContext.TypePrecision.FullName}>");
+                await WriteLine("");
+                await WriteLine($"namespace {pTypeUserExpression.Namespace}");
+                await WriteLine("{");
+                mWriter.Indent++;
+                await WriteLine($"class UserExpression{Guid.NewGuid().ToClassName()} : UserExpression<{mContext.PrecisionInfo.TypePrecision.FullName}>");
                 await WriteLine("{");
                 mWriter.Indent++;
                 await WriteExpr(argExpr);
                 //await WriteLines(new[{]);
+                mWriter.Indent--;
+                await WriteLine("}");
                 mWriter.Indent--;
                 await WriteLine("}");
             }
@@ -85,19 +79,13 @@ namespace Algebra.ExpressionCAS.Evaluate
 
         private async Task WriteExpr(IList<string> argExpr)
         {
-            await WriteLines(mExprPart1);
+            await WriteLine(@"public override Expression<Func<object>> Expr => ");
             mWriter.Indent++;
-            await WriteLines(mExprPart2);
-            mWriter.Indent++;
-            await WriteLines(mExprPart3);
-            mWriter.Indent++;
+            LineExprStart = mLineAct;
             await WriteLines(argExpr);
+            LineExprEnd = mLineAct;
             await WriteLine(";");
             mWriter.Indent--;
-            mWriter.Indent--;
-            await WriteLine("}");
-            mWriter.Indent--;
-            await WriteLine("}");
         }
     }
 }

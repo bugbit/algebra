@@ -12,16 +12,16 @@ namespace Algebra.ExpressionCAS.Evaluate
         private IProgress<PadProgress> mProgress;
         private PadContext mContext;
 
-        public EvaluateContext(IProgress<PadProgress> argProgress, CancellationToken argCancelToken, Type argTypePrecision, PadContext argContext)
+        public EvaluateContext(IProgress<PadProgress> argProgress, CancellationToken argCancelToken, Precisions.Info argPrecisionInfo, PadContext argContext)
         {
             mProgress = argProgress;
             CancelToken = argCancelToken;
-            TypePrecision = argTypePrecision;
+            PrecisionInfo = argPrecisionInfo;
             mContext = argContext;
-            PadProgress = new PadProgress { Name = Properties.Resources.Evaluating };
+            PadProgress = new PadProgress { Name = Properties.Resources.Evaluating, Visible = true };
         }
 
-        public Type TypePrecision { get; }
+        public Precisions.Info PrecisionInfo { get; }
         public CancellationToken CancelToken { get; }
 
         public PadProgress PadProgress { get; }

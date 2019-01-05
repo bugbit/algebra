@@ -61,7 +61,25 @@ namespace Algebra.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Evaluating ....
+        ///   Busca una cadena traducida similar a Error al evaluar la expresión.
+        /// </summary>
+        internal static string ErrorEvaluate {
+            get {
+                return ResourceManager.GetString("ErrorEvaluate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Expresión evaluada en {0} segundos.
+        /// </summary>
+        internal static string EvaluateSuccess {
+            get {
+                return ResourceManager.GetString("EvaluateSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Evaluando ....
         /// </summary>
         internal static string Evaluating {
             get {
@@ -70,7 +88,7 @@ namespace Algebra.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Expression{0}.
+        ///   Busca una cadena traducida similar a Expresión{0}.
         /// </summary>
         internal static string NonameExpression {
             get {
@@ -79,7 +97,7 @@ namespace Algebra.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Ready.
+        ///   Busca una cadena traducida similar a Listo.
         /// </summary>
         internal static string Ready {
             get {

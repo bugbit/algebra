@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using static System.Math;
 
 namespace TestExpressions
 {
@@ -17,8 +18,9 @@ namespace TestExpressions
         }
         public static Expression Solver(Expression e) => e;
         public static Expression E(Expression<Func<T, T>> e) => e;
+        public static Expression E(Expression<Func<T, T, T>> e) => e;
     }
-    class UserExpression : ExpressionCAS<int>
+    class UserExpression : ExpressionCAS<double>
     {
 #if ROSLYN
         public Expression Expr1 { get; private set; }
@@ -26,35 +28,6 @@ namespace TestExpressions
         public void Evaluate()
         {
             Expr1 = IsNumberPrime(() => 10);
-        }
-#endif
-
-        public Expression<Func<object>> Expr
-        {
-            get
-            {
-                return () => IsNumberPrime(() => 10);
-            }
-        }
-
-        public Expression<Func<object>> Expr1
-        {
-            get
-            {
-                return
-                    () => new { a = 20, b = IsNumberPrime(() => 10) }
-                    ;
-            }
-        }
-
-        public Expression<Func<object>> Expr2
-        {
-            get
-            {
-                return
-                    () => Solver(E(x => x));
-                ;
-            }
         }
 
         public object Evaluate1()
@@ -66,6 +39,23 @@ namespace TestExpressions
         {
             return new { a = 20, b = IsNumberPrime(() => 10) };
         }
+#endif
+
+        public Expression<Func<object>> Expr =>
+            () => IsNumberPrime(() => 10)
+            ;
+
+        public Expression<Func<object>> Expr1 =>
+            () => new { a = 20, b = IsNumberPrime(() => 10) }
+            ;
+
+        public Expression<Func<object>> Expr2 =>
+            () => Solver(E(x => x))
+            ;
+
+        public Expression<Func<object>> Expr3 =>
+            () => E((x, y) => Sqrt(x * x + y * y))
+            ;
     }
     class Program
     {
@@ -97,9 +87,9 @@ namespace TestExpressions
             expr.Evaluate();
 
             Console.WriteLine(expr.Expr1);
-#endif
-            Console.WriteLine(expr.Evaluate1());
+             Console.WriteLine(expr.Evaluate1());
             Console.WriteLine(expr.Evaluate2());
+#endif
             Console.WriteLine(expr.Expr);
             Console.WriteLine(expr.Expr.Compile().Invoke());
             Console.WriteLine(expr.Expr1);

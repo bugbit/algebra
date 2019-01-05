@@ -62,7 +62,7 @@ namespace Algebra
             if (pPad == null)
                 return;
 
-            var pTypePrecision = TypePrecisionActive;
+            var pTypePrecision = PrecisionInfoActive;
 
             if (pTypePrecision == null)
                 return;
@@ -77,7 +77,7 @@ namespace Algebra
         }
 
         private PadControl PadActive => tabPads.SelectedTab?.Controls.OfType<PadControl>().FirstOrDefault();
-        private Type TypePrecisionActive
+        private CAS.Precisions.Info PrecisionInfoActive
         {
             get
             {
@@ -86,7 +86,7 @@ namespace Algebra
                 if (pItem == null)
                     return null;
 
-                return CAS.Precisions.PrecicionsTypes[(CAS.Precisions.EPrecisions)pItem.Tag];
+                return (CAS.Precisions.Info)pItem.Tag;
             }
         }
 
@@ -101,7 +101,7 @@ namespace Algebra
 
         private void InitPrecisions()
         {
-            precisionToolStripMenuItem.DropDownItems.AddRange((from p in CAS.Precisions.PrecisionsNames select new ToolStripMenuItem { Text = p.Value, Tag = p.Key }).ToArray());
+            precisionToolStripMenuItem.DropDownItems.AddRange((from p in CAS.Precisions.PrecicionsInfo.Values select new ToolStripMenuItem { Text = p.Name, Tag = p }).ToArray());
             ((ToolStripMenuItem)precisionToolStripMenuItem.DropDownItems[0]).Checked = true;
         }
 
