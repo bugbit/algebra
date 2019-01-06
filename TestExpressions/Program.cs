@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Windows.Forms;
 using static System.Math;
 
 namespace TestExpressions
@@ -18,7 +19,7 @@ namespace TestExpressions
         }
         public static Expression Solver(Expression e) => e;
         public static Expression E(Expression<Func<T, T>> e) => e;
-        public static Expression E(Expression<Func<T, T, T>> e) => e;
+        public static Expression F(Expression<Func<T, T, T>> e) => e;
     }
     class UserExpression : ExpressionCAS<double>
     {
@@ -41,26 +42,28 @@ namespace TestExpressions
         }
 #endif
 
-        public Expression<Func<object>> Expr =>
-            () => IsNumberPrime(() => 10)
+        public Expression<Func<object>> Expr => () =>
+            IsNumberPrime(() => 10)
             ;
 
-        public Expression<Func<object>> Expr1 =>
-            () => new { a = 20, b = IsNumberPrime(() => 10) }
+        public Expression<Func<object>> Expr1 => () =>
+            new { a = 20, b = IsNumberPrime(() => 10) }
             ;
 
-        public Expression<Func<object>> Expr2 =>
-            () => Solver(E(x => x))
+        public Expression<Func<object>> Expr2 => () =>
+            Solver(E(x => x))
             ;
 
-        public Expression<Func<object>> Expr3 =>
-            () => E((x, y) => Sqrt(x * x + y * y))
+        public Expression<Func<object>> Expr3 => () =>
+             F((x, y) => Sqrt(x * x + y * y))
             ;
     }
     class Program
     {
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 #if ROSLYN
             var exprs = new[]
             {

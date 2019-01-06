@@ -79,7 +79,7 @@ namespace Algebra.ExpressionCAS.Evaluate
 
         private async Task WriteExpr(IList<string> argExpr)
         {
-            await WriteLine(@"public override Expression<Func<object>> Expr => ");
+            await WriteLine(@"public override Expression<Func<object>> Expr => ()=>");
             mWriter.Indent++;
             LineExprStart = mLineAct;
             await WriteLines(argExpr);

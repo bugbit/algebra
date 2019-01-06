@@ -41,6 +41,8 @@ namespace Algebra
         [STAThread]
         static int Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             //PrepareConsoleForLocalization();
 
             return new AlgebraProgram(args).Run();

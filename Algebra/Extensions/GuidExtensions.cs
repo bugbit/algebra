@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Algebra.Extensions
 {
-   public static class GuidExpressions
+   public static class GuidExtensions
     {
         public static string ToClassName(this Guid argGuid) => argGuid.ToString().Replace("-", string.Empty);
     }
