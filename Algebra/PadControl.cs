@@ -31,7 +31,7 @@ using System.Threading;
 
 namespace Algebra
 {
-    public delegate void ChangeIsEvaluateHandler(PadControl argPad, bool argIsValidate);
+    public delegate void ChangeIsEvaluatingHandler(PadControl argPad, bool argIsValidate);
 
     public partial class PadControl : UserControl
     {
@@ -40,6 +40,8 @@ namespace Algebra
         private IProgress<PadProgress> mPadProgress;
         private CancellationTokenSource mFrmAlgebraCancel;
         private CancellationTokenSource mPadCancel = null;
+        private object mLockIsEvaluating = new object();
+        private bool mIsEvaluating;
 
         public PadControl(CancellationTokenSource argFrmAlgebraCancel = null)
         {
@@ -50,7 +52,26 @@ namespace Algebra
             AddOutputHeader();
         }
 
-        public event ChangeIsEvaluateHandler ChangeIsEvaluate;
+        public event ChangeIsEvaluatingHandler ChangeIsEvaluating;
+
+        public bool IsEvaluating
+        {
+            get
+            {
+                lock (mLockIsEvaluating)
+                {
+                    return mIsEvaluating;
+                }
+            }
+            set
+            {
+                lock (mLockIsEvaluating)
+                {
+                    mIsEvaluating = value;
+                }
+                ChangeIsEvaluating?.Invoke(this, mIsEvaluating);
+            }
+        }
 
         public string NameExpression
         {
@@ -86,8 +107,10 @@ namespace Algebra
 
         public async Task Evaluate(CAS.Precisions.Info argPrecisionInfo)
         {
-            // Controlar isevaluate
-            ChangeIsEvaluate?.Invoke(this, true);
+            if (IsEvaluating)
+                return;
+
+            IsEvaluating = true;
             try
             {
                 mPadCancel?.Dispose();
@@ -104,7 +127,7 @@ namespace Algebra
             }
             finally
             {
-                ChangeIsEvaluate?.Invoke(this, true);
+                IsEvaluating = false;
                 mPadCancel?.Dispose();
                 mPadCancel = null;
             }

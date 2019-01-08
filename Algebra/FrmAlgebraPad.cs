@@ -49,6 +49,7 @@ namespace Algebra
             var pPage = new TabPage();
             var pPad = new PadControl(mCancelToken) { NameExpression = pName };
 
+            pPad.ChangeIsEvaluating += Pad_ChangeIsEvaluating;
             pPage.Controls.Add(pPad);
             tabPads.TabPages.Add(pPage);
 
@@ -105,6 +106,15 @@ namespace Algebra
             ((ToolStripMenuItem)precisionToolStripMenuItem.DropDownItems[0]).Checked = true;
         }
 
+        private void Pad_ChangeIsEvaluating(PadControl argPad, bool argIsValidate)
+        {
+            if (argPad == PadActive)
+            {
+                evaluateToolStripMenuItem.Enabled = !argIsValidate;
+                cancelToolStripMenuItem.Enabled = argIsValidate;
+            }
+        }
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -123,6 +133,11 @@ namespace Algebra
         private void cancelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PadActive?.CancelEvaluate();
+        }
+
+        private void tabPads_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Pad_ChangeIsEvaluating(PadActive, PadActive.IsEvaluating);
         }
     }
 }

@@ -36,8 +36,8 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expressionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.evaluateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.precisionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cancelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.precisionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -78,6 +78,7 @@
             this.tabPads.SelectedIndex = 0;
             this.tabPads.Size = new System.Drawing.Size(677, 546);
             this.tabPads.TabIndex = 0;
+            this.tabPads.SelectedIndexChanged += new System.EventHandler(this.tabPads_SelectedIndexChanged);
             // 
             // menuStrip1
             // 
@@ -123,12 +124,6 @@
             this.evaluateToolStripMenuItem.Text = "Evaluate";
             this.evaluateToolStripMenuItem.Click += new System.EventHandler(this.evaluateToolStripMenuItem_Click);
             // 
-            // precisionToolStripMenuItem
-            // 
-            this.precisionToolStripMenuItem.Name = "precisionToolStripMenuItem";
-            this.precisionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.precisionToolStripMenuItem.Text = "Precision";
-            // 
             // cancelToolStripMenuItem
             // 
             this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
@@ -136,6 +131,12 @@
             this.cancelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cancelToolStripMenuItem.Text = "Cancel";
             this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
+            // 
+            // precisionToolStripMenuItem
+            // 
+            this.precisionToolStripMenuItem.Name = "precisionToolStripMenuItem";
+            this.precisionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.precisionToolStripMenuItem.Text = "Precision";
             // 
             // FrmAlgebraPad
             // 
