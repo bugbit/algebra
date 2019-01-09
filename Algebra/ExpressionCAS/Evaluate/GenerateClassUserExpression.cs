@@ -13,7 +13,7 @@ namespace Algebra.ExpressionCAS.Evaluate
 {
     class GenerateClassUserExpression
     {
-        private static readonly string[] mUsing = new[] { "System.Linq.Expressions", "CAS = Algebra.ExpressionCAS", "static System.Math" };
+        private static readonly string[] mUsing = new[] { "System", "System.Linq.Expressions", "CAS = Algebra.ExpressionCAS", "static System.Math" };
 
         private EvaluateContext mContext;
         private IndentedTextWriter mWriter;
@@ -24,6 +24,7 @@ namespace Algebra.ExpressionCAS.Evaluate
             mContext = argContext;
         }
 
+        public string ClassName { get; private set; }
         public List<string> Assembles => new List<string>(new[] { "System.dll", "System.Core.dll", Assembly.GetExecutingAssembly().Location });
 
         public int LineExprStart { get; private set; }
@@ -31,6 +32,7 @@ namespace Algebra.ExpressionCAS.Evaluate
 
         public async Task Generate(TextWriter argWriter, IList<string> argExpr)
         {
+            ClassName = $"UserExpression{Guid.NewGuid().ToClassName()}";
             using (mWriter = new IndentedTextWriter(argWriter))
             {
                 var pTypeUserExpression = typeof(UserExpression<>);
@@ -41,9 +43,11 @@ namespace Algebra.ExpressionCAS.Evaluate
                 await WriteLine($"namespace {pTypeUserExpression.Namespace}");
                 await WriteLine("{");
                 mWriter.Indent++;
-                await WriteLine($"class UserExpression{Guid.NewGuid().ToClassName()} : UserExpression<{mContext.PrecisionInfo.TypePrecision.FullName}>");
+                await WriteLine($"class {ClassName} : UserExpression<{mContext.PrecisionInfo.TypePrecision.FullName}>");
                 await WriteLine("{");
                 mWriter.Indent++;
+                await WriteLine($"public {ClassName}(PadContext argContext) : base(argContext) {{ }}");
+                await WriteLine("");
                 await WriteExpr(argExpr);
                 //await WriteLines(new[{]);
                 mWriter.Indent--;
@@ -55,6 +59,7 @@ namespace Algebra.ExpressionCAS.Evaluate
 
         private async Task WriteLine(string argStr)
         {
+            mContext.CancelToken.ThrowIfCancellationRequested();
             await mWriter.WriteLineAsync(argStr);
             mLineAct++;
         }

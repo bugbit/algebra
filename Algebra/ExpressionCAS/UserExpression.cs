@@ -24,9 +24,7 @@ namespace Algebra.ExpressionCAS
 
     public class PruebaUserExpression : UserExpression<int>
     {
-        public PruebaUserExpression(PadContext argContext) : base(argContext)
-        {
-        }
+        public PruebaUserExpression(PadContext argContext) : base(argContext) { }
 
         public override Expression<Func<object>> Expr => throw new NotImplementedException();
     }

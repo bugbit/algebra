@@ -42,19 +42,19 @@ namespace TestExpressions
         }
 #endif
 
-        public Expression<Func<object>> Expr => () =>
+        public Expression<Func<Expression>> Expr => () =>
             IsNumberPrime(() => 10)
             ;
 
-        public Expression<Func<object>> Expr1 => () =>
-            new { a = 20, b = IsNumberPrime(() => 10) }
+        public Expression<Func<Expression>> Expr1 => () =>
+            Expression.Constant(new { a = 20, b = IsNumberPrime(() => 10) })
             ;
 
-        public Expression<Func<object>> Expr2 => () =>
+        public Expression<Func<Expression>> Expr2 => () =>
             Solver(E(x => x))
             ;
 
-        public Expression<Func<object>> Expr3 => () =>
+        public Expression<Func<Expression>> Expr3 => () =>
              F((x, y) => Sqrt(x * x + y * y))
             ;
     }

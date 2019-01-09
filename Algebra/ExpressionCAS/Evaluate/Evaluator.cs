@@ -49,6 +49,7 @@ namespace Algebra.ExpressionCAS.Evaluate
                         mContext.PadProgress.Maximum += 2;
                         mContext.ReportProgress();
                         await pGenerate.Generate(pWriterBase, argExpr);
+                        mContext.CancelToken.ThrowIfCancellationRequested();
                         mContext.IncProgress();
 
                         if (!DebugEvaluate)
@@ -61,14 +62,16 @@ namespace Algebra.ExpressionCAS.Evaluate
 
                     if (DebugEvaluate)
                     {
-                        cp.GenerateExecutable = true;
                         cp.IncludeDebugInformation = true;
                         cp.OutputAssembly = Path.ChangeExtension(mSourceCode, ".dll");
                     }
+                    else
+                        cp.CompilerOptions = "/optimize";
 
                     var pProvider = Common.HelperCodeCom.CodeProvider.Value;
                     var cr = await Task.Run(() => (DebugEvaluate) ? pProvider.CompileAssemblyFromFile(cp, mSourceCode) : pProvider.CompileAssemblyFromSource(cp, mSourceCode));
 
+                    mContext.CancelToken.ThrowIfCancellationRequested();
                     mContext.IncProgress();
 
                     if (cr.Errors.Count > 0)
@@ -80,6 +83,8 @@ namespace Algebra.ExpressionCAS.Evaluate
                     }
                     else
                     {
+                        // Get expression y execute it
+                        //cr.CompiledAssembly
                         pStopWatch.Stop();
                         mContext.PadProgress.Name = string.Format(Properties.Resources.EvaluateSuccess, pStopWatch.Elapsed.Seconds);
                         mContext.ReportProgress();
