@@ -22,11 +22,12 @@ namespace Algebra.ExpressionCAS.Evaluate
             mContext = new EvaluateContext(argProgress, argCancelToken, argPrecisionInfo, argContext);
         }
 
-        public async Task<Evaluate.EvaluateResult> Evaluate(IList<string> argExpr)
+        public async Task<EvaluateResult> Evaluate(IList<string> argExpr)
         {
             try
             {
                 var pStopWatch = new Stopwatch();
+                var pResult = new EvaluateResult();
 
                 pStopWatch.Start();
                 if (argExpr == null || argExpr.Count == 0 || argExpr.All(s => string.IsNullOrWhiteSpace(s)))
@@ -42,11 +43,11 @@ namespace Algebra.ExpressionCAS.Evaluate
                     if (DebugEvaluate)
                         mSourceCode = pFilesTmp.AddExtension(".cs", true);
 
-                    var pGenerate = new Evaluate.GenerateClassUserExpression(mContext);
+                    var pGenerate = new GenerateClassUserExpression(mContext);
 
                     using (var pWriterBase = (DebugEvaluate) ? (TextWriter)new StreamWriter(mSourceCode) : new StringWriter())
                     {
-                        mContext.PadProgress.Maximum += 2;
+                        mContext.PadProgress.Maximum += 3;
                         mContext.ReportProgress();
                         await pGenerate.Generate(pWriterBase, argExpr);
                         mContext.CancelToken.ThrowIfCancellationRequested();
@@ -83,21 +84,38 @@ namespace Algebra.ExpressionCAS.Evaluate
                     }
                     else
                     {
-                        // Get expression y execute it
-                        //cr.CompiledAssembly
+                        await Evaluate(pGenerate, cr, pResult);
+                        //Evaluate(cr,pr)
                         pStopWatch.Stop();
                         mContext.PadProgress.Name = string.Format(Properties.Resources.EvaluateSuccess, pStopWatch.Elapsed.Seconds);
+                        mContext.PadProgress.Progress++;
                         mContext.ReportProgress();
                     }
                 }
 
-                return null;
+                return pResult;
             }
             finally
             {
                 mContext.PadProgress.Visible = false;
                 mContext.ReportProgress();
             }
+        }
+
+        private async Task Evaluate(GenerateClassUserExpression argGenerate, CompilerResults argResults, EvaluateResult argResult)
+        {
+            // Get expression y execute it
+            //cr.CompiledAssembly
+            var pContext = mContext.Context;
+            var pType = argResults.CompiledAssembly.GetType(argGenerate.ClassName);
+            var pConstr = pType.GetConstructor(new[] { typeof(PadContext) });
+            var pObj = pConstr.Invoke(new object[] { pContext });
+            var pUserExpr = (IUserExpression)pObj;
+            var pExpr = pUserExpr.Expr;
+            var pExprC = pExpr.Compile();
+            var pValue = await Task.Factory.FromAsync(pExprC.BeginInvoke, pExprC.EndInvoke, null);
+
+            pContext.Assemblies.Add(argResults.CompiledAssembly);
         }
     }
 }

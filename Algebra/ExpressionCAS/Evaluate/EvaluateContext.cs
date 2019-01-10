@@ -10,19 +10,19 @@ namespace Algebra.ExpressionCAS.Evaluate
     public class EvaluateContext
     {
         private IProgress<PadProgress> mProgress;
-        private PadContext mContext;
 
         public EvaluateContext(IProgress<PadProgress> argProgress, CancellationToken argCancelToken, Precisions.Info argPrecisionInfo, PadContext argContext)
         {
             mProgress = argProgress;
             CancelToken = argCancelToken;
             PrecisionInfo = argPrecisionInfo;
-            mContext = argContext;
+            Context = argContext;
             PadProgress = new PadProgress { Name = Properties.Resources.Evaluating, Visible = true };
         }
 
         public Precisions.Info PrecisionInfo { get; }
         public CancellationToken CancelToken { get; }
+        public PadContext Context { get; }
 
         public PadProgress PadProgress { get; }
 
