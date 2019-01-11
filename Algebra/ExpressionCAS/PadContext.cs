@@ -9,6 +9,7 @@ namespace Algebra.ExpressionCAS
 {
     public class PadContext
     {
-        public List<Assembly> Assemblies { get; } = new List<Assembly>();
+        public HashSet<Assembly> GeneratesAssemblies { get; } = new HashSet<Assembly>();
+        public List<IUserExpression> GeneratesUserExprs { get; } = new List<IUserExpression>();
     }
 }

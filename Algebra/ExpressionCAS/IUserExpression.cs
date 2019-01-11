@@ -9,6 +9,7 @@ namespace Algebra.ExpressionCAS
 {
     public interface IUserExpression
     {
-        Expression<Func<Expression>> Expr { get; }
+        Expression<Func<object>> Expr { get; }
+        Task<Evaluate.EvaluateResult> Evaluate(PadContext argContext);
     }
 }
