@@ -9,6 +9,6 @@ namespace Algebra.ExpressionCAS
 {
     public interface IUserExpression
     {
-        Expression<Func<Expression>> Expr { get; }
+        Expression<Func<object>> Expr { get; }
     }
 }

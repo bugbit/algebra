@@ -111,11 +111,17 @@ namespace Algebra.ExpressionCAS.Evaluate
             var pConstr = pType.GetConstructor(new[] { typeof(PadContext) });
             var pObj = pConstr.Invoke(new object[] { pContext });
             var pUserExpr = (IUserExpression)pObj;
-            var pExpr = pUserExpr.Expr;
-            var pExprC = pExpr.Compile();
-            var pValue = await Task.Factory.FromAsync(pExprC.BeginInvoke, pExprC.EndInvoke, null);
 
             pContext.Assemblies.Add(argResults.CompiledAssembly);
+
+            await Evaluate(pUserExpr, argResult);
+        }
+
+        private async Task Evaluate(IUserExpression argUserExrp, EvaluateResult argResult)
+        {
+            var pExpr = argUserExrp.Expr;
+            var pExprC = pExpr.Compile();
+            var pValue = await Task.Factory.FromAsync(pExprC.BeginInvoke, pExprC.EndInvoke, null);
         }
     }
 }
