@@ -24,7 +24,9 @@ namespace Algebra.ExpressionCAS.Evaluate
             mContext = argContext;
         }
 
+        public string NameSpace { get; private set; }
         public string ClassName { get; private set; }
+        public string FullClassName => NameSpace + "." + ClassName;
         public List<string> Assembles => new List<string>(new[] { "System.dll", "System.Core.dll", Assembly.GetExecutingAssembly().Location });
 
         public int LineExprStart { get; private set; }
@@ -32,15 +34,16 @@ namespace Algebra.ExpressionCAS.Evaluate
 
         public async Task Generate(TextWriter argWriter, IList<string> argExpr)
         {
-            ClassName = $"UserExpression{Guid.NewGuid().ToClassName()}";
             using (mWriter = new IndentedTextWriter(argWriter))
             {
                 var pTypeUserExpression = typeof(UserExpression<>);
 
+                NameSpace = pTypeUserExpression.Namespace;
+                ClassName = $"UserExpression{Guid.NewGuid().ToClassName()}";
                 mLineAct = 1;
                 await WriteUsings();
                 await WriteLine("");
-                await WriteLine($"namespace {pTypeUserExpression.Namespace}");
+                await WriteLine($"namespace {NameSpace}");
                 await WriteLine("{");
                 mWriter.Indent++;
                 await WriteLine($"class {ClassName} : UserExpression<{mContext.PrecisionInfo.TypePrecision.FullName}>");

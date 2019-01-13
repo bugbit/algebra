@@ -9,8 +9,10 @@ namespace Algebra.ExpressionCAS.Evaluate
 {
     public class EvaluateResult
     {
+        public bool Success { get; set; }
+        public string MsgError { get; set; }
         public Expression<Func<object>> Expr { get; set; }
         public object Value { get; set; }
-        public string[] NewVars { get; set; }
+        public IDictionary<string,object> Vars { get; set; }
     }
 }

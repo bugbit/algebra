@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Algebra.Extensions;
 
 namespace Algebra.ExpressionCAS.Evaluate
 {
@@ -85,15 +86,27 @@ namespace Algebra.ExpressionCAS.Evaluate
                     else
                     {
                         await Evaluate(pGenerate, cr, pResult);
-                        //Evaluate(cr,pr)
-                        pStopWatch.Stop();
-                        mContext.PadProgress.Name = string.Format(Properties.Resources.EvaluateSuccess, pStopWatch.Elapsed.Seconds);
+
+                        if (!pResult.Success)
+                            mContext.PadProgress.Name = Properties.Resources.ErrorEvaluate;
+                        else
+                        {
+                            //Evaluate(cr,pr)
+                            pStopWatch.Stop();
+                            mContext.PadProgress.Name = string.Format(Properties.Resources.EvaluateSuccess, pStopWatch.Elapsed.Seconds);
+                        }
                         mContext.PadProgress.Progress++;
                         mContext.ReportProgress();
                     }
                 }
 
                 return pResult;
+            }
+            catch
+            {
+                mContext.PadProgress.Name = Properties.Resources.ErrorEvaluate;
+
+                throw;
             }
             finally
             {
@@ -107,12 +120,12 @@ namespace Algebra.ExpressionCAS.Evaluate
             // Get expression y execute it
             //cr.CompiledAssembly
             var pContext = mContext.Context;
-            var pType = argResults.CompiledAssembly.GetType(argGenerate.ClassName);
+            var pType = argResults.CompiledAssembly.GetType(argGenerate.FullClassName);
             var pConstr = pType.GetConstructor(new[] { typeof(PadContext) });
             var pObj = pConstr.Invoke(new object[] { pContext });
             var pUserExpr = (IUserExpression)pObj;
 
-            pContext.Assemblies.Add(argResults.CompiledAssembly);
+            pContext.GeneratesAssemblies.Add(argResults.CompiledAssembly);
 
             await Evaluate(pUserExpr, argResult);
         }
@@ -121,7 +134,49 @@ namespace Algebra.ExpressionCAS.Evaluate
         {
             var pExpr = argUserExrp.Expr;
             var pExprC = pExpr.Compile();
-            var pValue = await Task.Factory.FromAsync(pExprC.BeginInvoke, pExprC.EndInvoke, null);
+
+            try
+            {
+                //var pValue = await Task.Factory.FromAsync(pExprC.BeginInvoke, pExprC.EndInvoke, TaskCreationOptions.None);
+                var pValue = await Task.Run(() => pExprC.DynamicInvoke(null));
+
+                mContext.CancelToken.ThrowIfCancellationRequested();
+
+                var pNamesVars = new List<string>();
+                var pType = pValue.GetType();
+
+                pNamesVars.Add("i");
+                if (!pType.IsAnonymousType())
+                    pNamesVars.Add("o");
+
+                var pContext = mContext.Context;
+                var pNamesVarsNew = pContext.CreateVarsCounters(pNamesVars);
+                var pVars = new Dictionary<string, object>
+                {
+                    { pNamesVarsNew[0], pExpr }
+                };
+
+                if (pNamesVarsNew.Length > 1)
+                    pVars.Add(pNamesVarsNew[1], pValue);
+                else
+                {
+                    foreach (var p in pType.GetProperties())
+                        pVars.Add(p.Name, p.GetGetMethod().Invoke(pValue, null));
+                }
+                pContext.AddVars(pVars);
+
+                argResult.Success = true;
+                argResult.Expr = pExpr;
+                argResult.Value = pValue;
+                argResult.Vars = pVars;
+            }
+            catch (Exception ex)
+            {
+                argResult.Success = false;
+                argResult.MsgError = ex.Message;
+
+                return;
+            }
         }
     }
 }

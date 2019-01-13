@@ -41,6 +41,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DecimalMath.DecimalEx, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DecimalMath.DecimalEx.1.0.0.0\lib\portable-net40+sl50+win+wpa81+wp80\DecimalMath.DecimalEx.dll</HintPath>
+    </Reference>
     <Reference Include="FastColoredTextBox, Version=2.16.24.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
       <HintPath>..\packages\FCTB.2.16.24\lib\FastColoredTextBox.dll</HintPath>
     </Reference>
@@ -73,12 +76,14 @@
     <Compile Include="ExpressionCAS\UserExpression.cs" />
     <Compile Include="Extensions\GuidExtensions.cs" />
     <Compile Include="Extensions\StringsExtensions.cs" />
+    <Compile Include="Extensions\TypeExtension.cs" />
     <Compile Include="FrmAlgebraPad.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmAlgebraPad.Designer.cs">
       <DependentUpon>FrmAlgebraPad.cs</DependentUpon>
     </Compile>
+    <Compile Include="Math\Algorithms.cs" />
     <Compile Include="Math\BigDecimal.cs" />
     <Compile Include="PadControl.cs">
       <SubType>UserControl</SubType>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Algebra.ExpressionCAS
 {
-    public class ExpressionCAS<T>
+    public class ExpressionCAS<T> : Math.Algorithms<T>
     {
     }
 }

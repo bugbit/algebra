@@ -123,7 +123,15 @@ namespace Algebra
 
                     if (pExpr == null)
                         return;
+
+                    if (pExpr.Success && pExpr.Vars != null)
+                        foreach (var v in pExpr.Vars)
+                            txtOutput.AppendText($"\n{v.Key} = {v.Value}");
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, FindForm().Name, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
