@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace Algebra.Math
 {
-    public class Algorithms<T>
+    public static class Algorithms
     {
-        public bool IsPrime(T argNumber)
-        {
-            return IsPrimeD(argNumber);
-        }
-
-        private bool IsPrimeD(dynamic argNumber)
+        public static bool IsPrime(dynamic argNumber)
         {
             if ((argNumber % 2) == 0)
                 return false;

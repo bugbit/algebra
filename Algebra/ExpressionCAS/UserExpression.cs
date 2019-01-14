@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Algebra.ExpressionCAS
 {
-    public abstract class UserExpression<T> : ExpressionCAS<T>, IUserExpression
+    public abstract class UserExpression<T> : IUserExpression
     {
         protected PadContext mContext;
 

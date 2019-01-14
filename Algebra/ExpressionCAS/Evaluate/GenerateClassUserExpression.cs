@@ -13,7 +13,7 @@ namespace Algebra.ExpressionCAS.Evaluate
 {
     class GenerateClassUserExpression
     {
-        private static readonly string[] mUsing = new[] { "System", "System.Linq.Expressions", "CAS = Algebra.ExpressionCAS", "static System.Math" };
+        private static readonly string[] mUsing = new[] { "System", "System.Linq.Expressions", $"static {typeof(ExpressionCAS).FullName}", $"static {typeof(Math.Algorithms).FullName}" };
 
         private EvaluateContext mContext;
         private IndentedTextWriter mWriter;
