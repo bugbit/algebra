@@ -13,9 +13,28 @@ namespace TestExpressions
 {
     class ExpressionCAS<T>
     {
+        public static bool IsNumberPrime(int n)
+        {
+            return false;
+        }
+
+        public static bool IsNumberPrime(decimal n)
+        {
+            return false;
+        }
+
+        public static bool IsNumberPrime(dynamic n)
+        {
+            return IsNumberPrime(n);
+        }
+
         public static Expression IsNumberPrime(Expression<Func<T>> e)
         {
             return Expression.Constant(false);
+        }
+        public static Expression IsNumberPrime(ConstantExpression e)
+        {
+            return Expression.Constant(IsNumberPrime(e.Value));
         }
         public static Expression Solver(Expression e) => e;
         public static Expression E(Expression<Func<T, T>> e) => e;
@@ -43,7 +62,11 @@ namespace TestExpressions
 #endif
 
         public Expression<Func<object>> Expr => () =>
-            IsNumberPrime(() => 10)
+            //IsNumberPrime(() => 10)
+            Expression.Or
+            (
+                IsNumberPrime(Expression.Constant(10)), IsNumberPrime(Expression.Constant(20.0m))
+            )
             ;
 
         public Expression<Func<object>> Expr1 => () =>
