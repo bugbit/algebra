@@ -107,6 +107,7 @@ namespace Algebra.Math
 
             return x % c;
         }
+        public static BigDecimal Module(BigDecimal a, BigDecimal b, BigDecimal c) => Module((BigInteger)a, (BigInteger)b, (BigInteger)c);
         //public static decimal Module(BigDecimal a, BigDecimal b, BigDecimal c)
         //{
         //    BigDecimal x = 1, y = a; // long long is taken to avoid overflow of intermediate results
@@ -127,6 +128,28 @@ namespace Algebra.Math
         public static dynamic Module(dynamic a, dynamic b, dynamic c) => Module(a, b, c);
 
         #endregion
+
+
+        #region MulMod
+
+        /* this function calculates (ab)%c taking into account that ab might overflow */
+        public static long MulMod(int a, int b, int c)
+        {
+            long x = 0, y = a % c;
+            while (b > 0)
+            {
+                if (b % 2 == 1)
+                {
+                    x = (x + y) % c;
+                }
+                y = (x * y) % c;
+                b /= 2;
+            }
+            return x % c;
+        }
+
+        #endregion
+
         public static bool IsPrime(dynamic argNumber)
         {
             if ((argNumber % 2) == 0)

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Numerics;
 using System.Text;
 using System.Windows.Forms;
 using static System.Math;
@@ -22,6 +23,13 @@ namespace TestExpressions
         {
             return false;
         }
+
+        public static bool IsNumberPrime(BigInteger n)
+        {
+            return false;
+        }
+
+        public static bool IsNumberPrime(BigDecimal n) => IsNumberPrime((BigInteger)n);
 
         public static bool IsNumberPrime(dynamic n)
         {
@@ -65,7 +73,7 @@ namespace TestExpressions
             //IsNumberPrime(() => 10)
             Expression.Or
             (
-                IsNumberPrime(Expression.Constant(10)), IsNumberPrime(Expression.Constant(20.0m))
+                IsNumberPrime(Expression.Constant((BigDecimal)10)), /*IsNumberPrime(Expression.Constant(10)), */IsNumberPrime(Expression.Constant(20.0m))
             )
             ;
 
