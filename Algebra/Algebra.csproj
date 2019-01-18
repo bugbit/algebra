@@ -83,8 +83,9 @@
     <Compile Include="FrmAlgebraPad.Designer.cs">
       <DependentUpon>FrmAlgebraPad.cs</DependentUpon>
     </Compile>
-    <Compile Include="Math\Algorithms.cs" />
+    <Compile Include="Math\MathEx.cs" />
     <Compile Include="Math\BigDecimal.cs" />
+    <Compile Include="Math\MathEx.IsPrime.cs" />
     <Compile Include="PadControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

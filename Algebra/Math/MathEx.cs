@@ -22,14 +22,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Algebra
+namespace Algebra.Math
 {
-    public class PadProgress
+    public static partial class MathEx
     {
-        public string Name { get; set; }
-        public bool Visible { get; set; } = true;
-        public int Minimum { get; set; }
-        public int Maximum { get; set; }
-        public int Progress { get; set; }
+       
     }
 }
