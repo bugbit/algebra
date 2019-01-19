@@ -307,7 +307,7 @@ namespace Algebra.Math
     {
         #region Module
         /* This function calculates (ab)%c */
-        public static int Module(int a, int b, int c)
+        public static int Modulo(int a, int b, int c)
         {
             long x = 1, y = a; // long long is taken to avoid overflow of intermediate results
 
@@ -323,7 +323,7 @@ namespace Algebra.Math
 
             return (int)(x % c);
         }
-        public static long Module(long a, long b, long c)
+        public static long Modulo(long a, long b, long c)
         {
             decimal x = 1, y = a; // long long is taken to avoid overflow of intermediate results
 
@@ -339,7 +339,7 @@ namespace Algebra.Math
 
             return (long)(x % c);
         }
-        public static float Module(float a, float b, float c)
+        public static float Modulo(float a, float b, float c)
         {
             double x = 1, y = a; // long long is taken to avoid overflow of intermediate results
 
@@ -355,7 +355,7 @@ namespace Algebra.Math
 
             return (float)(x % c);
         }
-        public static double Module(double a, double b, double c)
+        public static double Modulo(double a, double b, double c)
         {
             decimal x = 1, y = (decimal)a; // long long is taken to avoid overflow of intermediate results
 
@@ -371,7 +371,7 @@ namespace Algebra.Math
 
             return (double)(x % (decimal)c);
         }
-        public static decimal Module(decimal a, decimal b, decimal c)
+        public static decimal Modulo(decimal a, decimal b, decimal c)
         {
             BigInteger x = 1, y = (BigInteger)a; // long long is taken to avoid overflow of intermediate results
 
@@ -387,7 +387,7 @@ namespace Algebra.Math
 
             return (decimal)(x % (BigInteger)c);
         }
-        public static BigInteger Module(BigInteger a, BigInteger b, BigInteger c)
+        public static BigInteger Modulo(BigInteger a, BigInteger b, BigInteger c)
         {
             BigInteger x = 1, y = a; // long long is taken to avoid overflow of intermediate results
 
@@ -403,7 +403,7 @@ namespace Algebra.Math
 
             return x % c;
         }
-        public static BigDecimal Module(BigDecimal a, BigDecimal b, BigDecimal c) => Module((BigInteger)a, (BigInteger)b, (BigInteger)c);
+        public static BigDecimal Modulo(BigDecimal a, BigDecimal b, BigDecimal c) => Modulo((BigInteger)a, (BigInteger)b, (BigInteger)c);
         //public static decimal Module(BigDecimal a, BigDecimal b, BigDecimal c)
         //{
         //    BigDecimal x = 1, y = a; // long long is taken to avoid overflow of intermediate results
@@ -421,7 +421,7 @@ namespace Algebra.Math
         //    return (decimal)(x % c);
         //}
 
-        public static dynamic Module(dynamic a, dynamic b, dynamic c) => Module(a, b, c);
+        public static dynamic Modulo(dynamic a, dynamic b, dynamic c) => Modulo(a, b, c);
 
         #endregion
 
@@ -444,7 +444,118 @@ namespace Algebra.Math
             return x % c;
         }
 
+        public static decimal MulMod(long a, long b, long c)
+        {
+            decimal x = 0, y = a % c;
+            while (b > 0)
+            {
+                if (b % 2 == 1)
+                {
+                    x = (x + y) % c;
+                }
+                y = (x * y) % c;
+                b /= 2;
+            }
+            return x % c;
+        }
+
+        public static double MulMod(float a, float b, float c)
+        {
+            double x = 0, y = a % c;
+            while (b > 0)
+            {
+                if (b % 2 == 1)
+                {
+                    x = (x + y) % c;
+                }
+                y = (x * y) % c;
+                b /= 2;
+            }
+            return x % c;
+        }
+
+        public static decimal MulMod(double a, double b, double c)
+        {
+            decimal x = 0, y = (decimal)a % (decimal)c;
+            while (b > 0)
+            {
+                if (b % 2 == 1)
+                {
+                    x = (x + y) % (decimal)c;
+                }
+                y = (x * y) % (decimal)c;
+                b /= 2;
+            }
+            return x % (decimal)c;
+        }
+
+        public static BigInteger MulMod(decimal a, decimal b, decimal c)
+        {
+            BigInteger x = 0, y = (BigInteger)a % (BigInteger)c;
+            while (b > 0)
+            {
+                if (b % 2 == 1)
+                {
+                    x = (x + y) % (BigInteger)c;
+                }
+                y = (x * y) % (BigInteger)c;
+                b /= 2;
+            }
+            return x % (BigInteger)c;
+        }
+
+        public static BigInteger MulMod(BigInteger a, BigInteger b, BigInteger c)
+        {
+            BigInteger x = 0, y = a % c;
+            while (b > 0)
+            {
+                if (b % 2 == 1)
+                {
+                    x = (x + y) % c;
+                }
+                y = (x * y) % c;
+                b /= 2;
+            }
+            return x % c;
+        }
+
+        public static BigDecimal MulMod(BigDecimal a, BigDecimal b, BigDecimal c) => MulMod((BigInteger)a, (BigInteger)b, (BigInteger)c);
+
+        public static dynamic MulMod(dynamic a, dynamic b, dynamic c) => MulMod(a, b, c);
+
         #endregion
+
+        //public static bool Miller(dynamic p, int iteration)
+        //{
+        //    if (p < 2)
+        //    {
+        //        return false;
+        //    }
+        //    if (p != 2 && p % 2 == 0)
+        //    {
+        //        return false;
+        //    }
+        //    dynamic s = p - 1;
+        //    while (s % 2 == 0)
+        //    {
+        //        s /= 2;
+        //    }
+        //    for (int i = 0; i < iteration; i++)
+        //    {
+        //        dynamic a = rand() % (p - 1) + 1, temp = s;
+        //        dynamic mod = Modulo(a, temp, p);
+        //        while (temp != p - 1 && mod != 1 && mod != p - 1)
+        //        {
+        //            mod = MulMod(mod, mod, p); 
+        //                 temp *= 2;
+        //        }
+        //        if (mod != p - 1 && temp % 2 == 0)
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    return true;
+        //}
 
         public static bool IsPrime(dynamic argNumber)
         {
