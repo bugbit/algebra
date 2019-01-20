@@ -75,6 +75,7 @@
     <Compile Include="ExpressionCAS\Precisions.cs" />
     <Compile Include="ExpressionCAS\UserExpression.cs" />
     <Compile Include="Extensions\GuidExtensions.cs" />
+    <Compile Include="Extensions\RandomExtensions.cs" />
     <Compile Include="Extensions\StringsExtensions.cs" />
     <Compile Include="Extensions\TypeExtension.cs" />
     <Compile Include="FrmAlgebraPad.cs">

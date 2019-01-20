@@ -16,10 +16,12 @@
 */
 #endregion
 
+using Algebra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -305,264 +307,119 @@ namespace Algebra.Math
     #endregion
     public partial class MathEx
     {
-        #region Module
-        /* This function calculates (ab)%c */
-        public static int Modulo(int a, int b, int c)
+        // https://rosettacode.org/wiki/Miller%E2%80%93Rabin_primality_test#C.23
+        public static bool Miller(int n, int iteration)
         {
-            long x = 1, y = a; // long long is taken to avoid overflow of intermediate results
+            if ((n < 2) || (n % 2 == 0)) return (n == 2);
 
-            while (b > 0)
+            int s = n - 1;
+            while (s % 2 == 0) s >>= 1;
+
+            Random r = new Random();
+            for (int i = 0; i < iteration; i++)
             {
-                if (b % 2 == 1)
+                int a = r.Next(n - 1) + 1;
+                int temp = s;
+                long mod = 1;
+                for (int j = 0; j < temp; ++j) mod = (mod * a) % n;
+                while (temp != n - 1 && mod != 1 && mod != n - 1)
                 {
-                    x = (x * y) % c;
+                    mod = (mod * mod) % n;
+                    temp *= 2;
                 }
-                y = (y * y) % c; // squaring the base
-                b /= 2;
+
+                if (mod != n - 1 && temp % 2 == 0) return false;
             }
-
-            return (int)(x % c);
-        }
-        public static long Modulo(long a, long b, long c)
-        {
-            decimal x = 1, y = a; // long long is taken to avoid overflow of intermediate results
-
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x * y) % c;
-                }
-                y = (y * y) % c; // squaring the base
-                b /= 2;
-            }
-
-            return (long)(x % c);
-        }
-        public static float Modulo(float a, float b, float c)
-        {
-            double x = 1, y = a; // long long is taken to avoid overflow of intermediate results
-
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x * y) % c;
-                }
-                y = (y * y) % c; // squaring the base
-                b /= 2;
-            }
-
-            return (float)(x % c);
-        }
-        public static double Modulo(double a, double b, double c)
-        {
-            decimal x = 1, y = (decimal)a; // long long is taken to avoid overflow of intermediate results
-
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x * y) % (decimal)c;
-                }
-                y = (y * y) % (decimal)c; // squaring the base
-                b /= 2;
-            }
-
-            return (double)(x % (decimal)c);
-        }
-        public static decimal Modulo(decimal a, decimal b, decimal c)
-        {
-            BigInteger x = 1, y = (BigInteger)a; // long long is taken to avoid overflow of intermediate results
-
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x * y) % (BigInteger)c;
-                }
-                y = (y * y) % (BigInteger)c; // squaring the base
-                b /= 2;
-            }
-
-            return (decimal)(x % (BigInteger)c);
-        }
-        public static BigInteger Modulo(BigInteger a, BigInteger b, BigInteger c)
-        {
-            BigInteger x = 1, y = a; // long long is taken to avoid overflow of intermediate results
-
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x * y) % c;
-                }
-                y = (y * y) % c; // squaring the base
-                b /= 2;
-            }
-
-            return x % c;
-        }
-        public static BigDecimal Modulo(BigDecimal a, BigDecimal b, BigDecimal c) => Modulo((BigInteger)a, (BigInteger)b, (BigInteger)c);
-        //public static decimal Module(BigDecimal a, BigDecimal b, BigDecimal c)
-        //{
-        //    BigDecimal x = 1, y = a; // long long is taken to avoid overflow of intermediate results
-
-        //    while (b > 0)
-        //    {
-        //        if (b % (BigDecimal)2 == 1)
-        //        {
-        //            x = (x * y) % c;
-        //        }
-        //        y = (y * y) % c; // squaring the base
-        //        b /= 2;
-        //    }
-
-        //    return (decimal)(x % c);
-        //}
-
-        public static dynamic Modulo(dynamic a, dynamic b, dynamic c) => Modulo(a, b, c);
-
-        #endregion
-
-
-        #region MulMod
-
-        /* this function calculates (ab)%c taking into account that ab might overflow */
-        public static long MulMod(int a, int b, int c)
-        {
-            long x = 0, y = a % c;
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x + y) % c;
-                }
-                y = (x * y) % c;
-                b /= 2;
-            }
-            return x % c;
+            return true;
         }
 
-        public static decimal MulMod(long a, long b, long c)
+        public static bool Miller(long n, int iteration)
         {
-            decimal x = 0, y = a % c;
-            while (b > 0)
+            if ((n < 2) || (n % 2 == 0)) return (n == 2);
+
+            long s = n - 1;
+            while (s % 2 == 0) s >>= 1;
+
+            Random r = new Random();
+            for (int i = 0; i < iteration; i++)
             {
-                if (b % 2 == 1)
+                long a = r.Next(n - 1) + 1;
+                long temp = s;
+                decimal mod = 1;
+                for (int j = 0; j < temp; ++j) mod = (mod * a) % n;
+                while (temp != n - 1 && mod != 1 && mod != n - 1)
                 {
-                    x = (x + y) % c;
+                    mod = (mod * mod) % n;
+                    temp *= 2;
                 }
-                y = (x * y) % c;
-                b /= 2;
+
+                if (mod != n - 1 && temp % 2 == 0) return false;
             }
-            return x % c;
+            return true;
         }
 
-        public static double MulMod(float a, float b, float c)
+        public static bool Miller(float n, int iteration) => Miller((int)n, iteration);
+
+        public static bool Miller(double n, int iteration) => Miller((long)n, iteration);
+        public static bool Miller(decimal n, int iteration) => Miller((BigInteger)n, iteration);
+        public static bool Miller(BigDecimal n, int iteration) => Miller((BigInteger)n, iteration);
+
+        public static bool Miller(BigInteger n, int iteration)
         {
-            double x = 0, y = a % c;
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x + y) % c;
-                }
-                y = (x * y) % c;
-                b /= 2;
-            }
-            return x % c;
-        }
-
-        public static decimal MulMod(double a, double b, double c)
-        {
-            decimal x = 0, y = (decimal)a % (decimal)c;
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x + y) % (decimal)c;
-                }
-                y = (x * y) % (decimal)c;
-                b /= 2;
-            }
-            return x % (decimal)c;
-        }
-
-        public static BigInteger MulMod(decimal a, decimal b, decimal c)
-        {
-            BigInteger x = 0, y = (BigInteger)a % (BigInteger)c;
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x + y) % (BigInteger)c;
-                }
-                y = (x * y) % (BigInteger)c;
-                b /= 2;
-            }
-            return x % (BigInteger)c;
-        }
-
-        public static BigInteger MulMod(BigInteger a, BigInteger b, BigInteger c)
-        {
-            BigInteger x = 0, y = a % c;
-            while (b > 0)
-            {
-                if (b % 2 == 1)
-                {
-                    x = (x + y) % c;
-                }
-                y = (x * y) % c;
-                b /= 2;
-            }
-            return x % c;
-        }
-
-        public static BigDecimal MulMod(BigDecimal a, BigDecimal b, BigDecimal c) => MulMod((BigInteger)a, (BigInteger)b, (BigInteger)c);
-
-        public static dynamic MulMod(dynamic a, dynamic b, dynamic c) => MulMod(a, b, c);
-
-        #endregion
-
-        //public static bool Miller(dynamic p, int iteration)
-        //{
-        //    if (p < 2)
-        //    {
-        //        return false;
-        //    }
-        //    if (p != 2 && p % 2 == 0)
-        //    {
-        //        return false;
-        //    }
-        //    dynamic s = p - 1;
-        //    while (s % 2 == 0)
-        //    {
-        //        s /= 2;
-        //    }
-        //    for (int i = 0; i < iteration; i++)
-        //    {
-        //        dynamic a = rand() % (p - 1) + 1, temp = s;
-        //        dynamic mod = Modulo(a, temp, p);
-        //        while (temp != p - 1 && mod != 1 && mod != p - 1)
-        //        {
-        //            mod = MulMod(mod, mod, p); 
-        //                 temp *= 2;
-        //        }
-        //        if (mod != p - 1 && temp % 2 == 0)
-        //        {
-        //            return false;
-        //        }
-        //    }
-        //    return true;
-        //}
-
-        public static bool IsPrime(dynamic argNumber)
-        {
-            if ((argNumber % 2) == 0)
+            if (n == 2 || n == 3)
+                return true;
+            if (n < 2 || n % 2 == 0)
                 return false;
+
+            BigInteger d = n - 1;
+            int s = 0;
+
+            while (d % 2 == 0)
+            {
+                d /= 2;
+                s += 1;
+            }
+
+            // There is no built-in method for generating random BigInteger values.
+            // Instead, random BigIntegers are constructed from randomly generated
+            // byte arrays of the same length as the source.
+            RandomNumberGenerator rng = RandomNumberGenerator.Create();
+            byte[] bytes = new byte[n.ToByteArray().LongLength];
+            BigInteger a;
+
+            for (int i = 0; i < iteration; i++)
+            {
+                do
+                {
+                    // This may raise an exception in Mono 2.10.8 and earlier.
+                    // http://bugzilla.xamarin.com/show_bug.cgi?id=2761
+                    rng.GetBytes(bytes);
+                    a = new BigInteger(bytes);
+                }
+                while (a < 2 || a >= n - 2);
+
+                BigInteger x = BigInteger.ModPow(a, d, n);
+                if (x == 1 || x == n - 1)
+                    continue;
+
+                for (int r = 1; r < s; r++)
+                {
+                    x = BigInteger.ModPow(x, 2, n);
+                    if (x == 1)
+                        return false;
+                    if (x == n - 1)
+                        break;
+                }
+
+                if (x != n - 1)
+                    return false;
+            }
 
             return true;
         }
+
+        public static bool Miller(dynamic n, int iteration) => Miller(n, iteration);
+
+        public static bool IsPrime(dynamic argNumber) => Miller(argNumber, 20);// 18-20 iterations are enough for most of the applications.
     }
 }

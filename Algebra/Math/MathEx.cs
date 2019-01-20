@@ -26,6 +26,5 @@ namespace Algebra.Math
 {
     public static partial class MathEx
     {
-       
     }
 }

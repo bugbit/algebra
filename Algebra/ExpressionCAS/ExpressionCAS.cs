@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,5 +27,14 @@ namespace Algebra.ExpressionCAS
 {
     public static class ExpressionCAS
     {
+        public async static Task<object> Eval(Expression argExpr)
+        {
+            if (argExpr.NodeType == ExpressionType.Constant)
+                return ((ConstantExpression)argExpr).Value;
+
+            var pExpr = (argExpr as LambdaExpression) ?? Expression.Lambda(argExpr);
+
+            return await Task.Run(() => pExpr.Compile().DynamicInvoke(null));
+        }
     }
 }

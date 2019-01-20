@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Algebra.Extensions;
+using static Algebra.ExpressionCAS.ExpressionCAS;
 
 namespace Algebra.ExpressionCAS.Evaluate
 {
@@ -151,12 +152,13 @@ namespace Algebra.ExpressionCAS.Evaluate
         private async Task Evaluate(IUserExpression argUserExrp, EvaluateResult argResult)
         {
             var pExpr = argUserExrp.Expr;
-            var pExprC = pExpr.Compile();
+            //var pExprC = pExpr.Compile();
 
             try
             {
                 //var pValue = await Task.Factory.FromAsync(pExprC.BeginInvoke, pExprC.EndInvoke, TaskCreationOptions.None);
-                var pValue = await Task.Run(() => pExprC.DynamicInvoke(null));
+                //var pValue = await Task.Run(() => pExprC.DynamicInvoke(null));
+                var pValue = await Eval(pExpr);
 
                 mContext.CancelToken.ThrowIfCancellationRequested();
 
