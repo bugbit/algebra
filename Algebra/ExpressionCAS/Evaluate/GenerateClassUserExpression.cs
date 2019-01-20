@@ -45,7 +45,7 @@ namespace Algebra.ExpressionCAS.Evaluate
         public string NameSpace { get; private set; }
         public string ClassName { get; private set; }
         public string FullClassName => NameSpace + "." + ClassName;
-        public List<string> Assembles => new List<string>(new[] { "System.dll", "System.Core.dll", Assembly.GetExecutingAssembly().Location });
+        public List<string> Assembles => new List<string>(new[] { "System.dll", "System.Core.dll", "System.Numerics.dll", Assembly.GetExecutingAssembly().Location });
 
         public int LineExprStart { get; private set; }
         public int LineExprEnd { get; private set; }

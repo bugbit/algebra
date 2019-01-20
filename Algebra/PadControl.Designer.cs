@@ -59,8 +59,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.txtOutput);
-            this.splitContainer1.Size = new System.Drawing.Size(1025, 516);
-            this.splitContainer1.SplitterDistance = 89;
+            this.splitContainer1.Size = new System.Drawing.Size(1024, 768);
+            this.splitContainer1.SplitterDistance = 132;
             this.splitContainer1.TabIndex = 0;
             // 
             // txtExpression
@@ -79,6 +79,7 @@
             this.txtExpression.AutoIndentCharsPatterns = "\r\n^\\s*[\\w\\.]+(\\s\\w+)?\\s*(?<range>=)\\s*(?<range>[^;]+);\r\n^\\s*(case|default)\\s*[^:]" +
     "*(?<range>:)\\s*(?<range>[^;]+);\r\n";
             this.txtExpression.AutoScrollMinSize = new System.Drawing.Size(27, 14);
+            this.txtExpression.AutoSize = true;
             this.txtExpression.BackBrush = null;
             this.txtExpression.BracketsHighlightStrategy = FastColoredTextBoxNS.BracketsHighlightStrategy.Strategy2;
             this.txtExpression.CharHeight = 14;
@@ -98,7 +99,7 @@
             this.txtExpression.RightBracket2 = '}';
             this.txtExpression.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.txtExpression.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("txtExpression.ServiceColors")));
-            this.txtExpression.Size = new System.Drawing.Size(1025, 89);
+            this.txtExpression.Size = new System.Drawing.Size(1024, 132);
             this.txtExpression.TabIndex = 0;
             this.txtExpression.Zoom = 100;
             // 
@@ -139,7 +140,7 @@
             this.txtOutput.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
             this.txtOutput.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("txtOutput.ServiceColors")));
             this.txtOutput.ShowLineNumbers = false;
-            this.txtOutput.Size = new System.Drawing.Size(1025, 423);
+            this.txtOutput.Size = new System.Drawing.Size(1024, 632);
             this.txtOutput.TabIndex = 1;
             this.txtOutput.Zoom = 100;
             // 
@@ -148,9 +149,9 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tlProcesoName,
             this.tgProcess});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 494);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 746);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1025, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1024, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -173,8 +174,9 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.splitContainer1);
             this.Name = "PadControl";
-            this.Size = new System.Drawing.Size(1025, 516);
+            this.Size = new System.Drawing.Size(1024, 768);
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);

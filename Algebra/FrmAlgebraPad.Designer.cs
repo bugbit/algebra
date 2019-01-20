@@ -59,7 +59,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabPads);
             this.splitContainer1.Size = new System.Drawing.Size(1019, 546);
-            this.splitContainer1.SplitterDistance = 338;
+            this.splitContainer1.SplitterDistance = 246;
             this.splitContainer1.TabIndex = 0;
             // 
             // treeView1
@@ -67,7 +67,7 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(338, 546);
+            this.treeView1.Size = new System.Drawing.Size(246, 546);
             this.treeView1.TabIndex = 0;
             // 
             // tabPads
@@ -76,7 +76,7 @@
             this.tabPads.Location = new System.Drawing.Point(0, 0);
             this.tabPads.Name = "tabPads";
             this.tabPads.SelectedIndex = 0;
-            this.tabPads.Size = new System.Drawing.Size(677, 546);
+            this.tabPads.Size = new System.Drawing.Size(769, 546);
             this.tabPads.TabIndex = 0;
             this.tabPads.SelectedIndexChanged += new System.EventHandler(this.tabPads_SelectedIndexChanged);
             // 
@@ -120,7 +120,7 @@
             // 
             this.evaluateToolStripMenuItem.Name = "evaluateToolStripMenuItem";
             this.evaluateToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.evaluateToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.evaluateToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.evaluateToolStripMenuItem.Text = "Evaluate";
             this.evaluateToolStripMenuItem.Click += new System.EventHandler(this.evaluateToolStripMenuItem_Click);
             // 
@@ -128,14 +128,14 @@
             // 
             this.cancelToolStripMenuItem.Name = "cancelToolStripMenuItem";
             this.cancelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
-            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cancelToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.cancelToolStripMenuItem.Text = "Cancel";
             this.cancelToolStripMenuItem.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
             // 
             // precisionToolStripMenuItem
             // 
             this.precisionToolStripMenuItem.Name = "precisionToolStripMenuItem";
-            this.precisionToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.precisionToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.precisionToolStripMenuItem.Text = "Precision";
             // 
             // FrmAlgebraPad

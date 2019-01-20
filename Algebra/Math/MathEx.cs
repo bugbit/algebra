@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,5 +27,14 @@ namespace Algebra.Math
 {
     public static partial class MathEx
     {
+        public static BigInteger Factorial(BigInteger n)
+        {
+            BigInteger r = n;
+
+            while (--n > 1)
+                r *= n;
+
+            return r;
+        }
     }
 }
