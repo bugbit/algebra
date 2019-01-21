@@ -59,7 +59,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabPads);
             this.splitContainer1.Size = new System.Drawing.Size(1019, 546);
-            this.splitContainer1.SplitterDistance = 246;
+            this.splitContainer1.SplitterDistance = 245;
             this.splitContainer1.TabIndex = 0;
             // 
             // treeView1
@@ -67,7 +67,7 @@
             this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(246, 546);
+            this.treeView1.Size = new System.Drawing.Size(245, 546);
             this.treeView1.TabIndex = 0;
             // 
             // tabPads
@@ -76,7 +76,7 @@
             this.tabPads.Location = new System.Drawing.Point(0, 0);
             this.tabPads.Name = "tabPads";
             this.tabPads.SelectedIndex = 0;
-            this.tabPads.Size = new System.Drawing.Size(769, 546);
+            this.tabPads.Size = new System.Drawing.Size(770, 546);
             this.tabPads.TabIndex = 0;
             this.tabPads.SelectedIndexChanged += new System.EventHandler(this.tabPads_SelectedIndexChanged);
             // 

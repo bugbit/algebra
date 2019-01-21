@@ -47,7 +47,7 @@ namespace Algebra
         {
             var pName = argName ?? string.Format(Properties.Resources.NonameExpression, Interlocked.Increment(ref mNumNonameExpression));
             var pPage = new TabPage();
-            var pPad = new PadControl(mCancelToken) { NameExpression = pName };
+            var pPad = new PadControl(mCancelToken) { NameExpression = pName, Dock = DockStyle.Fill };
 
             pPad.ChangeIsEvaluating += Pad_ChangeIsEvaluating;
             pPage.Controls.Add(pPad);
@@ -137,7 +137,10 @@ namespace Algebra
 
         private void tabPads_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Pad_ChangeIsEvaluating(PadActive, PadActive.IsEvaluating);
+            var pPadActive = PadActive;
+
+            if (pPadActive != null)
+                Pad_ChangeIsEvaluating(pPadActive, pPadActive.IsEvaluating);
         }
     }
 }

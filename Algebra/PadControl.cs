@@ -43,7 +43,9 @@ namespace Algebra
         private object mLockIsEvaluating = new object();
         private bool mIsEvaluating;
 
-        public PadControl(CancellationTokenSource argFrmAlgebraCancel = null)
+        public PadControl() : this(null) { }
+
+        public PadControl(CancellationTokenSource argFrmAlgebraCancel)
         {
             mFrmAlgebraCancel = argFrmAlgebraCancel;
             InitializeComponent();
