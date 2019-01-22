@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace System.Numerics
 {
+
     public struct BigDecimal : IConvertible, IFormattable, IComparable, IComparable<BigDecimal>, IEquatable<BigDecimal>
     {
         public static readonly BigDecimal MinusOne = new BigDecimal(BigInteger.MinusOne, 0);
@@ -70,6 +71,16 @@ namespace System.Numerics
         public bool IsPowerOfTwo { get { return _unscaledValue.IsPowerOfTwo; } }
         public bool IsZero { get { return _unscaledValue.IsZero; } }
         public int Sign { get { return _unscaledValue.Sign; } }
+
+        /// <summary>
+		/// Gets the scale value of this <see cref="BigDecimal"/> instance
+		/// </summary>
+		/// <remarks>
+		/// The scale is the number of digits behind the decimal point. The value of 
+		/// this <see cref="BigDecimal"/> is the <c>unsignedValue * 10^(-scale)</c>. 
+		/// If the scale is negative, then this <see cref="BigDecimal"/> represents a big integer.
+		/// </remarks>
+		public int Scale => _scale;
 
         public override string ToString()
         {

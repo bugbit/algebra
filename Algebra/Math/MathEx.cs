@@ -27,6 +27,45 @@ namespace Algebra.Math
 {
     public static partial class MathEx
     {
+        public static bool IsNumber(object argObj)
+        {
+            switch (Type.GetTypeCode(argObj.GetType()))
+            {
+                case TypeCode.Boolean:
+                case TypeCode.DateTime:
+                case TypeCode.DBNull:
+                    return false;
+                case TypeCode.Object:
+                    return (argObj is BigInteger) || (argObj is BigDecimal);
+                default:
+                    return true;
+            }
+        }
+
+        public static bool IsInteger(object argObj)
+        {
+            switch (Type.GetTypeCode(argObj.GetType()))
+            {
+                case TypeCode.Boolean:
+                case TypeCode.DateTime:
+                case TypeCode.DBNull:
+                    return false;
+                case TypeCode.Decimal:
+                case TypeCode.Single:
+                case TypeCode.Double:
+                    return (((decimal)argObj) % 1) == 0m;
+                case TypeCode.Object:
+                    if (argObj is BigInteger)
+                        return true;
+                    if (argObj is BigDecimal)
+                        return ((BigDecimal)argObj).Scale <= 0;
+
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
         public static BigInteger Factorial(BigInteger n)
         {
             BigInteger r = n;

@@ -158,7 +158,7 @@ namespace Algebra.ExpressionCAS.Evaluate
             {
                 //var pValue = await Task.Factory.FromAsync(pExprC.BeginInvoke, pExprC.EndInvoke, TaskCreationOptions.None);
                 //var pValue = await Task.Run(() => pExprC.DynamicInvoke(null));
-                var pValue = await Eval(pExpr);
+                var pValue = await EvalAsync(pExpr);
 
                 mContext.CancelToken.ThrowIfCancellationRequested();
 

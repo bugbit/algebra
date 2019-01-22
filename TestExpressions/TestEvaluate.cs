@@ -35,8 +35,8 @@ namespace TestExpressions
             var pPad = pFrm.NewPad();
 
             //pPad.ExpressionString = "2+2";
-            //pPad.ExpressionString = "IsPrime(2+2)";
-            pPad.ExpressionString = "Factorial(100)";
+            pPad.ExpressionString = "IsPrime(2+2)";
+            //pPad.ExpressionString = "Factorial(100)";
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             pFrm.Evaluate();

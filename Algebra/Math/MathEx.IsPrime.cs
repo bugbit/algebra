@@ -420,6 +420,6 @@ namespace Algebra.Math
 
         public static bool Miller(dynamic n, int iteration) => Miller(n, iteration);
 
-        public static bool IsPrime(dynamic argNumber) => Miller(argNumber, 20);// 18-20 iterations are enough for most of the applications.
+        public static bool IsPrime(dynamic argNumber) => IsInteger(argNumber) && Miller(argNumber, 20);// 18-20 iterations are enough for most of the applications.
     }
 }

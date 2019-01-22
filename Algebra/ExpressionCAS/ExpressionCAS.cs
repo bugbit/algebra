@@ -27,7 +27,15 @@ namespace Algebra.ExpressionCAS
 {
     public static class ExpressionCAS
     {
-        public async static Task<object> Eval(Expression argExpr)
+        public static object Eval(Expression argExpr)
+        {
+            var pTask = EvalAsync(argExpr);
+
+            pTask.Wait();
+
+            return pTask.Result;
+        }
+        public async static Task<object> EvalAsync(Expression argExpr)
         {
             if (argExpr.NodeType == ExpressionType.Constant)
                 return ((ConstantExpression)argExpr).Value;
