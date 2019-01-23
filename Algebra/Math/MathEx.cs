@@ -53,7 +53,7 @@ namespace Algebra.Math
                 case TypeCode.Decimal:
                 case TypeCode.Single:
                 case TypeCode.Double:
-                    return (((decimal)argObj) % 1) == 0m;
+                    return (Convert.ToDecimal(argObj) % 1) == 0m;
                 case TypeCode.Object:
                     if (argObj is BigInteger)
                         return true;
