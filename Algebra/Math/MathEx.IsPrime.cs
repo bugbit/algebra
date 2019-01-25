@@ -307,6 +307,27 @@ namespace Algebra.Math
     #endregion
     public partial class MathEx
     {
+        public static int[] CridaDeEratostenes(int argMaxNumberPrimer)
+        {
+            var pList = new List<int>();
+            var pCalc = new HashSet<int>();
+            var lastprime = 1;
+            var lastprimeSquare = 1;
+
+            while (lastprimeSquare <= argMaxNumberPrimer)
+            {
+                lastprime++;
+
+                while (pCalc.Contains(lastprime))
+                    lastprime++;
+
+                pList.Add(lastprime);
+                lastprimeSquare = lastprime * lastprime;
+            }
+
+
+            return pList.ToArray();
+        }
         // https://rosettacode.org/wiki/Miller%E2%80%93Rabin_primality_test#C.23
         public static bool Miller(int n, int iteration)
         {

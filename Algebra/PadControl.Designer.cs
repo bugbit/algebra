@@ -65,6 +65,9 @@
             // 
             // txtExpression
             // 
+            this.txtExpression.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtExpression.AutoCompleteBracketsList = new char[] {
         '(',
         ')',
@@ -86,8 +89,6 @@
             this.txtExpression.CharWidth = 8;
             this.txtExpression.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtExpression.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.txtExpression.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtExpression.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.txtExpression.IsReplaceMode = false;
             this.txtExpression.Language = FastColoredTextBoxNS.Language.CSharp;
             this.txtExpression.LeftBracket = '(';
@@ -105,6 +106,9 @@
             // 
             // txtOutput
             // 
+            this.txtOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOutput.AutoCompleteBracketsList = new char[] {
         '(',
         ')',
@@ -125,8 +129,6 @@
             this.txtOutput.CharWidth = 8;
             this.txtOutput.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtOutput.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.txtOutput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtOutput.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.txtOutput.IsReplaceMode = false;
             this.txtOutput.Language = FastColoredTextBoxNS.Language.CSharp;
             this.txtOutput.LeftBracket = '(';

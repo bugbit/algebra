@@ -27,6 +27,15 @@ namespace Algebra.Math
 {
     public static partial class MathEx
     {
+        public static readonly int[] cListPrimesFirst;
+        public static readonly int cListPrimesFirstLastNumber;
+
+        static MathEx()
+        {
+            cListPrimesFirstLastNumber = 10007;
+            cListPrimesFirst = CridaDeEratostenes(cListPrimesFirstLastNumber);
+        }
+
         public static bool IsNumber(object argObj)
         {
             switch (Type.GetTypeCode(argObj.GetType()))
