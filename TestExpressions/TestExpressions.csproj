@@ -76,6 +76,7 @@
       <Name>Algebra</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\Algebra.Core\Algebra.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

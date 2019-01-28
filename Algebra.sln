@@ -7,7 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algebra", "Algebra\Algebra.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestExpressions", "TestExpressions\TestExpressions.csproj", "{2689F959-5237-4913-872D-5C3EBE33B365}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Algebra.Core", "Algebra.Core\Algebra.Core.shproj", "{6BC43B40-21E4-4EA4-913C-03777FD9109F}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Algebra.Core\Algebra.Core.projitems*{2689f959-5237-4913-872d-5c3ebe33b365}*SharedItemsImports = 4
+		Algebra.Core\Algebra.Core.projitems*{6bc43b40-21e4-4ea4-913c-03777fd9109f}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
