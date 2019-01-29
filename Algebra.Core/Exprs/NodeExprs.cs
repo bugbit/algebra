@@ -55,6 +55,8 @@ namespace Algebra.Core.Exprs
 
         public virtual T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
 
+        public virtual int Priority => MathExpr.TypeNodesPriorities[TypeExpr];
+
         public abstract NodeExpr Clone();
     }
 
@@ -97,6 +99,8 @@ namespace Algebra.Core.Exprs
         public NodeBinaryExpr(NodeBinaryExpr e) : this(e.TypeBinary, e.Left, e.Right) { }
 
         public override T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
+
+        public override int Priority => MathExpr.TypeBinariesPriorities[TypeBinary];
 
         public override NodeExpr Clone() => new NodeBinaryExpr(this);
     }
