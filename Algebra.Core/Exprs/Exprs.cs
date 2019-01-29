@@ -26,7 +26,7 @@ namespace Algebra.Core.Exprs
     {
         Constant
     }
-    public class Expr : ICloneable
+    public abstract class Expr : ICloneable
     {
         public ETypeExpr TypeExpr { get; }
 
