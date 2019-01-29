@@ -53,6 +53,8 @@ namespace Algebra.Core.Exprs
             return Clone();
         }
 
+        public override string ToString() => NodeExprStringBuilderVisitor.ToString(this);
+
         public virtual T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
 
         public virtual int Priority => MathExpr.TypeNodesPriorities[TypeExpr];
