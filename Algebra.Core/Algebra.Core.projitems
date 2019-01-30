@@ -10,11 +10,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Algebra.Parse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\MathExpr.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprStringBuilderVisitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprVisitors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exprs\Parser\Parser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exprs\Parser\Tokenizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\TaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Precisions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Exprs\Parser\" />
   </ItemGroup>
 </Project>

@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,12 @@ namespace TestExpressions
     {
         static void Main(string[] args)
         {
+            //var n1 = (int)decimal.Parse("1.1", NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+            //var n2 = double.Parse("1.1", NumberFormatInfo.InvariantInfo);
+            var a1 = Algebra.Core.Algebra.Default;
+            var n1 = a1.Parse("1.1");
+            var n2 = a1.ParseT("1.1");
+
             var e1 = new NodeExprCte(100, ETypeConstant.Number);
             var e2 = new NodeExprCte(200, ETypeConstant.Number);
             var e3 = new NodeBinaryExpr(ETypeBinary.Add, e1, e2);

@@ -24,13 +24,13 @@ using System.Text;
 
 namespace Algebra.Core
 {
+    public enum EPrecisions
+    {
+        Integer, Long, BigInteger, Float, Double, Decimal, BigDecimal
+    }
+
     public static class Precisions
     {
-        public enum EPrecisions
-        {
-            Integer, Long, BigInteger, Float, Double, Decimal, BigDecimal
-        }
-
         public class Info
         {
             public Info() { }

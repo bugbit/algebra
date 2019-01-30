@@ -18,31 +18,37 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Algebra.Core
 {
     public partial interface IAlgebra
     {
+        object Parse(string str);
+    }
+    public partial class Algebra
+    {
+        public virtual object Parse(string str) => null;
+    }
+    public partial interface IAlgebra<T>
+    {
+        T ParseT(string str);
     }
 
-    public partial interface IAlgebra<T> : IAlgebra
+    public partial class Algebra<T>
     {
+        public override object Parse(string str) => ParseT(str);
+        public virtual T ParseT(string str) => default(T);
+        //public override object Parse(string str)
+        //{
+        //    return base.Parse(str);
+        //}
+        //new public virtual T Parse(string str) => default(T);
     }
 
-    public partial class Algebra : IAlgebra
+    public partial class AlgebraInt
     {
-        //public static readonly IDictionary<EPrecisions,IAlgebra> MapP
-        private static readonly Lazy<AlgebraInt> mDefault = new Lazy<AlgebraInt>();
-
-        public static AlgebraInt Default => mDefault.Value;
-    }
-
-    public partial class Algebra<T> : Algebra, IAlgebra<T>
-    {
-    }
-
-    public partial class AlgebraInt : Algebra<int>
-    {
+        public override int ParseT(string str) => (int)decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
     }
 }
