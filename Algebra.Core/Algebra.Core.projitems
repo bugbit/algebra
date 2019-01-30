@@ -9,10 +9,12 @@
     <Import_RootNamespace>Algebra.Core</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Algebra.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\MathExpr.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprStringBuilderVisitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprVisitors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\TaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Precisions.cs" />
   </ItemGroup>
 </Project>

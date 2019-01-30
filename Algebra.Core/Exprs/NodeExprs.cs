@@ -19,6 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Algebra.Core.Exprs
 {
@@ -56,6 +58,7 @@ namespace Algebra.Core.Exprs
         public override string ToString() => NodeExprStringBuilderVisitor.ToString(this);
 
         public virtual T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
+        public virtual Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => visitor.Visit(this, t);
 
         public virtual int Priority => MathExpr.TypeNodesPriorities[TypeExpr];
 
@@ -79,6 +82,7 @@ namespace Algebra.Core.Exprs
         public ETypeConstant TypeConstant { get; }
 
         public override T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
+        public override Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => visitor.Visit(this, t);
 
         public override NodeExpr Clone() => new NodeExprCte(this);
     }
@@ -101,8 +105,12 @@ namespace Algebra.Core.Exprs
         public NodeBinaryExpr(NodeBinaryExpr e) : this(e.TypeBinary, e.Left, e.Right) { }
 
         public override T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
+        public override Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => visitor.Visit(this, t);
 
         public override int Priority => MathExpr.TypeBinariesPriorities[TypeBinary];
+
+        public bool IsNecesaryParenthesisLeft => Left.Priority > Priority;
+        public bool IsNecesaryParenthesisRight => Priority < Right.Priority;
 
         public override NodeExpr Clone() => new NodeBinaryExpr(this);
     }

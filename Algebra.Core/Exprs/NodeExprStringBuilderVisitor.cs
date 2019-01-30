@@ -16,31 +16,48 @@
 */
 #endregion
 
+using Algebra.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Algebra.Core.Exprs
 {
-    public class NodeExprStringBuilderVisitor : NodeExprVisitor<string>
+    public class NodeExprStringBuilderVisitor : NodeExprVisitorASync<string>
     {
-        public static string ToString(NodeExpr e) => new NodeExprStringBuilderVisitor().Visit(e);
+        public static Task<string> ToStringAsync(NodeExpr e, CancellationToken t) => new NodeExprStringBuilderVisitor().Visit(e, t);
+        public static string ToString(NodeExpr e) => new NodeExprStringBuilderVisitor().Visit(e, new CancellationTokenSource().Token).WaitAndResult();
 
-        public override string Visit(NodeExprCte e) => (e?.Value.ToString()) ?? "null";
+        public override Task<string> Visit(NodeExprCte e, CancellationToken t) => Task.Run(() => (e?.Value.ToString()) ?? "null");
 
-        public override string Visit(NodeBinaryExpr e)
+        public override Task<string> Visit(NodeBinaryExpr e, CancellationToken t)
         {
-            var l = e.Left.Accept(this);
-            var r = e.Right.Accept(this);
-            var lp = e.Left.Priority > e.Priority;
-            var rp = e.Priority < e.Right.Priority;
+            return Task.Run
+            (
+                () =>
+                {
+                    var lt = Visit(e.Left, t);
+                    var rt = Visit(e.Right, t);
 
-            if (lp)
-                l = $"({l})";
-            if (rp)
-                r = $"({r})";
+                    Task.WaitAll(lt, rt);
 
-            return (e.TypeBinary == ETypeBinary.Mult && !(e.Left.TypeExpr == ENodeTypeExpr.Constant && e.Right.TypeExpr == ENodeTypeExpr.Constant)) ? l + r : l + MathExpr.TypeBinariesStr[e.TypeBinary] + r;
+                    t.ThrowIfCancellationRequested();
+
+                    var l = lt.Result;
+                    var r = rt.Result;
+                    var lp = e.Left.Priority > e.Priority;
+                    var rp = e.Priority < e.Right.Priority;
+
+                    if (e.IsNecesaryParenthesisLeft)
+                        l = $"({l})";
+                    if (e.IsNecesaryParenthesisRight)
+                        r = $"({r})";
+
+                    return (e.TypeBinary == ETypeBinary.Mult && !(e.Left.TypeExpr == ENodeTypeExpr.Constant && e.Right.TypeExpr == ENodeTypeExpr.Constant)) ? l + r : l + MathExpr.TypeBinariesStr[e.TypeBinary] + r;
+                }
+            );
         }
     }
 }

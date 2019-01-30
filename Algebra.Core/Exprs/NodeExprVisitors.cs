@@ -19,6 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Algebra.Core.Exprs
 {
@@ -29,6 +31,13 @@ namespace Algebra.Core.Exprs
         T Visit(NodeBinaryExpr e);
     }
 
+    public interface INodeExprVisitorAsync<T>
+    {
+        Task<T> Visit(NodeExpr e, CancellationToken t);
+        Task<T> Visit(NodeExprCte e, CancellationToken t);
+        Task<T> Visit(NodeBinaryExpr e, CancellationToken t);
+    }
+
     public class NodeExprVisitor<T> : INodeExprVisitor<T>
     {
         public virtual T Visit(NodeExpr e) => e.Accept(this);
@@ -36,6 +45,15 @@ namespace Algebra.Core.Exprs
         public virtual T Visit(NodeExprCte e) => default(T);
 
         public virtual T Visit(NodeBinaryExpr e) => default(T);
+    }
+
+    public class NodeExprVisitorASync<T> : INodeExprVisitorAsync<T>
+    {
+        public virtual Task<T> Visit(NodeExpr e, CancellationToken t) => e.Accept(this, t);
+
+        public virtual Task<T> Visit(NodeExprCte e, CancellationToken t) => Task.FromResult(default(T));
+
+        public virtual Task<T> Visit(NodeBinaryExpr e, CancellationToken t) => Task.FromResult(default(T));
     }
 }
 
