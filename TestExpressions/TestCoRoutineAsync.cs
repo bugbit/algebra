@@ -51,10 +51,51 @@ namespace TestExpressions
             await Task.Yield();
         }
 
+        async static Task Parse2()
+        {
+            Console.WriteLine(mStr);
+            await Task.Yield();
+            Console.WriteLine(mStr);
+            await Task.Yield();
+        }
+        // https://stackoverflow.com/questions/22852251/async-await-as-a-replacement-of-coroutines
+
         static async Task MainAsync()
         {
-            mStr = "10";
-            await Parse();
+            //mStr = "10";
+            //await Task.WhenAll(RunCoroutineAsync(Parse), RunCoroutineAsync(Parse2));
+        }
+
+        static async Task StartCoRoutine(Task<IEnumerator> t)
+        {
+            var e = await t;
+
+            while (e.MoveNext())
+            {
+                var r = e.Current;
+
+                if (r is Task)
+                    await (Task)r;
+            }
+        }
+
+        static IEnumerator Parse11()
+        {
+            Console.WriteLine("Entry 11");
+            yield return Parse12();
+            Console.WriteLine("Entry Yield 11");
+            yield return Task.FromResult<object>(null);
+            Console.WriteLine("Finish 11");
+            yield return Task.FromResult<object>(null);
+        }
+
+        static IEnumerator Parse12()
+        {
+            Console.WriteLine("Entry 12");
+            yield return Task.FromResult<object>(null);
+            Console.WriteLine("Entry Yield 12");
+            Console.WriteLine("Finish 12");
+            yield return Task.FromResult<object>(null);
         }
     }
 }
