@@ -18,39 +18,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Algebra.Core
 {
     public partial interface IAlgebra<T>
     {
-        T ParseNumber(string str);
-        Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t);
+        T Convert(int n);
     }
-
     public partial class Algebra<T>
     {
-        private Exprs.Parser<T> mParse;
-
-        public Algebra()
-        {
-            mParse = new Exprs.Parser<T>(this);
-        }
-
-        public virtual T ParseNumber(string str) => default(T);
-        //public override object Parse(string str)
-        //{
-        //    return base.Parse(str);
-        //}
-        //new public virtual T Parse(string str) => default(T);
-        public Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => mParse.ParsePrompt(str, t);
+        public virtual T Convert(int n) => default(T);
     }
 
     public partial class AlgebraInt
     {
-        public override int ParseNumber(string str) => (int)decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+        public override int Convert(int n) => n;
     }
 }

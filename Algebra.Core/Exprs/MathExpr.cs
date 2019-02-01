@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Algebra.Core.Exprs
@@ -32,6 +33,8 @@ namespace Algebra.Core.Exprs
             [ETypeBinary.Div] = "/",
             [ETypeBinary.Pow] = "^"
         };
+
+        public static readonly IDictionary<string, ETypeBinary> StrToBinaries = TypeBinariesStr.ToDictionary(d => d.Value, d => d.Key);
 
         public const int PriorityHight = -int.MaxValue;
         public const int PriorityLow = +int.MaxValue;

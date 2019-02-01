@@ -1,7 +1,27 @@
-﻿using System;
+﻿#region LICENSE
+/*
+    Algebra Software free CAS
+    Copyright © 2018 Óscar Hernández Bañó
+    This file is part of Algebra.
+    Algebra is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Algebra.Core.Exprs
 {
@@ -36,7 +56,21 @@ namespace Algebra.Core.Exprs
             bWait = true;
         }
 
-        private void GetToken()
+        public Task Read(CancellationToken t) => GetToken(t);
+
+        private Task<char?> ReadCar(CancellationToken t)
+        {
+            t.ThrowIfCancellationRequested();
+            lock (this)
+            {
+                if (mPos >= mStrLen)
+                    return Task.FromResult((char?)null);
+
+                return Task.FromResult((char?)mStr[mPos++]);
+            }
+        }
+
+        private async Task GetToken(CancellationToken t)
         {
             if (bWait)
             {
@@ -46,40 +80,42 @@ namespace Algebra.Core.Exprs
             }
 
             Token = Value = "";
-            while (mPos < mStrLen && char.IsWhiteSpace(mStr[mPos]))
-                mPos++;
 
-            if (mPos >= mStrLen)
+            var pCar = await ReadCar(t);
+
+            while (pCar.HasValue && char.IsWhiteSpace(pCar.Value))
+                pCar = await ReadCar(t);
+
+            if (!pCar.HasValue)
             {
                 TypeToken = EType.EOF;
 
                 return;
             }
 
-            var pCar = mStr[mPos++];
-
-            if (mOperatorsChars.Contains(pCar))
+            if (mOperatorsChars.Contains(pCar.Value))
             {
                 Token = Value = pCar.ToString();
                 TypeToken = EType.Operation;
             }
-            else if (char.IsDigit(pCar))
+            else if (char.IsDigit(pCar.Value))
             {
                 TypeToken = EType.Number;
-                while (char.IsDigit(pCar))
+                while (char.IsDigit(pCar.Value))
                 {
+                    t.ThrowIfCancellationRequested();
                     Token += pCar;
-                    pCar = mStr[mPos++];
-                    if (mPos >= mStrLen)
+                    pCar = await ReadCar(t);
+                    if (!pCar.HasValue)
                         return;
                 }
-                mPos--;
+                Value = Token;
 
                 return;
             }
             else
             {
-                switch (pCar)
+                switch (pCar.Value)
                 {
                     case ';':
                         Token = Value = pCar.ToString();

@@ -26,7 +26,7 @@ namespace Algebra.Core.Exprs
 {
     public enum ENodeTypeExpr
     {
-        Constant, BinaryExpr
+        Constant, BinaryExpr, Instruction
     }
 
     public enum ETypeConstant
@@ -63,6 +63,9 @@ namespace Algebra.Core.Exprs
         public virtual int Priority => MathExpr.TypeNodesPriorities[TypeExpr];
 
         public abstract NodeExpr Clone();
+
+        public static NodeExprNumber<N> Number<N>(N n) => new NodeExprNumber<N>(n);
+        public static NodeBinaryExpr Binary(ETypeBinary t, NodeExpr l, NodeExpr r) => new NodeBinaryExpr(t, l, r);
     }
 
     public class NodeExprCte : NodeExpr
@@ -85,6 +88,22 @@ namespace Algebra.Core.Exprs
         public override Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => visitor.Visit(this, t);
 
         public override NodeExpr Clone() => new NodeExprCte(this);
+    }
+
+    public class NodeExprNumber<N> : NodeExprCte
+    {
+        protected NodeExprNumber() : base() { }
+
+        public NodeExprNumber(N n) : base(n, ETypeConstant.Number) { }
+
+        public NodeExprNumber(NodeExprNumber<N> e) : this(e.Value) { }
+
+        new public N Value => (N)base.Value;
+
+        public override T Accept<T>(INodeExprVisitor<T> visitor) => (visitor is INodeExprVisitor<N, T>) ? ((INodeExprVisitor<N, T>)visitor).Visit(this) : visitor.Visit(this);
+        public override async Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => (visitor is INodeExprVisitorAsync<N, T>) ? await ((INodeExprVisitorAsync<N, T>)visitor).Visit(this, t) : await visitor.Visit(this, t);
+
+        public override NodeExpr Clone() => new NodeExprNumber<N>(this);
     }
 
     public class NodeBinaryExpr : NodeExpr
@@ -113,5 +132,26 @@ namespace Algebra.Core.Exprs
         public bool IsNecesaryParenthesisRight => Priority < Right.Priority;
 
         public override NodeExpr Clone() => new NodeBinaryExpr(this);
+    }
+
+    public class NodeExprInstruction : NodeExpr
+    {
+        public NodeExpr Expr { get; }
+        public bool IsShowResult { get; }
+
+        protected NodeExprInstruction() : base(ENodeTypeExpr.Instruction) { }
+
+        public NodeExprInstruction(NodeExpr e, bool isshowresult) : this()
+        {
+            Expr = e;
+            IsShowResult = isshowresult;
+        }
+
+        public NodeExprInstruction(NodeExprInstruction e) : this(e.Expr, e.IsShowResult) { }
+
+        public override T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
+        public override Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => visitor.Visit(this, t);
+
+        public override NodeExpr Clone() => new NodeExprInstruction(this);
     }
 }

@@ -59,5 +59,10 @@ namespace Algebra.Core.Exprs
                 }
             );
         }
+
+        public async override Task<string> Visit(NodeExprInstruction e, CancellationToken t)
+        {
+            return (await base.Visit(e, t)) + " " + ((e.IsShowResult) ? ";" : "$");
+        }
     }
 }
