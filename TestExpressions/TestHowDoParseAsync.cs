@@ -8,17 +8,197 @@ using System.Threading.Tasks;
 
 namespace TestExpressions
 {
+    public class ParserResult
+    {
+        public bool Finished { get; set; }
+        public string Result { get; set; }
+    }
+
+    class ParserInternal
+    {
+        private CancellationToken mTokenCancel;
+        private TaskCompletionSource<ParserResult> mSetResultCompleted = null;
+        private TaskCompletionSource<string> mSetExprCompleted = null;
+        private Task<string> mSetExprTask = null;
+        private object mLockGetToken = new object();
+        private string mExpr;
+        private string mResult;
+        private int mPos = 0;
+
+        public ParserInternal(string e, CancellationToken t)
+        {
+            SetExpr(e);
+            mTokenCancel = t;
+            Finished = false;
+            mSetResultCompleted = new TaskCompletionSource<ParserResult>();
+            SetResultTask = mSetResultCompleted.Task;
+            mSetExprCompleted = new TaskCompletionSource<string>();
+            mSetExprTask = mSetExprCompleted.Task;
+        }
+
+        public async Task<ParserResult> Continue(string e)
+        {
+            mSetExprCompleted.SetResult(e);
+
+            mSetResultCompleted = new TaskCompletionSource<ParserResult>();
+            SetResultTask = mSetResultCompleted.Task;
+
+            return await SetResultTask;
+        }
+
+        public bool Finished { get; private set; }
+
+        public Task<ParserResult> SetResultTask { get; private set; }
+
+        private char? GetToken()
+        {
+            lock (mLockGetToken)
+            {
+                return (mExpr == null || mPos >= mExpr.Length) ? (char?)null : mExpr[mPos++];
+            }
+        }
+
+        private void SetExpr(string s)
+        {
+            mExpr = s;
+            mPos = 0;
+        }
+
+        private ParserResult SetResult(ParserResult r)
+        {
+            TaskCompletionSource<ParserResult> tc = null;
+
+            lock (this)
+            {
+                Finished = r.Finished;
+                tc = mSetResultCompleted;
+            }
+
+            mTokenCancel.ThrowIfCancellationRequested();
+
+            if (tc == null)
+                throw new InvalidOperationException();
+
+            tc.SetResult(r);
+
+            return r;
+        }
+
+        private async Task Yield(ParserResult r)
+        {
+            SetResult(r);
+            Task<string> t = null;
+
+            lock (this)
+            {
+                t = mSetExprTask;
+            }
+
+            mTokenCancel.ThrowIfCancellationRequested();
+
+            if (t == null)
+                throw new InvalidOperationException();
+
+            SetExpr(await t);
+        }
+
+        public async Task Parse()
+        {
+            char? pCar;
+
+            mResult = "";
+            do
+            {
+                mTokenCancel.ThrowIfCancellationRequested();
+
+                pCar = GetToken();
+
+                if (pCar == null)
+                    await Yield(new ParserResult { Finished = false });
+                else
+                    mResult += pCar;
+            } while (pCar != ';');
+
+            SetResult(new ParserResult { Finished = true, Result = mResult });
+        }
+    }
+
+    public class Parser
+    {
+        private ParserInternal mParseExpr = null;
+
+        public Task<ParserResult> Parse(string s, CancellationToken c) => ParseInternal(s, c, t => t.Parse(), ref mParseExpr);
+
+        private Task<ParserResult> ParseInternal(string s, CancellationToken c, Func<ParserInternal, Task> CreateParse, ref ParserInternal t)
+        {
+            var pStarted = false;
+            ParserInternal tt;
+
+            lock (this)
+            {
+                if (t == null || t.Finished)
+                {
+                    pStarted = true;
+                    t = new ParserInternal(s, c);
+                }
+                tt = t;
+            }
+
+            if (pStarted)
+            {
+                Task.Run(() => CreateParse.Invoke(tt));
+
+                return tt.SetResultTask;
+            }
+
+            return tt.Continue(s);
+        }
+    }
+
     class TestHowDoParseAsync
     {
         static void Main()
         {
             MainAsync().Wait();
+
+            Console.ReadLine();
         }
         static async Task MainAsync()
         {
-            var ok = await Parse("2+3");
+            var t = new CancellationTokenSource();
+            var pParse = new Algebra.Core.Exprs.Parser();
+            var r1 = await pParse.ParsePrompt("2+3", t.Token);
 
-            ok = await Parse("*4;");
+            Print(r1);
+
+            var r2 = await pParse.ParsePrompt("*4;", t.Token);
+
+            Print(r2);
+
+            /*
+            var pParse = new Parser();
+            var r1 = await pParse.Parse("2+3", t.Token);
+
+            if (r1.Finished)
+                Console.WriteLine(r1.Result);
+
+            var r2 = await pParse.Parse("*4;", t.Token);
+
+            if (r2.Finished)
+                Console.WriteLine(r2.Result);
+                */
+        }
+
+        static void Print(Algebra.Core.Exprs.ParseResult r)
+        {
+            if (r.Finished)
+                Print(r.Exprs);
+        }
+
+        static void Print(Algebra.Core.Exprs.NodeExpr[] es)
+        {
+            foreach (var e in es)
+                Console.WriteLine(e);
         }
 
         private static string mToken;
