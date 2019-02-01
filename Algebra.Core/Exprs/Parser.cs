@@ -15,7 +15,7 @@ namespace Algebra.Core.Exprs
             private CancellationToken mTokenCancel;
             private TaskCompletionSource<ParseResult> mSetResultCompleted = null;
             private TaskCompletionSource<string> mSetExprCompleted = null;
-            private Task<string> mSetExprTask = null;
+            private readonly Task<string> mSetExprTask = null;
 
             public ParserInternal(string e, CancellationToken t)
             {
@@ -44,7 +44,7 @@ namespace Algebra.Core.Exprs
 
             public Task ParsePrompt()
             {
-                return Task.Run(() => SetResult(new ParseResult { Finished = true });
+                return Task.Run(() => SetResult(new ParseResult { Finished = true }));
             }
 
             private void SetExpr(string s)

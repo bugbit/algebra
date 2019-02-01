@@ -12,9 +12,9 @@ namespace Algebra.Core.Exprs
             Number, Operation, OpenParenthesis, CloseParenthesis, TerminateSemiColon, TerminateDolar, EOF
         }
 
-        private char[] mOperatorsChars = MathExpr.TypeBinariesStr.Values.Select(s => s[0]).ToArray();
+        private readonly static char[] mOperatorsChars = MathExpr.TypeBinariesStr.Values.Select(s => s[0]).ToArray();
         private string mStr;
-        private int mStrLen;
+        private readonly int mStrLen;
         private int mPos = 0;
         private bool bWait = false;
 
@@ -45,9 +45,7 @@ namespace Algebra.Core.Exprs
                 return;
             }
 
-            Token = "";
-            Value = "";
-
+            Token = Value = "";
             while (mPos < mStrLen && char.IsWhiteSpace(mStr[mPos]))
                 mPos++;
 
@@ -56,6 +54,50 @@ namespace Algebra.Core.Exprs
                 TypeToken = EType.EOF;
 
                 return;
+            }
+
+            var pCar = mStr[mPos++];
+
+            if (mOperatorsChars.Contains(pCar))
+            {
+                Token = Value = pCar.ToString();
+                TypeToken = EType.Operation;
+            }
+            else if (char.IsDigit(pCar))
+            {
+                TypeToken = EType.Number;
+                while (char.IsDigit(pCar))
+                {
+                    Token += pCar;
+                    pCar = mStr[mPos++];
+                    if (mPos >= mStrLen)
+                        return;
+                }
+                mPos--;
+
+                return;
+            }
+            else
+            {
+                switch (pCar)
+                {
+                    case ';':
+                        Token = Value = pCar.ToString();
+                        TypeToken = EType.TerminateSemiColon;
+                        return;
+                    case '$':
+                        Token = Value = pCar.ToString();
+                        TypeToken = EType.TerminateDolar;
+                        return;
+                    case '(':
+                        Token = Value = pCar.ToString();
+                        TypeToken = EType.OpenParenthesis;
+                        return;
+                    case ')':
+                        Token = Value = pCar.ToString();
+                        TypeToken = EType.CloseParenthesis;
+                        return;
+                }
             }
         }
     }
