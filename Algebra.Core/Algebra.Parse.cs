@@ -46,7 +46,7 @@ namespace Algebra.Core
         //    return base.Parse(str);
         //}
         //new public virtual T Parse(string str) => default(T);
-        public Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => mParse.ParsePrompt(str, t);
+        public Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => mParse.Parse(str, t);
     }
 
     public partial class AlgebraInt
