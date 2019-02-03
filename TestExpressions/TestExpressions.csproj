@@ -66,12 +66,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Algebra.Core\Algebra.Core.csproj">
+      <Project>{993c4eae-94c1-43f4-854b-aaf9fbef38d9}</Project>
+      <Name>Algebra.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Algebra\Algebra.csproj">
       <Project>{375a03c6-ff54-4ab3-8958-56de42dcf627}</Project>
       <Name>Algebra</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\Algebra.Core\Algebra.Core.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

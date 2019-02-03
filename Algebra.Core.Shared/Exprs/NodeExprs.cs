@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,17 +27,22 @@ namespace Algebra.Core.Exprs
 {
     public enum ENodeTypeExpr
     {
-        Constant, BinaryExpr, Instruction
+        Constant, Unary, BinaryExpr, Instruction
     }
 
     public enum ETypeConstant
     {
-        Number
+        Number, Null
     }
 
     public enum ETypeBinary
     {
         Add, Sub, Mult, Div, Pow
+    }
+
+    public enum ETypeUnary
+    {
+        SignPos, SigNeg
     }
 
     public abstract class NodeExpr : ICloneable
@@ -64,8 +70,11 @@ namespace Algebra.Core.Exprs
 
         public abstract NodeExpr Clone();
 
+        public static NodeExprCte Null => new NodeExprCte(null, ETypeConstant.Null);
         public static NodeExprNumber<N> Number<N>(N n) => new NodeExprNumber<N>(n);
-        public static NodeBinaryExpr Binary(ETypeBinary t, NodeExpr l, NodeExpr r) => new NodeBinaryExpr(t, l, r);
+        public static NodeExprUnary Unary(ETypeUnary t, NodeExpr e) => new NodeExprUnary(t, e);
+        public static NodeExprBinary Binary(ETypeBinary t, NodeExpr l, NodeExpr r) => new NodeExprBinary(t, l, r);
+        public static NodeExprInstruction Instruction(NodeExpr e, bool isshowresult) => new NodeExprInstruction(e, isshowresult);
     }
 
     public class NodeExprCte : NodeExpr
@@ -106,22 +115,43 @@ namespace Algebra.Core.Exprs
         public override NodeExpr Clone() => new NodeExprNumber<N>(this);
     }
 
-    public class NodeBinaryExpr : NodeExpr
+    public class NodeExprUnary : NodeExpr
+    {
+        protected NodeExprUnary() : base(ENodeTypeExpr.Unary) { }
+
+        public NodeExprUnary(ETypeUnary t, NodeExpr e) : this()
+        {
+            TypeUnary = t;
+            Expr = e;
+        }
+
+        public NodeExprUnary(NodeExprUnary e) : this(e.TypeUnary, e.Expr) { }
+
+        public ETypeUnary TypeUnary { get; }
+        public NodeExpr Expr { get; }
+
+
+        public override T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
+        public override Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => visitor.Visit(this, t);
+        public override NodeExpr Clone() => new NodeExprUnary(this);
+    }
+
+    public class NodeExprBinary : NodeExpr
     {
         public ETypeBinary TypeBinary { get; }
         public NodeExpr Left { get; }
         public NodeExpr Right { get; }
 
-        protected NodeBinaryExpr() : base(ENodeTypeExpr.BinaryExpr) { }
+        protected NodeExprBinary() : base(ENodeTypeExpr.BinaryExpr) { }
 
-        public NodeBinaryExpr(ETypeBinary type, NodeExpr left, NodeExpr right) : this()
+        public NodeExprBinary(ETypeBinary type, NodeExpr left, NodeExpr right) : this()
         {
             TypeBinary = type;
             Left = left;
             Right = right;
         }
 
-        public NodeBinaryExpr(NodeBinaryExpr e) : this(e.TypeBinary, e.Left, e.Right) { }
+        public NodeExprBinary(NodeExprBinary e) : this(e.TypeBinary, e.Left, e.Right) { }
 
         public override T Accept<T>(INodeExprVisitor<T> visitor) => visitor.Visit(this);
         public override Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => visitor.Visit(this, t);
@@ -131,7 +161,7 @@ namespace Algebra.Core.Exprs
         public bool IsNecesaryParenthesisLeft => Left.Priority > Priority;
         public bool IsNecesaryParenthesisRight => Priority < Right.Priority;
 
-        public override NodeExpr Clone() => new NodeBinaryExpr(this);
+        public override NodeExpr Clone() => new NodeExprBinary(this);
     }
 
     public class NodeExprInstruction : NodeExpr

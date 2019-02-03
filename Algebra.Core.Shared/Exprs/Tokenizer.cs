@@ -70,6 +70,14 @@ namespace Algebra.Core.Exprs
             }
         }
 
+        private void BackCar()
+        {
+            lock (this)
+            {
+                mPos--;
+            }
+        }
+
         private async Task GetToken(CancellationToken t)
         {
             if (bWait)
@@ -101,14 +109,16 @@ namespace Algebra.Core.Exprs
             else if (char.IsDigit(pCar.Value))
             {
                 TypeToken = EType.Number;
-                while (char.IsDigit(pCar.Value))
+                do
                 {
                     t.ThrowIfCancellationRequested();
                     Token += pCar;
                     pCar = await ReadCar(t);
                     if (!pCar.HasValue)
-                        return;
-                }
+                        break;
+                } while (char.IsDigit(pCar.Value));
+                if (pCar.HasValue)
+                    BackCar();
                 Value = Token;
 
                 return;

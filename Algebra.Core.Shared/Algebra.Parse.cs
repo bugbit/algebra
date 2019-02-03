@@ -25,10 +25,20 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core
 {
+    public partial interface IAlgebra
+    {
+        Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t);
+    }
+
     public partial interface IAlgebra<T>
     {
         T ParseNumber(string str);
-        Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t);
+        //Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t);
+    }
+
+    public partial class Algebra : IAlgebra
+    {
+        public virtual Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => Task.FromResult(new Exprs.ParseResult { Finished = true, Exprs = new[] { Exprs.NodeExpr.Null } });
     }
 
     public partial class Algebra<T>
@@ -46,7 +56,7 @@ namespace Algebra.Core
         //    return base.Parse(str);
         //}
         //new public virtual T Parse(string str) => default(T);
-        public Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => mParse.Parse(str, t);
+        public override Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => mParse.Parse(str, t);
     }
 
     public partial class AlgebraInt

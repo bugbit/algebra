@@ -37,16 +37,16 @@ namespace TestExpressions
 
             var e1 = new NodeExprCte(100, ETypeConstant.Number);
             var e2 = new NodeExprCte(200, ETypeConstant.Number);
-            var e3 = new NodeBinaryExpr(ETypeBinary.Add, e1, e2);
+            var e3 = new NodeExprBinary(ETypeBinary.Add, e1, e2);
 
             var e11 = new NodeExprCte(10, ETypeConstant.Number);
             var e21 = new NodeExprCte(20, ETypeConstant.Number);
-            var e31 = new NodeBinaryExpr(ETypeBinary.Add, e11, e21);
+            var e31 = new NodeExprBinary(ETypeBinary.Add, e11, e21);
 
             // (100+200)*(10+20)
-            var e4 = new NodeBinaryExpr(ETypeBinary.Mult, e3, e31);
+            var e4 = new NodeExprBinary(ETypeBinary.Mult, e3, e31);
             // (100+200)*(10+20)+(100+200)*(10+20)
-            var e5 = new NodeBinaryExpr(ETypeBinary.Add, e4, e4);
+            var e5 = new NodeExprBinary(ETypeBinary.Add, e4, e4);
 
             Console.WriteLine(e5);
             Console.ReadLine();

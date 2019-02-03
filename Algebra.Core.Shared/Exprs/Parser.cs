@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,17 +64,20 @@ namespace Algebra.Core.Exprs
 
         private class ParserInternal
         {
+            [DebuggerDisplay("{TypeTerm} {TypeBinary} {Token} {Expr}")]
             private class ParseTermResult
             {
                 public enum EType
                 {
-                    Expression, Operation, EOF, Terminate
+                    Expression, UnaryOperation, Operation, EOF, Terminate
                 }
 
+                public ETypeUnary TypeUnary { get; set; }
                 public ETypeBinary TypeBinary { get; set; }
                 public EType TypeTerm { get; set; }
                 public NodeExpr Expr { get; set; }
                 public string Token { get; set; }
+                public Tokenizer.EType TypeToken { get; set; }
             }
 
             private IAlgebra<T> mAlg;
@@ -113,6 +117,8 @@ namespace Algebra.Core.Exprs
 
             public async Task Parse()
             {
+                bool pHaveSign = true;
+
                 for (; ; )
                 {
                     mTokenCancel.ThrowIfCancellationRequested();
@@ -123,16 +129,39 @@ namespace Algebra.Core.Exprs
                     {
                         case ParseTermResult.EType.Expression:
                             AddExprToStack(pTerm.Expr);
+                            //if (pHaveSign)
+                            //    EvalOperation();
+                            pHaveSign = false;
                             break;
                         case ParseTermResult.EType.Operation:
                             lock (mStackOperations)
                             {
-                                var t = PeekOperation();
-
-                                if (t == null || MathExpr.TypeBinariesPriorities[pTerm.TypeBinary] <= MathExpr.TypeBinariesPriorities[t.TypeBinary])
-                                    AddOperationToExpr(t);
+                                if (pHaveSign)
+                                {
+                                    switch (pTerm.TypeBinary)
+                                    {
+                                        case ETypeBinary.Add:
+                                            pTerm.TypeTerm = ParseTermResult.EType.UnaryOperation;
+                                            pTerm.TypeUnary = ETypeUnary.SignPos;
+                                            break;
+                                        case ETypeBinary.Sub:
+                                            pTerm.TypeTerm = ParseTermResult.EType.UnaryOperation;
+                                            pTerm.TypeUnary = ETypeUnary.SigNeg;
+                                            break;
+                                        default:
+                                            throw new InvalidOperationException();
+                                    }
+                                    AddOperationToExpr(pTerm);
+                                }
                                 else
-                                    EvalOperation();
+                                {
+                                    var t = PeekOperation();
+
+                                    if (t != null && MathExpr.TypeBinariesPriorities[pTerm.TypeBinary] > MathExpr.TypeBinariesPriorities[t.TypeBinary])
+                                        EvalOperation();
+                                    AddOperationToExpr(pTerm);
+                                    pHaveSign = true;
+                                }
                             }
                             break;
                         case ParseTermResult.EType.EOF:
@@ -148,6 +177,14 @@ namespace Algebra.Core.Exprs
                             break;
                         case ParseTermResult.EType.Terminate:
                             await Eval(t => false);
+
+                            if (!TryPopExpr(out NodeExpr e))
+                                throw new NullReferenceException(nameof(e));
+
+                            AddExprToStack(NodeExpr.Instruction(e, pTerm.TypeToken == Tokenizer.EType.TerminateSemiColon));
+
+                            pHaveSign = true;
+
                             break;
                     }
                 }
@@ -201,9 +238,7 @@ namespace Algebra.Core.Exprs
                     if (mStackOperations.IsEmpty)
                         return null;
 
-                    ParseTermResult t;
-
-                    if (!mStackOperations.TryPeek(out t))
+                    if (!mStackOperations.TryPeek(out ParseTermResult t))
                         return null;
 
                     return t;
@@ -241,14 +276,12 @@ namespace Algebra.Core.Exprs
 
             private bool TryPeekStackExpr(out ConcurrentStack<NodeExpr> se)
             {
-                return mStackExprs.TryPop(out se);
+                return mStackExprs.TryPeek(out se);
             }
 
             private bool TryPeekExpr(out NodeExpr e)
             {
-                ConcurrentStack<NodeExpr> se;
-
-                if (TryPeekStackExpr(out se))
+                if (TryPeekStackExpr(out ConcurrentStack<NodeExpr> se))
                     return se.TryPeek(out e);
 
                 e = null;
@@ -272,12 +305,7 @@ namespace Algebra.Core.Exprs
                             if (se.Count != 1)
                                 return null;
 
-                            if (se.Count != 1)
-                                return null;
-
-                            var ei = se.First() as NodeExprInstruction;
-
-                            if (ei == null)
+                            if (!(se.First() is NodeExprInstruction ei))
                                 return null;
 
                             es.Add(ei);
@@ -293,68 +321,81 @@ namespace Algebra.Core.Exprs
 
             private bool TryPopExpr(out NodeExpr e)
             {
-                ConcurrentStack<NodeExpr> se;
-
-                if (!TryPeekStackExpr(out se))
+                if (!TryPeekStackExpr(out ConcurrentStack<NodeExpr> se))
                 {
                     e = null;
 
                     return false;
                 }
 
-                return se.TryPop(out e);
+                if (!se.TryPop(out e))
+                    return false;
+
+                if (se.IsEmpty)
+                    return TryPopStackExpr(out se);
+
+                return true;
             }
 
             private bool TryPopStackExpr(out ConcurrentStack<NodeExpr> se) => mStackExprs.TryPop(out se);
 
             private bool TryPopOperation(out ParseTermResult t) => mStackOperations.TryPop(out t);
 
-            private bool EvalOperation()
+            private NodeExpr EvalOperation()
             {
-                ParseTermResult t;
-
-                return TryPopOperation(out t) && EvalOperation(t);
+                return (!TryPopOperation(out ParseTermResult t)) ? null : EvalOperation(t);
             }
 
-            private bool EvalOperation(ParseTermResult t)
+            private NodeExpr EvalOperation(ParseTermResult t)
             {
+                NodeExpr e;
+
                 switch (t.TypeTerm)
                 {
-                    case ParseTermResult.EType.Operation:
-                        NodeExpr l, r;
+                    case ParseTermResult.EType.UnaryOperation:
+                        if (!TryPopExpr(out NodeExpr ee))
+                            return null;
 
-                        if (!TryPopExpr(out r))
-                            return false;
-                        if (!TryPopExpr(out l))
-                            return false;
-
-                        var e = NodeExpr.Binary(t.TypeBinary, l, r);
+                        e = NodeExpr.Unary(t.TypeUnary, ee);
 
                         AddExprToStack(e);
 
-                        return true;
+                        return e;
+                    case ParseTermResult.EType.Operation:
+                        if (!TryPopExpr(out NodeExpr r))
+                            return null;
+                        if (!TryPopExpr(out NodeExpr l))
+                            return null;
+
+                        e = NodeExpr.Binary(t.TypeBinary, l, r);
+
+                        AddExprToStack(e);
+
+                        return e;
                     default:
-                        return false;
+                        return null;
                 }
             }
 
-            private Task<bool> Eval(Func<ParseTermResult, bool> exit)
+            private Task<NodeExpr> Eval(Func<ParseTermResult, bool> exit)
             {
                 return Task.Run
                 (
                     () =>
                     {
-                        ParseTermResult t;
+                        NodeExpr e = null;
 
-                        while (TryPopOperation(out t))
+                        while (TryPopOperation(out ParseTermResult t))
                         {
                             mTokenCancel.ThrowIfCancellationRequested();
 
                             if (exit.Invoke(t))
-                                return true;
+                                break;
+
+                            e = EvalOperation(t);
                         }
 
-                        return mStackExprs.IsEmpty && mStackOperations.IsEmpty;
+                        return e;
                     }
                 );
             }
@@ -383,7 +424,7 @@ namespace Algebra.Core.Exprs
                         return new ParseTermResult { TypeTerm = ParseTermResult.EType.EOF };
                     case Tokenizer.EType.TerminateDolar:
                     case Tokenizer.EType.TerminateSemiColon:
-                        return new ParseTermResult { TypeTerm = ParseTermResult.EType.Terminate, Token = pToken };
+                        return new ParseTermResult { TypeTerm = ParseTermResult.EType.Terminate, TypeToken = pType };
                 }
 
                 throw new InvalidOperationException();

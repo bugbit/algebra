@@ -32,7 +32,9 @@ namespace Algebra.Core.Exprs
 
         public override Task<string> Visit(NodeExprCte e, CancellationToken t) => Task.Run(() => (e?.Value.ToString()) ?? "null");
 
-        public override Task<string> Visit(NodeBinaryExpr e, CancellationToken t)
+        public async override Task<string> Visit(NodeExprUnary e, CancellationToken t) => MathExpr.TypeUnaryStr[e.TypeUnary] + (await Visit(e.Expr, t));
+
+        public override Task<string> Visit(NodeExprBinary e, CancellationToken t)
         {
             return Task.Run
             (
@@ -62,7 +64,7 @@ namespace Algebra.Core.Exprs
 
         public async override Task<string> Visit(NodeExprInstruction e, CancellationToken t)
         {
-            return (await base.Visit(e, t)) + " " + ((e.IsShowResult) ? ";" : "$");
+            return (await base.Visit(e, t)) + ((e.IsShowResult) ? ";" : "$");
         }
     }
 }

@@ -28,7 +28,8 @@ namespace Algebra.Core.Exprs
     {
         T Visit(NodeExpr e);
         T Visit(NodeExprCte e);
-        T Visit(NodeBinaryExpr e);
+        T Visit(NodeExprUnary e);
+        T Visit(NodeExprBinary e);
         T Visit(NodeExprInstruction e);
     }
 
@@ -41,7 +42,8 @@ namespace Algebra.Core.Exprs
     {
         Task<T> Visit(NodeExpr e, CancellationToken t);
         Task<T> Visit(NodeExprCte e, CancellationToken t);
-        Task<T> Visit(NodeBinaryExpr e, CancellationToken t);
+        Task<T> Visit(NodeExprUnary e, CancellationToken t);
+        Task<T> Visit(NodeExprBinary e, CancellationToken t);
         Task<T> Visit(NodeExprInstruction e, CancellationToken t);
     }
 
@@ -56,7 +58,9 @@ namespace Algebra.Core.Exprs
 
         public virtual T Visit(NodeExprCte e) => default(T);
 
-        public virtual T Visit(NodeBinaryExpr e) => default(T);
+        public virtual T Visit(NodeExprUnary e) => default(T);
+
+        public virtual T Visit(NodeExprBinary e) => default(T);
 
         public virtual T Visit(NodeExprInstruction e) => Visit(e.Expr);
     }
@@ -69,10 +73,9 @@ namespace Algebra.Core.Exprs
     public class NodeExprVisitorASync<T> : INodeExprVisitorAsync<T>
     {
         public virtual Task<T> Visit(NodeExpr e, CancellationToken t) => e.Accept(this, t);
-
         public virtual Task<T> Visit(NodeExprCte e, CancellationToken t) => Task.FromResult(default(T));
-
-        public virtual Task<T> Visit(NodeBinaryExpr e, CancellationToken t) => Task.FromResult(default(T));
+        public virtual Task<T> Visit(NodeExprUnary e, CancellationToken t) => Task.FromResult(default(T));
+        public virtual Task<T> Visit(NodeExprBinary e, CancellationToken t) => Task.FromResult(default(T));
         public virtual Task<T> Visit(NodeExprInstruction e, CancellationToken t) => Visit(e.Expr, t);
     }
 

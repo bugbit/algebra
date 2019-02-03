@@ -25,6 +25,12 @@ namespace Algebra.Core.Exprs
 {
     public class MathExpr
     {
+        public static readonly IDictionary<ETypeUnary, string> TypeUnaryStr = new Dictionary<ETypeUnary, string>
+        {
+            [ETypeUnary.SigNeg] = "-",
+            [ETypeUnary.SignPos] = "+",
+        };
+
         public static readonly IDictionary<ETypeBinary, string> TypeBinariesStr = new Dictionary<ETypeBinary, string>
         {
             [ETypeBinary.Add] = "+",
@@ -55,7 +61,8 @@ namespace Algebra.Core.Exprs
         public static readonly IDictionary<ENodeTypeExpr, int> TypeNodesPriorities = new Dictionary<ENodeTypeExpr, int>
         {
             [ENodeTypeExpr.Constant] = 0,
-            [ENodeTypeExpr.BinaryExpr] = 0
+            [ENodeTypeExpr.BinaryExpr] = 0,
+            [ENodeTypeExpr.Unary] = 0,
         };
     }
 }

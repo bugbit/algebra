@@ -37,8 +37,8 @@ namespace TestExpressions
         private CancellationToken mTokenCancel;
         private TaskCompletionSource<ParserResult> mSetResultCompleted = null;
         private TaskCompletionSource<string> mSetExprCompleted = null;
-        private Task<string> mSetExprTask = null;
-        private object mLockGetToken = new object();
+        private readonly Task<string> mSetExprTask = null;
+        private readonly object mLockGetToken = new object();
         private string mExpr;
         private string mResult;
         private int mPos = 0;
@@ -221,7 +221,7 @@ namespace TestExpressions
 
         private static string mToken;
         private static int mPos = -1;
-        private static object mLockGetToken = new object();
+        private readonly static object mLockGetToken = new object();
         private static Task<string> mGetTokenTask = null;
         private static TaskCompletionSource<string> mGetToken = null;
 
