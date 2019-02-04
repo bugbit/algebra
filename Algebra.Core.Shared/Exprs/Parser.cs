@@ -117,8 +117,8 @@ namespace Algebra.Core.Exprs
 
             public async Task Parse()
             {
-                bool pHaveSign = true;
-
+                mStackExprs = new ConcurrentStack<ConcurrentStack<NodeExpr>>();
+                mStackOperations = new ConcurrentStack<ParseTermResult>();
                 for (; ; )
                 {
                     mTokenCancel.ThrowIfCancellationRequested();
@@ -129,39 +129,15 @@ namespace Algebra.Core.Exprs
                     {
                         case ParseTermResult.EType.Expression:
                             AddExprToStack(pTerm.Expr);
-                            //if (pHaveSign)
-                            //    EvalOperation();
-                            pHaveSign = false;
                             break;
                         case ParseTermResult.EType.Operation:
                             lock (mStackOperations)
                             {
-                                if (pHaveSign)
-                                {
-                                    switch (pTerm.TypeBinary)
-                                    {
-                                        case ETypeBinary.Add:
-                                            pTerm.TypeTerm = ParseTermResult.EType.UnaryOperation;
-                                            pTerm.TypeUnary = ETypeUnary.SignPos;
-                                            break;
-                                        case ETypeBinary.Sub:
-                                            pTerm.TypeTerm = ParseTermResult.EType.UnaryOperation;
-                                            pTerm.TypeUnary = ETypeUnary.SigNeg;
-                                            break;
-                                        default:
-                                            throw new InvalidOperationException();
-                                    }
-                                    AddOperationToExpr(pTerm);
-                                }
-                                else
-                                {
-                                    var t = PeekOperation();
+                                var t = PeekOperation();
 
-                                    if (t != null && MathExpr.TypeBinariesPriorities[pTerm.TypeBinary] > MathExpr.TypeBinariesPriorities[t.TypeBinary])
-                                        EvalOperation();
-                                    AddOperationToExpr(pTerm);
-                                    pHaveSign = true;
-                                }
+                                if (t != null && MathExpr.TypeBinariesPriorities[pTerm.TypeBinary] > MathExpr.TypeBinariesPriorities[t.TypeBinary])
+                                    EvalOperation();
+                                AddOperationToExpr(pTerm);
                             }
                             break;
                         case ParseTermResult.EType.EOF:
@@ -182,9 +158,6 @@ namespace Algebra.Core.Exprs
                                 throw new NullReferenceException(nameof(e));
 
                             AddExprToStack(NodeExpr.Instruction(e, pTerm.TypeToken == Tokenizer.EType.TerminateSemiColon));
-
-                            pHaveSign = true;
-
                             break;
                     }
                 }
