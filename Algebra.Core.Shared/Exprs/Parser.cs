@@ -115,7 +115,12 @@ namespace Algebra.Core.Exprs
                 return await SetResultTask;
             }
 
-            public async Task Parse()
+            public Task Parse()
+            {
+                return null;
+            }
+
+            public async Task Parse2()
             {
                 mStackExprs = new ConcurrentStack<ConcurrentStack<NodeExpr>>();
                 mStackOperations = new ConcurrentStack<ParseTermResult>();
