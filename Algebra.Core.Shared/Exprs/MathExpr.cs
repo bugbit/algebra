@@ -31,6 +31,8 @@ namespace Algebra.Core.Exprs
             [ETypeUnary.SignPos] = "+",
         };
 
+        public static readonly IDictionary<string, ETypeUnary> StrToUnary = TypeUnaryStr.ToDictionary(d => d.Value, d => d.Key);
+
         public static readonly IDictionary<ETypeBinary, string> TypeBinariesStr = new Dictionary<ETypeBinary, string>
         {
             [ETypeBinary.Add] = "+",

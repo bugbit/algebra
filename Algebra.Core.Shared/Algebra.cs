@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Algebra.Core
@@ -32,10 +33,19 @@ namespace Algebra.Core
 
     public partial class Algebra : IAlgebra
     {
-        //public static readonly IDictionary<EPrecisions,IAlgebra> MapP
-        private static readonly Lazy<AlgebraInt> mDefault = new Lazy<AlgebraInt>();
+        public static readonly IDictionary<EPrecisions, Func<IAlgebra>> Algebras = new Dictionary<EPrecisions, Func<IAlgebra>>()
+        {
+            [EPrecisions.Integer] = () => new AlgebraInt(),
+            [EPrecisions.Long] = () => new AlgebraLong(),
+            [EPrecisions.BigInteger] = () => new AlgebraBigInteger(),
+            [EPrecisions.Float] = () => new AlgebraFloat(),
+            [EPrecisions.Double] = () => new AlgebraDouble(),
+            [EPrecisions.Decimal] = () => new AlgebraDecimal(),
+            [EPrecisions.BigDecimal] = () => new AlgebraBigDecimal()
+        };
+        private static readonly Lazy<IAlgebra> mDefault = new Lazy<IAlgebra>(Algebras[EPrecisions.Decimal]);
 
-        public static AlgebraInt Default => mDefault.Value;
+        public static IAlgebra Default => mDefault.Value;
     }
 
     public partial class Algebra<T> : Algebra, IAlgebra<T>
@@ -44,5 +54,35 @@ namespace Algebra.Core
 
     public partial class AlgebraInt : Algebra<int>
     {
+    }
+
+    public partial class AlgebraLong : Algebra<long>
+    {
+
+    }
+
+    public partial class AlgebraBigInteger : Algebra<BigInteger>
+    {
+
+    }
+
+    public partial class AlgebraFloat : Algebra<float>
+    {
+
+    }
+
+    public partial class AlgebraDouble : Algebra<double>
+    {
+
+    }
+
+    public partial class AlgebraDecimal : Algebra<decimal>
+    {
+
+    }
+
+    public partial class AlgebraBigDecimal : Algebra<BigDecimal>
+    {
+
     }
 }

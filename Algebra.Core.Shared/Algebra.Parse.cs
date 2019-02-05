@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,5 +63,35 @@ namespace Algebra.Core
     public partial class AlgebraInt
     {
         public override int ParseNumber(string str) => (int)decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+    }
+
+    public partial class AlgebraLong
+    {
+        public override long ParseNumber(string str) => (long)decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+    }
+
+    public partial class AlgebraBigInteger
+    {
+        public override BigInteger ParseNumber(string str) => (BigInteger)decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+    }
+
+    public partial class AlgebraFloat
+    {
+        public override float ParseNumber(string str) => float.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+    }
+
+    public partial class AlgebraDouble
+    {
+        public override double ParseNumber(string str) => double.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+    }
+
+    public partial class AlgebraDecimal
+    {
+        public override decimal ParseNumber(string str) => decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
+    }
+
+    public partial class AlgebraBigDecimal
+    {
+        public override BigDecimal ParseNumber(string str) => decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
     }
 }

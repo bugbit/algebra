@@ -20,6 +20,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\ParseResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\Tokenizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\TaskExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Math\BigDecimal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Precisions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Session.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Vars.cs" />
   </ItemGroup>
 </Project>

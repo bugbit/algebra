@@ -17,14 +17,12 @@
 #endregion
 
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Algebra.Core.Exprs;
 
 namespace Algebra.Core.Exprs
 {
@@ -69,15 +67,13 @@ namespace Algebra.Core.Exprs
             {
                 public enum EType
                 {
-                    Expression, UnaryOperation, Operation, EOF, Terminate
+                    Expression, UnaryOperation, Operation, EOF, Token
                 }
 
-                public ETypeUnary TypeUnary { get; set; }
-                public ETypeBinary TypeBinary { get; set; }
                 public EType TypeTerm { get; set; }
                 public NodeExpr Expr { get; set; }
-                public string Token { get; set; }
-                public Tokenizer.EType TypeToken { get; set; }
+                public ETypeBinary TypeBinary { get; set; }
+                public ETypeUnary TypeUnary { get; set; }
             }
 
             private IAlgebra<T> mAlg;
@@ -86,8 +82,6 @@ namespace Algebra.Core.Exprs
             private TaskCompletionSource<string> mSetExprCompleted = null;
             private readonly Task<string> mSetExprTask = null;
             private Tokenizer mTokenizer;
-            private ConcurrentStack<ConcurrentStack<NodeExpr>> mStackExprs = new ConcurrentStack<ConcurrentStack<NodeExpr>>();
-            private ConcurrentStack<ParseTermResult> mStackOperations = new ConcurrentStack<ParseTermResult>();
 
             public ParserInternal(IAlgebra<T> a, string e, CancellationToken t)
             {
@@ -115,57 +109,29 @@ namespace Algebra.Core.Exprs
                 return await SetResultTask;
             }
 
-            public Task Parse()
+            public async Task Parse()
             {
-                return null;
-            }
+                var pExprs = new List<NodeExprInstruction>();
 
-            public async Task Parse2()
-            {
-                mStackExprs = new ConcurrentStack<ConcurrentStack<NodeExpr>>();
-                mStackOperations = new ConcurrentStack<ParseTermResult>();
                 for (; ; )
                 {
                     mTokenCancel.ThrowIfCancellationRequested();
 
-                    var pTerm = await ParseTerm();
+                    var pExpr = await ParseInstruction();
 
-                    switch (pTerm.TypeTerm)
+                    pExprs.Add(pExpr);
+
+                    await ReadToken();
+                    Back();
+
+                    lock (this)
                     {
-                        case ParseTermResult.EType.Expression:
-                            AddExprToStack(pTerm.Expr);
-                            break;
-                        case ParseTermResult.EType.Operation:
-                            lock (mStackOperations)
-                            {
-                                var t = PeekOperation();
-
-                                if (t != null && MathExpr.TypeBinariesPriorities[pTerm.TypeBinary] > MathExpr.TypeBinariesPriorities[t.TypeBinary])
-                                    EvalOperation();
-                                AddOperationToExpr(pTerm);
-                            }
-                            break;
-                        case ParseTermResult.EType.EOF:
-                            var es = await ExprInstruccion();
-
-                            if (es != null)
-                            {
-                                SetResult(new ParseResult { Finished = true, Exprs = es });
-
-                                return;
-                            }
-                            await Yield(new ParseResult { Finished = false });
-                            break;
-                        case ParseTermResult.EType.Terminate:
-                            await Eval(t => false);
-
-                            if (!TryPopExpr(out NodeExpr e))
-                                throw new NullReferenceException(nameof(e));
-
-                            AddExprToStack(NodeExpr.Instruction(e, pTerm.TypeToken == Tokenizer.EType.TerminateSemiColon));
+                        if (mTokenizer.TypeToken == Tokenizer.EType.EOF)
                             break;
                     }
                 }
+
+                SetResult(new ParseResult { Finished = true, Exprs = pExprs.ToArray() });
             }
 
             private void SetExpr(string s)
@@ -209,178 +175,106 @@ namespace Algebra.Core.Exprs
                 SetExpr(await t);
             }
 
-            private ParseTermResult PeekOperation()
+            private async Task<NodeExprInstruction> ParseInstruction()
             {
-                lock (mStackOperations)
+                for (; ; )
                 {
-                    if (mStackOperations.IsEmpty)
-                        return null;
+                    mTokenCancel.ThrowIfCancellationRequested();
 
-                    if (!mStackOperations.TryPeek(out ParseTermResult t))
-                        return null;
+                    var pExpr = await ParseExpr();
+                    Tokenizer.EType pType;
 
-                    return t;
-                }
-            }
-
-            private ConcurrentStack<NodeExpr> AddStackExpr()
-            {
-                var s = new ConcurrentStack<NodeExpr>();
-
-                mStackExprs.Push(s);
-
-                return s;
-            }
-
-            private void AddExprToStack(NodeExpr e)
-            {
-                ConcurrentStack<NodeExpr> s;
-
-                if (mStackExprs.IsEmpty)
-                {
-                    s = AddStackExpr();
-                }
-                else
-                {
-                    mStackExprs.TryPeek(out s);
-                }
-                s.Push(e);
-            }
-
-            private void AddOperationToExpr(ParseTermResult t)
-            {
-                mStackOperations.Push(t);
-            }
-
-            private bool TryPeekStackExpr(out ConcurrentStack<NodeExpr> se)
-            {
-                return mStackExprs.TryPeek(out se);
-            }
-
-            private bool TryPeekExpr(out NodeExpr e)
-            {
-                if (TryPeekStackExpr(out ConcurrentStack<NodeExpr> se))
-                    return se.TryPeek(out e);
-
-                e = null;
-
-                return false;
-            }
-
-            private Task<NodeExprInstruction[]> ExprInstruccion()
-            {
-                return Task.Run
-                (
-                    () =>
+                    lock (this)
                     {
-                        if (mStackExprs.IsEmpty)
-                            return null;
+                        pType = mTokenizer.TypeToken;
 
-                        var es = new List<NodeExprInstruction>();
-
-                        foreach (var se in mStackExprs)
+                        switch (mTokenizer.TypeToken)
                         {
-                            if (se.Count != 1)
-                                return null;
-
-                            if (!(se.First() is NodeExprInstruction ei))
-                                return null;
-
-                            es.Add(ei);
+                            case Tokenizer.EType.TerminateDolar:
+                            case Tokenizer.EType.TerminateSemiColon:
+                                return NodeExpr.Instruction(pExpr, pType == Tokenizer.EType.TerminateSemiColon);
                         }
-
-                        if (es.Count <= 0)
-                            return null;
-
-                        return es.ToArray();
                     }
-                );
-            }
-
-            private bool TryPopExpr(out NodeExpr e)
-            {
-                if (!TryPeekStackExpr(out ConcurrentStack<NodeExpr> se))
-                {
-                    e = null;
-
-                    return false;
-                }
-
-                if (!se.TryPop(out e))
-                    return false;
-
-                if (se.IsEmpty)
-                    return TryPopStackExpr(out se);
-
-                return true;
-            }
-
-            private bool TryPopStackExpr(out ConcurrentStack<NodeExpr> se) => mStackExprs.TryPop(out se);
-
-            private bool TryPopOperation(out ParseTermResult t) => mStackOperations.TryPop(out t);
-
-            private NodeExpr EvalOperation()
-            {
-                return (!TryPopOperation(out ParseTermResult t)) ? null : EvalOperation(t);
-            }
-
-            private NodeExpr EvalOperation(ParseTermResult t)
-            {
-                NodeExpr e;
-
-                switch (t.TypeTerm)
-                {
-                    case ParseTermResult.EType.UnaryOperation:
-                        if (!TryPopExpr(out NodeExpr ee))
-                            return null;
-
-                        e = NodeExpr.Unary(t.TypeUnary, ee);
-
-                        AddExprToStack(e);
-
-                        return e;
-                    case ParseTermResult.EType.Operation:
-                        if (!TryPopExpr(out NodeExpr r))
-                            return null;
-                        if (!TryPopExpr(out NodeExpr l))
-                            return null;
-
-                        e = NodeExpr.Binary(t.TypeBinary, l, r);
-
-                        AddExprToStack(e);
-
-                        return e;
-                    default:
-                        return null;
                 }
             }
 
-            private Task<NodeExpr> Eval(Func<ParseTermResult, bool> exit)
+            private Task<NodeExpr> ParseExpr() => ParseExprOperations();
+
+            private async Task<NodeExpr> ParseExprOperations()
             {
-                return Task.Run
-                (
-                    () =>
+                var pStackExpr = new Stack<NodeExpr>();
+                var pStackOps = new Stack<ETypeBinary>();
+                var pExit = false;
+
+                do
+                {
+                    mTokenCancel.ThrowIfCancellationRequested();
+
+                    var pTerm = await ParseTerm();
+
+                    switch (pTerm.TypeTerm)
                     {
-                        NodeExpr e = null;
+                        case ParseTermResult.EType.Expression:
+                            pStackExpr.Push(pTerm.Expr);
+                            break;
+                        case ParseTermResult.EType.UnaryOperation:
+                            var pExpr = await ParseExpr();
 
-                        while (TryPopOperation(out ParseTermResult t))
-                        {
-                            mTokenCancel.ThrowIfCancellationRequested();
+                            pStackExpr.Push(NodeExpr.Unary(pTerm.TypeUnary, pExpr));
+                            break;
+                        case ParseTermResult.EType.Operation:
+                            if (pStackOps.Count <= 0)
+                            {
+                                pStackOps.Push(pTerm.TypeBinary);
+                            }
+                            else
+                            {
+                                var t = pStackOps.Peek();
 
-                            if (exit.Invoke(t))
-                                break;
+                                if (MathExpr.TypeBinariesPriorities[pTerm.TypeBinary] > MathExpr.TypeBinariesPriorities[t])
+                                    EvalOperation(pStackExpr, pStackOps);
+                                pStackOps.Push(pTerm.TypeBinary);
+                            }
+                            break;
+                        case ParseTermResult.EType.EOF:
+                            await Yield(new ParseResult { Finished = false });
+                            break;
+                        default:
+                            pExit = true;
+                            break;
 
-                            e = EvalOperation(t);
-                        }
-
-                        return e;
                     }
-                );
+                } while (!pExit);
+
+                while (pStackOps.Count > 0)
+                {
+                    mTokenCancel.ThrowIfCancellationRequested();
+
+                    EvalOperation(pStackExpr, pStackOps);
+                }
+
+                if (pStackExpr.Count != 1)
+                    throw new InvalidOperationException();
+
+                return pStackExpr.Pop();
+            }
+
+            private void EvalOperation(Stack<NodeExpr> se, Stack<ETypeBinary> so)
+            {
+                var pType = so.Pop();
+
+                if (se.Count < 2)
+                    throw new InvalidOperationException();
+
+                var r = se.Pop();
+                var l = se.Pop();
+
+                se.Push(NodeExpr.Binary(pType, l, r));
             }
 
             private async Task<ParseTermResult> ParseTerm()
             {
-                await mTokenizer.Read(mTokenCancel);
+                await ReadToken();
                 Tokenizer.EType pType;
                 string pValue;
                 string pToken;
@@ -396,16 +290,27 @@ namespace Algebra.Core.Exprs
                 {
                     case Tokenizer.EType.Number:
                         return new ParseTermResult { TypeTerm = ParseTermResult.EType.Expression, Expr = NodeExpr.Number(mAlg.ParseNumber(pValue)) };
+                    case Tokenizer.EType.Sign:
+                        return new ParseTermResult { TypeTerm = ParseTermResult.EType.UnaryOperation, TypeUnary = MathExpr.StrToUnary[pToken] };
                     case Tokenizer.EType.Operation:
-                        return new ParseTermResult { TypeTerm = ParseTermResult.EType.Operation, TypeBinary = MathExpr.StrToBinaries[pToken], Token = pToken };
+                        return new ParseTermResult { TypeTerm = ParseTermResult.EType.Operation, TypeBinary = MathExpr.StrToBinaries[pToken] };
                     case Tokenizer.EType.EOF:
                         return new ParseTermResult { TypeTerm = ParseTermResult.EType.EOF };
-                    case Tokenizer.EType.TerminateDolar:
-                    case Tokenizer.EType.TerminateSemiColon:
-                        return new ParseTermResult { TypeTerm = ParseTermResult.EType.Terminate, TypeToken = pType };
+                    default:
+                        return new ParseTermResult { TypeTerm = ParseTermResult.EType.Token };
                 }
 
                 throw new InvalidOperationException();
+            }
+
+            private async Task ReadToken()
+            {
+                await mTokenizer.Read(mTokenCancel);
+            }
+
+            private void Back()
+            {
+                mTokenizer.Back();
             }
         }
 

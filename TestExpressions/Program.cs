@@ -29,7 +29,7 @@ namespace TestExpressions
             return false;
         }
 
-        public static bool IsNumberPrime(BigDecimal n) => IsNumberPrime((BigInteger)n);
+        //public static bool IsNumberPrime(BigDecimal n) => IsNumberPrime((BigInteger)n);
 
         public static bool IsNumberPrime(dynamic n)
         {
@@ -70,11 +70,11 @@ namespace TestExpressions
 #endif
 
         public Expression<Func<object>> Expr => () =>
-            //IsNumberPrime(() => 10)
-            Expression.Or
-            (
-                IsNumberPrime(Expression.Constant((BigDecimal)10)), /*IsNumberPrime(Expression.Constant(10)), */IsNumberPrime(Expression.Constant(20.0m))
-            )
+            IsNumberPrime(() => 10)
+            //Expression.Or
+            //(
+            //    IsNumberPrime(Expression.Constant((BigDecimal)10)), /*IsNumberPrime(Expression.Constant(10)), */IsNumberPrime(Expression.Constant(20.0m))
+            //)
             ;
 
         public Expression<Func<object>> Expr1 => () =>

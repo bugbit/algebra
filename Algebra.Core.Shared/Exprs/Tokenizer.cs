@@ -29,14 +29,15 @@ namespace Algebra.Core.Exprs
     {
         public enum EType
         {
-            Number, Operation, OpenParenthesis, CloseParenthesis, TerminateSemiColon, TerminateDolar, EOF
+            Number, Sign, Operation, OpenParenthesis, CloseParenthesis, TerminateSemiColon, TerminateDolar, EOF
         }
 
         private readonly static char[] mOperatorsChars = MathExpr.TypeBinariesStr.Values.Select(s => s[0]).ToArray();
         private string mStr;
         private readonly int mStrLen;
         private int mPos = 0;
-        private bool bWait = false;
+        private bool mbInit = true;
+        private bool mbWait = false;
 
         public EType TypeToken { get; private set; }
         public string Token { get; private set; }
@@ -50,10 +51,10 @@ namespace Algebra.Core.Exprs
 
         public void Back()
         {
-            if (bWait)
+            if (mbWait)
                 throw new ArgumentException("Error en el estado back");
 
-            bWait = true;
+            mbWait = true;
         }
 
         public Task Read(CancellationToken t) => GetToken(t);
@@ -80,9 +81,9 @@ namespace Algebra.Core.Exprs
 
         private async Task GetToken(CancellationToken t)
         {
-            if (bWait)
+            if (mbWait)
             {
-                bWait = false;
+                mbWait = false;
 
                 return;
             }
@@ -100,7 +101,33 @@ namespace Algebra.Core.Exprs
 
                 return;
             }
+            if (pCar == '+' || pCar == '-')
+            {
+                if (mbInit || (TypeToken == EType.Operation && (Token == "+" || Token == "-")))
+                {
+                    var pCar2 = await ReadCar(t);
 
+                    if (pCar2.HasValue && char.IsDigit(pCar2.Value))
+                    {
+                        Token += pCar;
+                        pCar = pCar2;
+                    }
+                    else
+                    {
+                        BackCar();
+                        if (!mbInit)
+                        {
+                            Token = Value = pCar.ToString();
+                            TypeToken = EType.Sign;
+
+                            return;
+                        }
+                    }
+                }
+
+            }
+            if (mbInit)
+                mbInit = false;
             if (mOperatorsChars.Contains(pCar.Value))
             {
                 Token = Value = pCar.ToString();

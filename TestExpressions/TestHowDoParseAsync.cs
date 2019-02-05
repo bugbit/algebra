@@ -184,7 +184,8 @@ namespace TestExpressions
         static async Task MainAsync()
         {
             var t = new CancellationTokenSource();
-            var a = Algebra.Core.Algebra.Default;
+            var s = new Algebra.Core.Session();
+            var a = s.Alg;
             var r1 = await a.ParsePrompt("2+3", t.Token);
 
             Print(r1);
