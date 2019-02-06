@@ -5,7 +5,13 @@ using System.Text;
 
 namespace Algebra.Core
 {
-    public class Vars
+    public interface IVars
+    {
+        void Set(string n, Exprs.NodeExpr e);
+        Exprs.NodeExpr Get(string n);
+        Exprs.NodeExpr this[string n] { get; set; }
+    }
+    public class Vars : IVars
     {
         private ConcurrentDictionary<string, Exprs.NodeExpr> mVars = new ConcurrentDictionary<string, Exprs.NodeExpr>();
 
@@ -36,4 +42,9 @@ namespace Algebra.Core
             set => Set(n, value);
         }
     }
+
+    //public class VarsAmbito : IVars
+    //{
+
+    //}
 }

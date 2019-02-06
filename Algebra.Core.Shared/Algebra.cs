@@ -31,7 +31,7 @@ namespace Algebra.Core
     {
     }
 
-    public partial class Algebra : IAlgebra
+    public abstract partial class Algebra : IAlgebra
     {
         public static readonly IDictionary<EPrecisions, Func<IAlgebra>> Algebras = new Dictionary<EPrecisions, Func<IAlgebra>>()
         {
@@ -52,26 +52,26 @@ namespace Algebra.Core
     {
     }
 
-    public partial class AlgebraInt : Algebra<int>
+    public sealed partial class AlgebraInt : Algebra<int>
     {
     }
 
-    public partial class AlgebraLong : Algebra<long>
-    {
-
-    }
-
-    public partial class AlgebraBigInteger : Algebra<BigInteger>
+    public sealed partial class AlgebraLong : Algebra<long>
     {
 
     }
 
-    public partial class AlgebraFloat : Algebra<float>
+    public sealed partial class AlgebraBigInteger : Algebra<BigInteger>
     {
 
     }
 
-    public partial class AlgebraDouble : Algebra<double>
+    public sealed partial class AlgebraFloat : Algebra<float>
+    {
+
+    }
+
+    public sealed partial class AlgebraDouble : Algebra<double>
     {
 
     }
@@ -81,7 +81,7 @@ namespace Algebra.Core
 
     }
 
-    public partial class AlgebraBigDecimal : Algebra<BigDecimal>
+    public sealed partial class AlgebraBigDecimal : Algebra<BigDecimal>
     {
 
     }
