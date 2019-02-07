@@ -170,6 +170,8 @@ namespace Algebra.Core.Exprs
                         Token = Value = pCar.ToString();
                         TypeToken = EType.CloseParenthesis;
                         return;
+                    default:
+                        throw new ParserException(string.Format(Algebra_Resources.ParserExceptionUnknownToken, pCar));
                 }
             }
         }

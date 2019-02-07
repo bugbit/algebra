@@ -111,27 +111,34 @@ namespace Algebra.Core.Exprs
 
             public async Task Parse()
             {
-                var pExprs = new List<NodeExprInstruction>();
-
-                for (; ; )
+                try
                 {
-                    mTokenCancel.ThrowIfCancellationRequested();
+                    var pExprs = new List<NodeExprInstruction>();
 
-                    var pExpr = await ParseInstruction();
-
-                    pExprs.Add(pExpr);
-
-                    await ReadToken();
-                    Back();
-
-                    lock (this)
+                    for (; ; )
                     {
-                        if (mTokenizer.TypeToken == Tokenizer.EType.EOF)
-                            break;
-                    }
-                }
+                        mTokenCancel.ThrowIfCancellationRequested();
 
-                SetResult(new ParseResult { Finished = true, Exprs = pExprs.ToArray() });
+                        var pExpr = await ParseInstruction();
+
+                        pExprs.Add(pExpr);
+
+                        await ReadToken();
+                        Back();
+
+                        lock (this)
+                        {
+                            if (mTokenizer.TypeToken == Tokenizer.EType.EOF)
+                                break;
+                        }
+                    }
+
+                    SetResult(new ParseResult { Finished = true, Exprs = pExprs.ToArray() });
+                }
+                catch (Exception ex)
+                {
+                    SetResult(new ParseResult { Finished = true, Ex = ex });
+                }
             }
 
             private void SetExpr(string s)
@@ -299,14 +306,9 @@ namespace Algebra.Core.Exprs
                     default:
                         return new ParseTermResult { TypeTerm = ParseTermResult.EType.Token };
                 }
-
-                throw new InvalidOperationException();
             }
 
-            private async Task ReadToken()
-            {
-                await mTokenizer.Read(mTokenCancel);
-            }
+            private async Task ReadToken() => await mTokenizer.Read(mTokenCancel);
 
             private void Back()
             {

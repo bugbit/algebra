@@ -48,7 +48,7 @@ namespace Algebra.Core
         public static IAlgebra Default => mDefault.Value;
     }
 
-    public partial class Algebra<T> : Algebra, IAlgebra<T>
+    public abstract partial class Algebra<T> : Algebra, IAlgebra<T>
     {
     }
 
@@ -76,7 +76,7 @@ namespace Algebra.Core
 
     }
 
-    public partial class AlgebraDecimal : Algebra<decimal>
+    public sealed partial class AlgebraDecimal : Algebra<decimal>
     {
 
     }

@@ -24,6 +24,7 @@ namespace Algebra.Core.Exprs
 {
     public class ParseResult
     {
+        public Exception Ex;
         public NodeExpr[] Exprs { get; set; }
         public bool Finished { get; set; }
     }

@@ -11,13 +11,16 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.Convert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Algebra.Operations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.Parse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AlgebraException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\MathExpr.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprStringBuilderVisitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprVisitors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\Parser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\ParseResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exprs\ParserException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\Tokenizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\TaskExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Math\BigDecimal.cs" />

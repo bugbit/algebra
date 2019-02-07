@@ -29,7 +29,7 @@ namespace Algebra.Core
     }
     public partial class Algebra<T>
     {
-        public virtual T Convert(int n) => default(T);
+        public abstract T Convert(int n);
     }
 
     public partial class AlgebraInt

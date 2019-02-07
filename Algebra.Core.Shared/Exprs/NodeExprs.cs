@@ -49,6 +49,8 @@ namespace Algebra.Core.Exprs
     {
         public ENodeTypeExpr TypeExpr { get; }
 
+        virtual public bool IsNull => false;
+
         protected NodeExpr(ENodeTypeExpr type)
         {
             TypeExpr = type;
@@ -70,7 +72,7 @@ namespace Algebra.Core.Exprs
 
         public abstract NodeExpr Clone();
 
-        public static NodeExprCte Null => new NodeExprCte(null, ETypeConstant.Null);
+        public static NodeExprCte Null => new NodeExprNull();
         public static NodeExprNumber<N> Number<N>(N n) => new NodeExprNumber<N>(n);
         public static NodeExprUnary Unary(ETypeUnary t, NodeExpr e) => new NodeExprUnary(t, e);
         public static NodeExprBinary Binary(ETypeBinary t, NodeExpr l, NodeExpr r) => new NodeExprBinary(t, l, r);
@@ -97,6 +99,13 @@ namespace Algebra.Core.Exprs
         public override Task<T> Accept<T>(INodeExprVisitorAsync<T> visitor, CancellationToken t) => visitor.Visit(this, t);
 
         public override NodeExpr Clone() => new NodeExprCte(this);
+    }
+
+    public class NodeExprNull : NodeExprCte
+    {
+        public NodeExprNull() : base(null, ETypeConstant.Null) { }
+
+        public override bool IsNull => true;
     }
 
     public class NodeExprNumber<N> : NodeExprCte

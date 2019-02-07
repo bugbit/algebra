@@ -190,9 +190,12 @@ namespace TestExpressions
 
             Print(r1);
 
-            var r2 = await a.ParsePrompt("*4;", t.Token);
+            if (!r1.Finished)
+            {
+                var r2 = await a.ParsePrompt("*4;", t.Token);
 
-            Print(r2);
+                Print(r2);
+            }
 
             /*
             var pParse = new Parser();
@@ -211,7 +214,10 @@ namespace TestExpressions
         static void Print(Algebra.Core.Exprs.ParseResult r)
         {
             if (r.Finished)
-                Print(r.Exprs);
+                if (r.Exprs != null)
+                    Print(r.Exprs);
+                else if (r.Ex != null)
+                    Console.WriteLine($"Exception: {r.Ex.Message}");
         }
 
         static void Print(Algebra.Core.Exprs.NodeExpr[] es)
