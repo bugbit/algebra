@@ -58,9 +58,7 @@ namespace Algebra.Core
 
         public NodeExpr Get(string n)
         {
-            NodeExpr e;
-
-            if (mVars.TryGetValue(n, out e))
+            if (mVars.TryGetValue(n, out NodeExpr e))
                 return e;
 
             return Exprs.NodeExpr.Null;
