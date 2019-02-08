@@ -11,6 +11,11 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Algebra.Core.Shared", "Alge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Algebra.Core", "Algebra.Core\Algebra.Core.csproj", "{993C4EAE-94C1-43F4-854B-AAF9FBEF38D9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "others", "others", "{AE6C2BDE-E37B-4C17-B281-47AB36AFAB4F}"
+	ProjectSection(SolutionItems) = preProject
+		TODO = TODO
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Algebra.Core.Shared\Algebra.Core.Shared.projitems*{6bc43b40-21e4-4ea4-913c-03777fd9109f}*SharedItemsImports = 13
