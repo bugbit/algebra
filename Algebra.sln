@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "others", "others", "{AE6C2BDE-E37B-4C17-B281-47AB36AFAB4F}"
 	ProjectSection(SolutionItems) = preProject
 		TODO = TODO
+		VERSIONS = VERSIONS
 	EndProjectSection
 EndProject
 Global

@@ -45,11 +45,25 @@ namespace Algebra.Core
         };
         private static readonly Lazy<IAlgebra> mDefault = new Lazy<IAlgebra>(Algebras[EPrecisions.Decimal]);
 
+        public Algebra()
+        {
+            Initialize();
+        }
+
         public static IAlgebra Default => mDefault.Value;
+
+        protected virtual  void Initialize()
+        {
+        }
     }
 
     public abstract partial class Algebra<T> : Algebra, IAlgebra<T>
     {
+        protected override void Initialize()
+        {
+            base.Initialize();
+            InitializeBinaryOperations();
+        }
     }
 
     public sealed partial class AlgebraInt : Algebra<int>

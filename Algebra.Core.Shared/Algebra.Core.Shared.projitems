@@ -14,6 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.Operations.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.Parse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AlgebraException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exprs\EvaluateVisitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\MathExpr.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exprs\NodeExprStringBuilderVisitor.cs" />

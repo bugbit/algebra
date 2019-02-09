@@ -1,1 +1,5 @@
-1. Funciones matematicas BigDecimal
+falta implementar BigDecimal.Parse => la estoy haciendo a traves de decimal
+
+Funciones matematicas BigDecimal (sin,pow,cos,......)
+
+Pow para long,biginteger=> se hace a traves de BigInteger.Pow y solo aceptar exponientes enteros
