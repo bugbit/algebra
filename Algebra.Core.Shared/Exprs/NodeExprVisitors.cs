@@ -83,5 +83,22 @@ namespace Algebra.Core.Exprs
     {
         public virtual Task<T> Visit(NodeExprNumber<N> e, CancellationToken t) => Task.FromResult(default(T));
     }
+
+    public class NodeExprVisitorRetExprASync : NodeExprVisitorASync<NodeExpr>
+    {
+        public override Task<NodeExpr> Visit(NodeExprCte e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
+        public override Task<NodeExpr> Visit(NodeExprUnary e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
+        public override Task<NodeExpr> Visit(NodeExprBinary e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
+        public override Task<NodeExpr> Visit(NodeExprInstruction e, CancellationToken t) => Task.FromResult(e.Expr);
+    }
+
+    public class NodeExprVisitorRetExprASync<N> : NodeExprVisitorASync<N, NodeExpr>
+    {
+        public override Task<NodeExpr> Visit(NodeExprCte e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
+        public override Task<NodeExpr> Visit(NodeExprUnary e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
+        public override Task<NodeExpr> Visit(NodeExprBinary e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
+        public override Task<NodeExpr> Visit(NodeExprInstruction e, CancellationToken t) => Task.FromResult(e.Expr);
+        public override Task<NodeExpr> Visit(NodeExprNumber<N> e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
+    }
 }
 
