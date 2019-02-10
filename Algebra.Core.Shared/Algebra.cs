@@ -25,6 +25,7 @@ namespace Algebra.Core
 {
     public partial interface IAlgebra
     {
+        Session Session { get; }
     }
 
     public partial interface IAlgebra<T> : IAlgebra
@@ -33,70 +34,90 @@ namespace Algebra.Core
 
     public abstract partial class Algebra : IAlgebra
     {
-        public static readonly IDictionary<EPrecisions, Func<IAlgebra>> Algebras = new Dictionary<EPrecisions, Func<IAlgebra>>()
+        public static readonly IDictionary<EPrecisions, Func<Session, IAlgebra>> Algebras = new Dictionary<EPrecisions, Func<Session, IAlgebra>>()
         {
-            [EPrecisions.Integer] = () => new AlgebraInt(),
-            [EPrecisions.Long] = () => new AlgebraLong(),
-            [EPrecisions.BigInteger] = () => new AlgebraBigInteger(),
-            [EPrecisions.Float] = () => new AlgebraFloat(),
-            [EPrecisions.Double] = () => new AlgebraDouble(),
-            [EPrecisions.Decimal] = () => new AlgebraDecimal(),
-            [EPrecisions.BigDecimal] = () => new AlgebraBigDecimal()
+            [EPrecisions.Integer] = s => new AlgebraInt(s),
+            [EPrecisions.Long] = s => new AlgebraLong(s),
+            [EPrecisions.BigInteger] = s => new AlgebraBigInteger(s),
+            [EPrecisions.Float] = s => new AlgebraFloat(s),
+            [EPrecisions.Double] = s => new AlgebraDouble(s),
+            [EPrecisions.Decimal] = s => new AlgebraDecimal(s),
+            [EPrecisions.BigDecimal] = s => new AlgebraBigDecimal(s)
         };
-        private static readonly Lazy<IAlgebra> mDefault = new Lazy<IAlgebra>(Algebras[EPrecisions.Decimal]);
 
-        public Algebra()
+        public Algebra(Session s)
         {
+            Session = s;
             Initialize();
         }
 
-        public static IAlgebra Default => mDefault.Value;
+        public Session Session { get; }
 
-        protected virtual  void Initialize()
+        protected virtual void Initialize()
         {
         }
     }
 
     public abstract partial class Algebra<T> : Algebra, IAlgebra<T>
     {
+        public Algebra(Session s) : base(s)
+        {
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
+            InitializeParse();
             InitializeBinaryOperations();
         }
     }
 
     public sealed partial class AlgebraInt : Algebra<int>
     {
+        public AlgebraInt(Session s) : base(s)
+        {
+        }
     }
 
     public sealed partial class AlgebraLong : Algebra<long>
     {
-
+        public AlgebraLong(Session s) : base(s)
+        {
+        }
     }
 
     public sealed partial class AlgebraBigInteger : Algebra<BigInteger>
     {
-
+        public AlgebraBigInteger(Session s) : base(s)
+        {
+        }
     }
 
     public sealed partial class AlgebraFloat : Algebra<float>
     {
-
+        public AlgebraFloat(Session s) : base(s)
+        {
+        }
     }
 
     public sealed partial class AlgebraDouble : Algebra<double>
     {
-
+        public AlgebraDouble(Session s) : base(s)
+        {
+        }
     }
 
     public sealed partial class AlgebraDecimal : Algebra<decimal>
     {
-
+        public AlgebraDecimal(Session s) : base(s)
+        {
+        }
     }
 
     public sealed partial class AlgebraBigDecimal : Algebra<BigDecimal>
     {
-
+        public AlgebraBigDecimal(Session s) : base(s)
+        {
+        }
     }
 }

@@ -32,8 +32,8 @@ namespace TestExpressions
         {
             //var n1 = (int)decimal.Parse("1.1", NumberStyles.Float, NumberFormatInfo.InvariantInfo);
             //var n2 = double.Parse("1.1", NumberFormatInfo.InvariantInfo);
-            var a1 = new Algebra.Core.AlgebraInt();
-            var n1 = a1.ParseNumber("1.1");
+            var a1 = new Algebra.Core.Session().Alg;
+            //var n1 = a1.ParseNumber("1.1");
 
             var e1 = new NodeExprCte(100, ETypeConstant.Number);
             var e2 = new NodeExprCte(200, ETypeConstant.Number);

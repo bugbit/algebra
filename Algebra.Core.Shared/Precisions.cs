@@ -26,7 +26,7 @@ namespace Algebra.Core
 {
     public enum EPrecisions
     {
-        Integer, Long, BigInteger, Float, Double, Decimal, BigDecimal
+        Integer, Long, BigInteger, Float, Double, Decimal, BigDecimal, Default = Decimal
     }
 
     public static class Precisions

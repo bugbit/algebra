@@ -46,7 +46,7 @@ namespace Algebra.Core
     {
         private Exprs.Parser<T> mParse;
 
-        public Algebra()
+        private void InitializeParse()
         {
             mParse = new Exprs.Parser<T>(this);
         }

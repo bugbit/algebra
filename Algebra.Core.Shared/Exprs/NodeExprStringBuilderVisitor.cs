@@ -43,7 +43,7 @@ namespace Algebra.Core.Exprs
                     var lt = Visit(e.Left, t);
                     var rt = Visit(e.Right, t);
 
-                    Task.WaitAll(lt, rt);
+                    Task.WaitAll(new[] { lt, rt }, t);
 
                     t.ThrowIfCancellationRequested();
 
@@ -64,7 +64,11 @@ namespace Algebra.Core.Exprs
 
         public async override Task<string> Visit(NodeExprInstruction e, CancellationToken t)
         {
-            return (await base.Visit(e, t)) + ((e.IsShowResult) ? ";" : "$");
+            var s = await base.Visit(e, t);
+
+            t.ThrowIfCancellationRequested();
+
+            return s + ((e.IsShowResult) ? ";" : "$");
         }
     }
 }

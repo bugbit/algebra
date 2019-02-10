@@ -188,13 +188,13 @@ namespace TestExpressions
             var a = s.Alg;
             var r1 = await a.ParsePrompt("2+3", t.Token);
 
-            Print(r1);
+            Print(a, r1, t.Token);
 
             if (!r1.Finished)
             {
                 var r2 = await a.ParsePrompt("*4;", t.Token);
 
-                Print(r2);
+                Print(a, r2, t.Token);
             }
 
             /*
@@ -211,11 +211,15 @@ namespace TestExpressions
                 */
         }
 
-        static void Print(Algebra.Core.Exprs.ParseResult r)
+        static async void Print(Algebra.Core.IAlgebra a, Algebra.Core.Exprs.ParseResult r, CancellationToken t)
         {
             if (r.Finished)
                 if (r.Exprs != null)
+                {
                     Print(r.Exprs);
+                    foreach (var e in r.Exprs)
+                        Console.WriteLine(await a.Eval(e, t));
+                }
                 else if (r.Ex != null)
                     Console.WriteLine($"Exception: {r.Ex.Message}");
         }

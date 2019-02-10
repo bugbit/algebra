@@ -9,6 +9,7 @@
     <Import_RootNamespace>Algebra.Core</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Algebra.CAS.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.Convert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Algebra.Operations.cs" />

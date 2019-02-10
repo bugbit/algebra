@@ -12,7 +12,7 @@ namespace Algebra.Core
 
         public Session()
         {
-            ChangeAlgebra(Algebra.Default);
+            ChangeAlgebra(EPrecisions.Default);
         }
 
         public IAlgebra Alg { get; private set; }
@@ -21,12 +21,7 @@ namespace Algebra.Core
 
         public void ChangeAlgebra(EPrecisions p)
         {
-            ChangeAlgebra(Algebra.Algebras[p].Invoke());
-        }
-
-        public void ChangeAlgebra(IAlgebra a)
-        {
-            Alg = a;
+            Alg = Algebra.Algebras[p].Invoke(this);
         }
 
         public string[] CreateVarsCounters(IEnumerable<string> argVarsNames)

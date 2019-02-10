@@ -89,7 +89,7 @@ namespace Algebra.Core.Exprs
         public override Task<NodeExpr> Visit(NodeExprCte e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
         public override Task<NodeExpr> Visit(NodeExprUnary e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
         public override Task<NodeExpr> Visit(NodeExprBinary e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
-        public override Task<NodeExpr> Visit(NodeExprInstruction e, CancellationToken t) => Task.FromResult(e.Expr);
+        public override Task<NodeExpr> Visit(NodeExprInstruction e, CancellationToken t) => Visit(e.Expr, t);
     }
 
     public class NodeExprVisitorRetExprASync<N> : NodeExprVisitorASync<N, NodeExpr>
@@ -97,7 +97,7 @@ namespace Algebra.Core.Exprs
         public override Task<NodeExpr> Visit(NodeExprCte e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
         public override Task<NodeExpr> Visit(NodeExprUnary e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
         public override Task<NodeExpr> Visit(NodeExprBinary e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
-        public override Task<NodeExpr> Visit(NodeExprInstruction e, CancellationToken t) => Task.FromResult(e.Expr);
+        public override Task<NodeExpr> Visit(NodeExprInstruction e, CancellationToken t) => Visit(e.Expr, t);
         public override Task<NodeExpr> Visit(NodeExprNumber<N> e, CancellationToken t) => Task.FromResult<NodeExpr>(e);
     }
 }

@@ -27,7 +27,6 @@ using static DecimalMath.DecimalEx;
 
 namespace Algebra.Core
 {
-
     public partial interface IAlgebra<T>
     {
         T Add(T n1, T n2);
