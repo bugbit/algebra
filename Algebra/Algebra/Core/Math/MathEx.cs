@@ -17,18 +17,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
-using Algebra.Models;
-
-namespace Algebra.ViewModels
+namespace Algebra.Core.Math
 {
-    public class ItemDetailViewModel : BaseViewModel
+    public static partial class MathEx
     {
-        public Item Item { get; set; }
-        public ItemDetailViewModel(Item item = null)
-        {
-            Title = item?.Text;
-            Item = item;
-        }
     }
 }
