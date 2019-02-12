@@ -23,12 +23,14 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Algebra.Core.Exprs;
 
 namespace Algebra.Core
 {
     public partial interface IAlgebra
     {
         Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t);
+        Task<Exprs.NodeExpr> Parse(string str, CancellationToken t);
     }
 
     public partial interface IAlgebra<T>
@@ -39,6 +41,7 @@ namespace Algebra.Core
 
     public partial class Algebra : IAlgebra
     {
+        public abstract Task<Exprs.NodeExpr> Parse(string str, CancellationToken t);
         public virtual Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => Task.FromResult(new Exprs.ParseResult { Finished = true, Exprs = new[] { Exprs.NodeExpr.Null } });
     }
 
@@ -52,12 +55,15 @@ namespace Algebra.Core
         }
 
         public virtual T ParseNumber(string str) => default(T);
+
+        public override Task<NodeExpr> Parse(string str, CancellationToken t) => mParse.Parse(str, t);
+
         //public override object Parse(string str)
         //{
         //    return base.Parse(str);
         //}
         //new public virtual T Parse(string str) => default(T);
-        public override Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => mParse.Parse(str, t);
+        public override Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => mParse.ParsePrompt(str, t);
     }
 
     public partial class AlgebraInt

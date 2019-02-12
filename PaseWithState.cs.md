@@ -1,7 +1,7 @@
-ï»¿#region LICENSE
+#region LICENSE
 /*
     Algebra Software free CAS
-    Copyright Â© 2018 Ã“scar HernÃ¡ndez BaÃ±Ã³
+    Copyright © 2018 Óscar Hernández Bañó
     This file is part of Algebra.
     Algebra is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,16 +35,8 @@ namespace Algebra.Core.Exprs
             mAlg = a;
         }
 
-        public async Task<NodeExpr> Parse(string s, CancellationToken c)
+        public Task<ParseResult> Parse(string s, CancellationToken c)
         {
-            mParser = new ParserInternal(mAlg, s, c);
-
-            return await mParser.ParseExpr();
-        }
-
-        public Task<ParseResult> ParsePrompt(string s, CancellationToken c)
-        {
-            return Task.FromResult(new ParseResult { Finished = false });
             var pStarted = false;
             ParserInternal tt;
 
@@ -213,7 +205,7 @@ namespace Algebra.Core.Exprs
                 }
             }
 
-            public Task<NodeExpr> ParseExpr() => ParseExprOperations();
+            private Task<NodeExpr> ParseExpr() => ParseExprOperations();
 
             private async Task<NodeExpr> ParseExprOperations()
             {
@@ -252,7 +244,7 @@ namespace Algebra.Core.Exprs
                             }
                             break;
                         case ParseTermResult.EType.EOF:
-                            pExit = true;
+                            await Yield(new ParseResult { Finished = false });
                             break;
                         default:
                             pExit = true;
