@@ -188,9 +188,10 @@ namespace TestExpressions
             var t = new CancellationTokenSource();
             var s = new Algebra.Core.Session();
             var a = s.Alg;
-            var r1 = await a.Parse("2+3*4", t.Token);
+            var r1 = await a.Parse("2+3*4+3", t.Token);
 
             Console.WriteLine(r1);
+            Console.WriteLine($"{r1} es primo: {await a.PrimeP(r1, Algebra.Core.Math.EAlgorithmPrimeP.Default, t.Token)}");
             //var r1 = await a.ParsePrompt("2+3", t.Token);
 
             //Print(a, r1, t.Token);

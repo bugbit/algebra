@@ -32,7 +32,8 @@ namespace Algebra
             InitializeComponent();
 
 
-            MainPage = new MainPage();
+            //MainPage = new MainPage();
+            MainPage = new NavigationPage(new Views.AlgebraPage());
         }
 
         protected override void OnStart()
