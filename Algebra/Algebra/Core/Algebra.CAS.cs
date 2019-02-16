@@ -22,28 +22,48 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Algebra.Core.Exprs;
+using Algebra.Core.Math;
 
 namespace Algebra.Core
 {
     public partial interface IAlgebra
     {
         Task<NodeExpr> Eval(NodeExpr e, CancellationToken t, IVars v = null);
-        Task<bool> PrimeP(NodeExpr e);
+        Task<bool> PrimeP(NodeExpr e, EAlgorithmPrimeP a, CancellationToken t);
     }
 
     public partial class Algebra
     {
         public abstract Task<NodeExpr> Eval(NodeExpr e, CancellationToken t, IVars v = null);
-        public abstract Task<bool> PrimeP(NodeExpr e);
+        public abstract Task<bool> PrimeP(NodeExpr e, EAlgorithmPrimeP a, CancellationToken t);
     }
 
-    public partial class Algebra<T>
+    public partial interface IAlgebra<T> where T : struct
+    {
+        Task<T?> EvalToNumber(NodeExpr e, CancellationToken t, IVars v = null);
+    }
+
+    public partial class Algebra<T> where T : struct
     {
         public override Task<NodeExpr> Eval(NodeExpr e, CancellationToken t, IVars v = null) => EvaluateVisitor<T>.Eval(e, this, t, v);
 
-        public override Task<bool> PrimeP(NodeExpr e)
+        public async Task<T?> EvalToNumber(NodeExpr e, CancellationToken t, IVars v = null)
         {
-            throw new NotImplementedException();
+            var r = await Eval(e, t, v);
+
+            t.ThrowIfCancellationRequested();
+
+            if (r is NodeExprNumber<T> en)
+                return en.Value;
+
+            return null;
+        }
+
+        public override async Task<bool> PrimeP(NodeExpr e, EAlgorithmPrimeP a, CancellationToken t)
+        {
+            var n = await EvalToNumber(e, t);
+
+            return n.HasValue && IsNumberInteger(n.Value) && await PrimeP(n.Value, a, t);
         }
     }
 }

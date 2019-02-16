@@ -61,33 +61,6 @@ namespace Algebra.Core
         }
     }
 
-    public partial class AlgebraInt
-    {
-        public override int Add(int n1, int n2) => n1 + n2;
-        public override int Sub(int n1, int n2) => n1 - n2;
-        public override int Mult(int n1, int n2) => n1 * n2;
-        public override int Div(int n1, int n2) => n1 / n2;
-        public override int Pow(int n1, int n2) => (int)BigInteger.Pow(n1, n2);
-    }
-
-    public partial class AlgebraLong
-    {
-        public override long Add(long n1, long n2) => n1 + n2;
-        public override long Sub(long n1, long n2) => n1 - n2;
-        public override long Mult(long n1, long n2) => n1 * n2;
-        public override long Div(long n1, long n2) => n1 / n2;
-        public override long Pow(long n1, long n2) => (long)BigInteger.Pow(n1, (int)n2);
-    }
-
-    public partial class AlgebraBigInteger
-    {
-        public override BigInteger Add(BigInteger n1, BigInteger n2) => n1 + n2;
-        public override BigInteger Sub(BigInteger n1, BigInteger n2) => n1 - n2;
-        public override BigInteger Mult(BigInteger n1, BigInteger n2) => n1 * n2;
-        public override BigInteger Div(BigInteger n1, BigInteger n2) => n1 / n2;
-        public override BigInteger Pow(BigInteger n1, BigInteger n2) => BigInteger.Pow(n1, (int)n2);
-    }
-
     public partial class AlgebraFloat
     {
         public override float Add(float n1, float n2) => n1 + n2;

@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Exprs
 {
-    public sealed class Parser<T>
+    public sealed class Parser<T> where T : struct
     {
         private readonly IAlgebra<T> mAlg;
 

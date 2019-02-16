@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Exprs
 {
-    public class EvaluateVisitor<N> : NodeExprVisitorRetExprASync<N>
+    public class EvaluateVisitor<N> : NodeExprVisitorRetExprASync<N> where N : struct
     {
         private readonly IAlgebra<N> mAlg;
         private readonly IVars mVars;

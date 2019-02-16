@@ -36,9 +36,6 @@ namespace Algebra.Core
     {
         public static readonly IDictionary<EPrecisions, Func<Session, IAlgebra>> Algebras = new Dictionary<EPrecisions, Func<Session, IAlgebra>>()
         {
-            [EPrecisions.Integer] = s => new AlgebraInt(s),
-            [EPrecisions.Long] = s => new AlgebraLong(s),
-            [EPrecisions.BigInteger] = s => new AlgebraBigInteger(s),
             [EPrecisions.Float] = s => new AlgebraFloat(s),
             [EPrecisions.Double] = s => new AlgebraDouble(s),
             [EPrecisions.Decimal] = s => new AlgebraDecimal(s),
@@ -69,27 +66,7 @@ namespace Algebra.Core
             base.Initialize();
             InitializeParse();
             InitializeBinaryOperations();
-        }
-    }
-
-    public sealed partial class AlgebraInt : Algebra<int>
-    {
-        public AlgebraInt(Session s) : base(s)
-        {
-        }
-    }
-
-    public sealed partial class AlgebraLong : Algebra<long>
-    {
-        public AlgebraLong(Session s) : base(s)
-        {
-        }
-    }
-
-    public sealed partial class AlgebraBigInteger : Algebra<BigInteger>
-    {
-        public AlgebraBigInteger(Session s) : base(s)
-        {
+            InitializeFunctions();
         }
     }
 

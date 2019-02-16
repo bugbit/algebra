@@ -66,21 +66,6 @@ namespace Algebra.Core
         public override Task<Exprs.ParseResult> ParsePrompt(string str, CancellationToken t) => mParse.ParsePrompt(str, t);
     }
 
-    public partial class AlgebraInt
-    {
-        public override int ParseNumber(string str) => (int)decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
-    }
-
-    public partial class AlgebraLong
-    {
-        public override long ParseNumber(string str) => (long)decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
-    }
-
-    public partial class AlgebraBigInteger
-    {
-        public override BigInteger ParseNumber(string str) => (BigInteger)decimal.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);
-    }
-
     public partial class AlgebraFloat
     {
         public override float ParseNumber(string str) => float.Parse(str, NumberStyles.Float, NumberFormatInfo.InvariantInfo);

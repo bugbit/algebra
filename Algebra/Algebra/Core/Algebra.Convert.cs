@@ -32,21 +32,6 @@ namespace Algebra.Core
         public abstract T Convert(int n);
     }
 
-    public partial class AlgebraInt
-    {
-        public override int Convert(int n) => n;
-    }
-
-    public partial class AlgebraLong
-    {
-        public override long Convert(int n) => n;
-    }
-
-    public partial class AlgebraBigInteger
-    {
-        public override BigInteger Convert(int n) => n;
-    }
-
     public partial class AlgebraFloat
     {
         public override float Convert(int n) => n;

@@ -22,7 +22,7 @@ using System.Text;
 
 namespace Algebra.Core.Exprs
 {
-    class Evaluate
+    public static class Evaluate
     {
     }
 }
