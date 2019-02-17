@@ -37,6 +37,8 @@ namespace Algebra.Views
             s.Children.Add(new Label { Text = "GNU GENERAL PUBLIC LICENSE" });
             AddInBoard(s);
 
+            /*
+
             var skiaView = new SkiaView()
             {
                 WidthRequest = 40,
@@ -78,6 +80,7 @@ namespace Algebra.Views
 
             AddInBoard(skiaView);
 
+    */
         }
 
         public void AddInBoard(View v)

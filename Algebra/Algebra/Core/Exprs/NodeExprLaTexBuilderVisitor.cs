@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Exprs
 {
+    /*
+        https://es.wikipedia.org/wiki/LaTeX
+        https://ondiz.github.io/cursoLatex/Contenido/05.Ecuaciones.html
+        https://en.wikibooks.org/wiki/LaTeX/Mathematics#Operators
+        https://www.overleaf.com/learn/latex/Operators
+        http://minisconlatex.blogspot.com/2010/11/ecuaciones.html
+     */
     public class NodeExprLaTexBuilderVisitor : NodeExprVisitorASync<string>
     {
         public static Task<string> ToStringAsync(NodeExpr e, CancellationToken t) => new NodeExprStringBuilderVisitor().Visit(e, t);
@@ -38,8 +45,18 @@ namespace Algebra.Core.Exprs
                         l = $"({l})";
                     if (e.IsNecesaryParenthesisRight)
                         r = $"({r})";
+                    switch (e.TypeBinary)
+                    {
+                        case ETypeBinary.Mult:
+                            if (!(e.Left.TypeExpr == ENodeTypeExpr.Constant && e.Right.TypeExpr == ENodeTypeExpr.Constant))
+                                return l + r;
 
-                    return (e.TypeBinary == ETypeBinary.Mult && !(e.Left.TypeExpr == ENodeTypeExpr.Constant && e.Right.TypeExpr == ENodeTypeExpr.Constant)) ? l + r : l + MathExpr.TypeBinariesStr[e.TypeBinary] + r;
+                            return l + @"\cdot" + r;
+                        case ETypeBinary.Div:
+                            return @"\frac{" + l + "}{" + r + "}";
+                    }
+
+                    return l + MathExpr.TypeBinariesStr[e.TypeBinary] + r;
                 }
             );
         }
