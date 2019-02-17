@@ -9,6 +9,7 @@ namespace Algebra.GTK
         [STAThread]
         public static void Main(string[] args)
         {
+            SkiaForms.Gtk2.Init.Include();
             Gtk.Application.Init();
             Forms.Init();
 
