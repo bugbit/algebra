@@ -4,9 +4,7 @@
              x:Class="Algebra.Views.AddPage">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <ListView></ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
