@@ -117,10 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="NumberTheory_Title" xml:space="preserve">
+    <value>Teoría de los Números</value>
+  </data>
   <data name="ParserExceptionUnExpectedToken" xml:space="preserve">
     <value>No esperaba {0}</value>
   </data>
   <data name="ParserExceptionUnknownToken" xml:space="preserve">
     <value>No reconozco {0}</value>
+  </data>
+  <data name="PrimeP_Title" xml:space="preserve">
+    <value>Es número primo</value>
   </data>
 </root>

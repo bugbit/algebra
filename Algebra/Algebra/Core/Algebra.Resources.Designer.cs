@@ -61,6 +61,15 @@ namespace Algebra.Core {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Teoría de los Números.
+        /// </summary>
+        internal static string NumberTheory_Title {
+            get {
+                return ResourceManager.GetString("NumberTheory_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a No esperaba {0}.
         /// </summary>
         internal static string ParserExceptionUnExpectedToken {
@@ -75,6 +84,15 @@ namespace Algebra.Core {
         internal static string ParserExceptionUnknownToken {
             get {
                 return ResourceManager.GetString("ParserExceptionUnknownToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Es número primo.
+        /// </summary>
+        internal static string PrimeP_Title {
+            get {
+                return ResourceManager.GetString("PrimeP_Title", resourceCulture);
             }
         }
     }
