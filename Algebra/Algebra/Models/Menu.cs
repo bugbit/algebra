@@ -57,8 +57,7 @@ namespace Algebra.Models
     public class Grupos : ObservableCollection<Grupo>
     {
         public Grupos()
-        {
-            var pMenus = typeof(EMenu).GetCustomAttributes(typeof(MenuOfAttribute), false).OfType<MenuOfAttribute>();
+        {           
         }
     }
 }
