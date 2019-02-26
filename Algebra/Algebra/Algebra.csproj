@@ -31,7 +31,7 @@
   <ItemGroup>
     <EmbeddedResource Update="Core\Algebra.Resources.resx">
       <LastGenOutput>Algebra.Resources.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\AddPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
