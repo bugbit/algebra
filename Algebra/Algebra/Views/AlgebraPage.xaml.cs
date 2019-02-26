@@ -87,5 +87,10 @@ namespace Algebra.Views
         {
             Board.Children.Add(v);
         }
+
+        private async void AddItem_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new AddPage());
+        }
     }
 }

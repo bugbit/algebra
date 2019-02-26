@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Algebra.Core
 {
-    public sealed class ResString
+    public sealed class IRString
     {
-        public ResString() { }
-        public ResString(Func<CultureInfo> getCulture, Func<ResourceManager> getResourceManage, string key)
+        public IRString() { }
+        public IRString(Func<CultureInfo> getCulture, Func<ResourceManager> getResourceManage, string key)
         {
             GetCulture = getCulture;
             GetResourceManager = getResourceManage;

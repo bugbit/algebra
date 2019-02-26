@@ -1,10 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Algebra.Views.AddPage">
+             x:Class="Algebra.Views.AddPage"
+             xmlns:vm="clr-namespace:Algebra.ViewModels">
+    <ContentPage.BindingContext>
+        <vm:AddViewModel />
+    </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout>
-            <ListView></ListView>
+            <ListView IsGroupingEnabled="True" ItemsSource="{Binding Menu}" GroupDisplayBinding="{Binding Title}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Title}"></TextCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

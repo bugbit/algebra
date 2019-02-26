@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Algebra.Core;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Algebra.Models
     public class Menu : IEquatable<Menu>
     {
         public EMenu Id { get; set; }
-        public string Title { get; set; }
+        public IRString Title { get; set; }
 
         public bool Equals(Menu other)
         {
@@ -42,7 +43,7 @@ namespace Algebra.Models
     public class Grupo : ObservableCollection<Menu>, IEquatable<Grupo>
     {
         public EMenu Id { get; set; }
-        public string Title { get; set; }
+        public IRString Title { get; set; }
 
         public bool Equals(Grupo other)
         {
@@ -57,7 +58,7 @@ namespace Algebra.Models
     public class Grupos : ObservableCollection<Grupo>
     {
         public Grupos()
-        {           
+        {
         }
     }
 }
