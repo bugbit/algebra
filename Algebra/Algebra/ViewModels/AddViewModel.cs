@@ -7,13 +7,13 @@ namespace Algebra.ViewModels
 {
     public class AddViewModel : BaseViewModel
     {
-        private Grupos mMenu;
+        private Menu mMenu;
 
         public AddViewModel()
         {
             Menu = FactoryMenu.Menu;
         }
 
-        public Grupos Menu { get => mMenu; set { SetProperty(ref mMenu, value); } }
+        public Menu Menu { get => mMenu; set { SetProperty(ref mMenu, value); } }
     }
 }

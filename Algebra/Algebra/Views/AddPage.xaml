@@ -2,18 +2,25 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Algebra.Views.AddPage"
-             xmlns:vm="clr-namespace:Algebra.ViewModels">
+             xmlns:i18n="clr-namespace:Algebra.ViewsXaml"
+             xmlns:vm="clr-namespace:Algebra.ViewModels"
+             Title="{i18n:Translate AddPageTitle}">
     <ContentPage.BindingContext>
         <vm:AddViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout>
-            <ListView IsGroupingEnabled="True" ItemsSource="{Binding Menu}" GroupDisplayBinding="{Binding Title}">
+            <ListView IsGroupingEnabled="True" ItemsSource="{Binding Menu}" GroupDisplayBinding="{Binding Title}"  BackgroundColor="Green" ItemSelected="ListView_ItemSelected" VerticalOptions="FillAndExpand">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Title}"></TextCell>
+                        <TextCell Text="{Binding Title}" TextColor="White"></TextCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Title}" TextColor="White" />
+                    </DataTemplate>
+                </ListView.GroupHeaderTemplate>
             </ListView>
         </StackLayout>
     </ContentPage.Content>

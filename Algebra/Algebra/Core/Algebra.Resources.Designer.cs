@@ -61,6 +61,24 @@ namespace Algebra.Core {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Menu.
+        /// </summary>
+        internal static string AddPageTitle {
+            get {
+                return ResourceManager.GetString("AddPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Calcular.
+        /// </summary>
+        internal static string CalculateTI {
+            get {
+                return ResourceManager.GetString("CalculateTI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Teoría de los Números.
         /// </summary>
         internal static string NumberTheory_Title {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Xamarin.Forms;
 
 namespace Algebra.Models
 {
@@ -10,14 +11,17 @@ namespace Algebra.Models
     {
         private static readonly Lazy<FactoryMenu> mInstance = new Lazy<FactoryMenu>(() => new FactoryMenu());
 
-        public static Grupos Menu => mInstance.Value.mMenu;
+        public static Menu Menu => mInstance.Value.mMenu;
 
-        private Grupos mMenu = new Grupos();
+        private Menu mMenu = new Menu();
         private Dictionary<EMenu, Grupo> mMapGrupos = new Dictionary<EMenu, Grupo>();
+        private Dictionary<EMenu, MenuItem> mMapMenuItems = new Dictionary<EMenu, MenuItem>();
 
         private FactoryMenu()
         {
             CreateGrupos();
+            mMenu.ResourceManager = Core.Algebra_Resources.ResourceManager;
+            mMenu.UpdateIR(DependencyService.Get<Services.ILocate>().Culture);
         }
 
         private void CreateGrupos()
@@ -31,6 +35,19 @@ namespace Algebra.Models
 
             foreach (var m in pMenus)
                 CreateMenu(m.v, m.a);
+
+            var pAskViews = typeof(EMenu).Assembly.GetCustomAttributes<AskViewAttribute>();
+
+            foreach (var v in pAskViews)
+            {
+                foreach (var m in v.Ids)
+                {
+                    MenuItem pMenuItem;
+
+                    if (mMapMenuItems.TryGetValue(m, out pMenuItem))
+                        pMenuItem.AskViewType = v.ViewType;
+                }
+            }
         }
 
         private Grupo GetGrupo(EMenu argMenu)
@@ -41,8 +58,7 @@ namespace Algebra.Models
             {
                 pGrupo = new Grupo
                 {
-                    Id = argMenu,
-                    Title = Core.CultureManager.CreateAlgebraIRString($"{argMenu}_Title")
+                    Id = argMenu
                 };
 
                 mMenu.Add(pGrupo);
@@ -52,18 +68,18 @@ namespace Algebra.Models
             return pGrupo;
         }
 
-        private Menu CreateMenu(EMenu argMenu, MenuOfAttribute argAttr)
+        private MenuItem CreateMenu(EMenu argMenu, MenuOfAttribute argAttr)
         {
             var pGrupo = GetGrupo(argAttr.Grupo);
-            var pMenu = new Menu
+            var pMenuItem = new MenuItem
             {
-                Id = argMenu,
-                Title = Core.CultureManager.CreateAlgebraIRString($"{argMenu}_Title")
+                Id = argMenu
             };
 
-            pGrupo.Add(pMenu);
+            pGrupo.Add(pMenuItem);
+            mMapMenuItems[argMenu] = pMenuItem;
 
-            return pMenu;
+            return pMenuItem;
         }
     }
 }

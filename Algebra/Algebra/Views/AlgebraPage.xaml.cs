@@ -21,8 +21,8 @@ namespace Algebra.Views
 
             var s = new StackLayout { Spacing = 0 };
 
-            s.Children.Add(new Label { Text = $"{vm.Name} Version {vm.Version}" });
-            s.Children.Add(new Label { Text = vm.Description });
+            s.Children.Add(new Label { Text = $"{vm.Name} Version {vm.Version}", TextColor = Color.White });
+            s.Children.Add(new Label { Text = vm.Description, TextColor = Color.White });
 
             var l = new Label { Text = vm.Website, TextColor = Color.Blue, TextDecorations = TextDecorations.Underline };
 
@@ -33,8 +33,8 @@ namespace Algebra.Views
 
             s.Children.Add(l);
             s.Children.Add(new Label());
-            s.Children.Add(new Label { Text = vm.License });
-            s.Children.Add(new Label { Text = "GNU GENERAL PUBLIC LICENSE" });
+            s.Children.Add(new Label { Text = vm.License, TextColor = Color.White });
+            s.Children.Add(new Label { Text = "GNU GENERAL PUBLIC LICENSE", TextColor = Color.White });
             AddInBoard(s);
 
             /*
@@ -90,7 +90,7 @@ namespace Algebra.Views
 
         private async void AddItem_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new AddPage());
+            await Navigation.PushAsync(new AddPage());
         }
     }
 }

@@ -16,5 +16,19 @@ namespace Algebra.Views
         {
             InitializeComponent();
         }
+
+        private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            if ((e.SelectedItem is Models.MenuItem pMenuItem) && pMenuItem.AskViewType != null)
+            {
+                var pView = Activator.CreateInstance(pMenuItem.AskViewType);
+
+                if (pView is Page pPage)
+                {
+                    pPage.Title = pMenuItem.Title;
+                    await Navigation.PushAsync(pPage);
+                }
+            }
+        }
     }
 }

@@ -253,6 +253,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\LocateGTK.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -266,6 +267,11 @@
       <Project>{5fbff1a1-6341-4f7c-9a28-18ad87ed45b5}</Project>
       <Name>Algebra</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\add.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
