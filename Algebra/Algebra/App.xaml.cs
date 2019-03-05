@@ -26,18 +26,19 @@ namespace Algebra
 {
     public partial class App : Application
     {
-
+        private AlgebraPage mPage;
         public App()
         {
             InitializeComponent();
 
             //MainPage = new MainPage();
-            MainPage = new NavigationPage(new AlgebraPage());
+            mPage = new AlgebraPage();
+            MainPage = new NavigationPage(mPage);
         }
 
-        protected override void OnStart()
+        protected async override void OnStart()
         {
-            // Handle when your app starts
+            await mPage.Start();
         }
 
         protected override void OnSleep()

@@ -21,13 +21,12 @@ namespace Algebra.Views
         {
             if ((e.SelectedItem is Models.MenuItem pMenuItem) && pMenuItem.AskViewType != null)
             {
-                var pView = Activator.CreateInstance(pMenuItem.AskViewType);
+                var pPage = new AskPage { Title = pMenuItem.Title };
+                var pViewObj = Activator.CreateInstance(pMenuItem.AskViewType);
 
-                if (pView is Page pPage)
-                {
-                    pPage.Title = pMenuItem.Title;
-                    await Navigation.PushModalAsync(pPage);
-                }
+                if (pViewObj is ContentView pView)
+                    pPage.View.Children.Add(pView);
+                await Navigation.PushModalAsync(pPage);
             }
         }
 

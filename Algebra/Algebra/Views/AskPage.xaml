@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:i18n="clr-namespace:Algebra.ViewsXaml"
+             x:Class="Algebra.Views.AskPage">
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="Green">
+            <StackLayout x:Name="View" x:FieldModifier="Public" VerticalOptions="StartAndExpand"></StackLayout>
+            <StackLayout VerticalOptions="End" HorizontalOptions="End" Orientation="Horizontal" Padding="10">
+                <Button Text="{i18n:Translate BackBtn_Text}" Clicked="BackButton_Clicked"/>
+                <Button Text="{i18n:Translate CalculateTI}"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

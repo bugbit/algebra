@@ -18,7 +18,16 @@ namespace Algebra.Views
         public AlgebraPage()
         {
             InitializeComponent();
+        }
 
+        public async Task AddInBoard(View v)
+        {
+            Board.Children.Add(v);
+            await Scroll.ScrollToAsync(v, ScrollToPosition.MakeVisible, true);
+        }
+
+        public async Task Start()
+        {
             var s = new StackLayout { Spacing = 0 };
 
             s.Children.Add(new Label { Text = $"{vm.Name} Version {vm.Version}", TextColor = Color.White });
@@ -35,7 +44,13 @@ namespace Algebra.Views
             s.Children.Add(new Label());
             s.Children.Add(new Label { Text = vm.License, TextColor = Color.White });
             s.Children.Add(new Label { Text = "GNU GENERAL PUBLIC LICENSE", TextColor = Color.White });
-            AddInBoard(s);
+            await AddInBoard(s);
+
+            var pAddBtn = new Button { Text = Core.Algebra_Resources.AddBtn_Text };
+
+            pAddBtn.Clicked += AddItem_Clicked;
+
+            await AddInBoard(pAddBtn);
 
             /*
 
@@ -81,11 +96,6 @@ namespace Algebra.Views
             AddInBoard(skiaView);
 
     */
-        }
-
-        public void AddInBoard(View v)
-        {
-            Board.Children.Add(v);
         }
 
         private async void AddItem_Clicked(object sender, EventArgs e)

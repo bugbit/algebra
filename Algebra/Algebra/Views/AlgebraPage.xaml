@@ -9,13 +9,13 @@
         <vm:AlgebraViewModel x:Name="vm" />
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{i18n:Translate AddBtn_Text}" Clicked="AddItem_Clicked">
+        <!--<ToolbarItem Text="{i18n:Translate AddBtn_Text}" Clicked="AddItem_Clicked">
             <ToolbarItem.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="UWP" Value="add.png"/>
                 </OnPlatform>
             </ToolbarItem.Icon>
-        </ToolbarItem>
+        </ToolbarItem>-->
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ScrollView x:Name="Scroll" Orientation="Both" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">

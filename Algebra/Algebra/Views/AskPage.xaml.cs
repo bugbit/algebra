@@ -7,18 +7,14 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-using Algebra.Models;
-
-[assembly: AskView(typeof(Algebra.ViewModels.AskExpression), EMenu.PrimeP)]
-
-namespace Algebra.ViewModels
+namespace Algebra.Views
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AskExpression : ContentPage
-    {
-        public AskExpression()
-        {
-            InitializeComponent();
+	[XamlCompilation(XamlCompilationOptions.Compile)]
+	public partial class AskPage : ContentPage
+	{
+		public AskPage ()
+		{
+			InitializeComponent ();
         }
 
         private async void BackButton_Clicked(object sender, EventArgs e)
