@@ -26,9 +26,14 @@ namespace Algebra.Views
                 if (pView is Page pPage)
                 {
                     pPage.Title = pMenuItem.Title;
-                    await Navigation.PushAsync(pPage);
+                    await Navigation.PushModalAsync(pPage);
                 }
             }
+        }
+
+        private async void BackButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PopModalAsync();
         }
     }
 }

@@ -22,6 +22,9 @@
                     </DataTemplate>
                 </ListView.GroupHeaderTemplate>
             </ListView>
+            <StackLayout VerticalOptions="End" HorizontalOptions="EndAndExpand" Orientation="Horizontal" Padding="10">
+                <Button Text="{i18n:Translate BackBtn_Text}" Clicked="BackButton_Clicked"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

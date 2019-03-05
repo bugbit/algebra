@@ -24,7 +24,7 @@ namespace Algebra.Views
             s.Children.Add(new Label { Text = $"{vm.Name} Version {vm.Version}", TextColor = Color.White });
             s.Children.Add(new Label { Text = vm.Description, TextColor = Color.White });
 
-            var l = new Label { Text = vm.Website, TextColor = Color.Blue, TextDecorations = TextDecorations.Underline };
+            var l = new Label { Text = vm.Website, TextColor = Color.Wheat, TextDecorations = TextDecorations.Underline };
 
             l.GestureRecognizers.Add(new TapGestureRecognizer
             {
@@ -90,7 +90,7 @@ namespace Algebra.Views
 
         private async void AddItem_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new AddPage());
+            await Navigation.PushModalAsync(new AddPage());
         }
     }
 }

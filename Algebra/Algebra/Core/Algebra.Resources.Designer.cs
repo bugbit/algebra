@@ -61,11 +61,29 @@ namespace Algebra.Core {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Añadir.
+        /// </summary>
+        internal static string AddBtn_Text {
+            get {
+                return ResourceManager.GetString("AddBtn_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Menu.
         /// </summary>
         internal static string AddPageTitle {
             get {
                 return ResourceManager.GetString("AddPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Atras.
+        /// </summary>
+        internal static string BackBtn_Text {
+            get {
+                return ResourceManager.GetString("BackBtn_Text", resourceCulture);
             }
         }
         

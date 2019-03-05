@@ -3,12 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Algebra.ViewModels"
              x:Class="Algebra.Views.AlgebraPage"
+             xmlns:i18n="clr-namespace:Algebra.ViewsXaml"
              Title="Algebra">
     <ContentPage.BindingContext>
         <vm:AlgebraViewModel x:Name="vm" />
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Clicked="AddItem_Clicked">
+        <ToolbarItem Text="{i18n:Translate AddBtn_Text}" Clicked="AddItem_Clicked">
             <ToolbarItem.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="UWP" Value="add.png"/>
@@ -17,7 +18,9 @@
         </ToolbarItem>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout x:Name="Board" BackgroundColor="Green">
-        </StackLayout>
+        <ScrollView x:Name="Scroll" Orientation="Both" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <StackLayout x:Name="Board" BackgroundColor="Green">
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

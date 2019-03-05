@@ -20,5 +20,10 @@ namespace Algebra.ViewModels
         {
             InitializeComponent();
         }
+
+        private async void BackButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PopModalAsync();
+        }
     }
 }

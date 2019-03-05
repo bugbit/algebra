@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddBtn_Text" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
   <data name="AddPageTitle" xml:space="preserve">
     <value>Menu</value>
+  </data>
+  <data name="BackBtn_Text" xml:space="preserve">
+    <value>Atras</value>
   </data>
   <data name="CalculateTI" xml:space="preserve">
     <value>Calcular</value>
