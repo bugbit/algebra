@@ -19,7 +19,10 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ScrollView x:Name="Scroll" Orientation="Both" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-            <StackLayout x:Name="Board" BackgroundColor="Green">
+            <StackLayout BackgroundColor="Green">
+                <StackLayout x:Name="Board" BackgroundColor="Green">
+                </StackLayout>
+                <Button Text="{i18n:Translate AddBtn_Text}" Clicked="AddItem_Clicked" CommandParameter="{Binding Session}" BackgroundColor="Green" TextColor="White" BorderWidth="2" HorizontalOptions="Start"></Button>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

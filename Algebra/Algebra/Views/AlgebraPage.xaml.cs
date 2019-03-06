@@ -46,11 +46,11 @@ namespace Algebra.Views
             s.Children.Add(new Label { Text = "GNU GENERAL PUBLIC LICENSE", TextColor = Color.White });
             await AddInBoard(s);
 
-            var pAddBtn = new Button { Text = Core.Algebra_Resources.AddBtn_Text };
+            //var pAddBtn = new Button { Text = Core.Algebra_Resources.AddBtn_Text };
 
-            pAddBtn.Clicked += AddItem_Clicked;
+            //pAddBtn.Clicked += AddItem_Clicked;
 
-            await AddInBoard(pAddBtn);
+            //await AddInBoard(pAddBtn);
 
             /*
 

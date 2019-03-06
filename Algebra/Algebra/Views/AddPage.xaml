@@ -9,8 +9,8 @@
         <vm:AddViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout>
-            <ListView IsGroupingEnabled="True" ItemsSource="{Binding Menu}" GroupDisplayBinding="{Binding Title}"  BackgroundColor="Green" ItemSelected="ListView_ItemSelected" VerticalOptions="FillAndExpand">
+        <StackLayout BackgroundColor="Green">
+            <ListView IsGroupingEnabled="True" ItemsSource="{Binding Menu}" GroupDisplayBinding="{Binding Title}" BackgroundColor="Green" ItemSelected="ListView_ItemSelected" VerticalOptions="FillAndExpand">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding Title}" TextColor="White"></TextCell>
