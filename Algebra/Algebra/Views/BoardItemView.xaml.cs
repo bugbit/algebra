@@ -16,7 +16,9 @@
 */
 #endregion
 
-using Algebra.Models;
+//using CSharpMath.Rendering;
+using CSharpMath.SkiaSharp;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,16 +28,32 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-[assembly: AskView(typeof(Algebra.Views.AskExpressionView), EMenu.PrimeP)]
-
 namespace Algebra.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AskExpressionView : ContentView
+    public partial class BoardItemView : ContentView
     {
-        public AskExpressionView()
+        public BoardItemView()
         {
             InitializeComponent();
+            Enunciado.OnPaintSurface += OnEnunciadoPaintSurface;
         }
+
+        public ViewModels.BoardItemViewModel ViewModel => BindingContext as ViewModels.BoardItemViewModel;
+        public object AskViewModel => ViewModel?.AskViewModel;
+
+        virtual protected void OnEnunciadoPaintSurface(SKSurface s, SKImageInfo i)
+        {
+            s.Canvas.Clear(SKColors.Green);
+
+            if (ViewModel == null)
+                return;
+
+            var p = new MathPainter(12) { TextColor = SKColors.White, LaTeX = $@"\text{{{ViewModel?.Numero}. {EnunciadoStr}}}" };
+
+            p.Draw(s.Canvas, alignment: CSharpMath.Rendering.TextAlignment.Left);
+        }
+
+        virtual protected string EnunciadoStr => string.Empty;
     }
 }

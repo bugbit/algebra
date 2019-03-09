@@ -28,7 +28,7 @@ namespace Algebra.Core.Exprs
     public class NodeExprStringBuilderVisitor : NodeExprVisitorASync<string>
     {
         public static Task<string> ToStringAsync(NodeExpr e, CancellationToken t) => new NodeExprStringBuilderVisitor().Visit(e, t);
-        public static string ToString(NodeExpr e) => new NodeExprStringBuilderVisitor().Visit(e, new CancellationTokenSource().Token).WaitAndResult();
+        public static string ToString(NodeExpr e) => AsyncHelper.RunSync(() => new NodeExprStringBuilderVisitor().Visit(e, new CancellationTokenSource().Token));
 
         public override Task<string> Visit(NodeExprCte e, CancellationToken t) => Task.Run(() => (e?.Value.ToString()) ?? "null");
 

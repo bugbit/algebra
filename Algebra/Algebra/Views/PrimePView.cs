@@ -19,26 +19,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Xamarin.Forms.Xaml;
-using Xamarin.Forms;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Algebra.ViewsXaml
+namespace Algebra.Views
 {
-    // You exclude the 'Extension' suffix when using in Xaml markup
-    [ContentProperty("Text")]
-    public class TranslateExtension : IMarkupExtension
+    public class PrimePView : BoardItemView
     {
-        public string Text { get; set; }
+        new public ViewModels.AskExpressionViewModel AskViewModel => base.AskViewModel as ViewModels.AskExpressionViewModel;
 
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            if (Text == null)
-                return null;
-            //Debug.WriteLine("Provide: " + Text);
-            // Do your translation lookup here, using whatever method you require
-            var translated = Core.Algebra_Resources.ResourceManager.GetString(Text, Core.Algebra_Resources.Culture);
-
-            return translated;
-        }
+        protected override string EnunciadoStr => $"Averigua si el número {Core.Exprs.NodeExprLaTexBuilderVisitor.ToString(AskViewModel.Expr)} es primo?";
     }
 }

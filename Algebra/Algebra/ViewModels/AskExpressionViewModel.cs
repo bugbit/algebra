@@ -19,26 +19,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Xamarin.Forms.Xaml;
-using Xamarin.Forms;
 
-namespace Algebra.ViewsXaml
+namespace Algebra.ViewModels
 {
-    // You exclude the 'Extension' suffix when using in Xaml markup
-    [ContentProperty("Text")]
-    public class TranslateExtension : IMarkupExtension
+    public class AskExpressionViewModel : BaseViewModel
     {
-        public string Text { get; set; }
+        private Core.Session mSession;
+        private string mExprStr;
+        private Core.Exprs.NodeExpr mExpr;
 
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            if (Text == null)
-                return null;
-            //Debug.WriteLine("Provide: " + Text);
-            // Do your translation lookup here, using whatever method you require
-            var translated = Core.Algebra_Resources.ResourceManager.GetString(Text, Core.Algebra_Resources.Culture);
-
-            return translated;
-        }
+        public Core.Session Session { get => mSession; set => SetProperty(ref mSession, value); }
+        public string ExprStr { get => mExprStr; set => SetProperty(ref mExprStr, value); }
+        public Core.Exprs.NodeExpr Expr { get => mExpr; set => SetProperty(ref mExpr, value); }
     }
 }

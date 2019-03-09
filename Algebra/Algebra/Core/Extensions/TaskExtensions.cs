@@ -24,12 +24,6 @@ using System.Threading.Tasks;
 namespace Algebra.Core.Extensions
 {
     public static class TaskExtensions
-    {
-        public static T WaitAndResult<T>(this Task<T> t)
-        {
-            t.Wait();
-
-            return t.Result;
-        }
+    {        
     }
 }
