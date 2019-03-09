@@ -28,6 +28,6 @@ namespace Algebra.Views
     {
         new public ViewModels.AskExpressionViewModel AskViewModel => base.AskViewModel as ViewModels.AskExpressionViewModel;
 
-        protected override string EnunciadoStr => $"Averigua si el número {Core.Exprs.NodeExprLaTexBuilderVisitor.ToString(AskViewModel.Expr)} es primo?";
+        protected override string EnunciadoStr => $"Averigua si el número {Core.Exprs.NodeExprLaTexBuilderVisitor.ToString(AskViewModel.Expr)} es primo";
     }
 }

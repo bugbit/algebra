@@ -33,9 +33,21 @@ namespace Algebra.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class BoardItemView : ContentView
     {
+        private MathPainter mEnunciadoPainter;
+
         public BoardItemView()
         {
             InitializeComponent();
+            mEnunciadoPainter = new MathPainter(12) { TextColor = SKColors.White, LaTeX = $@"\text{{{ViewModel?.Numero}. {EnunciadoStr}}}" };
+
+            var pM = mEnunciadoPainter.Measure;
+
+            if (pM.HasValue)
+            {
+                Enunciado.WidthRequest = pM.Value.Width;
+                Enunciado.HeightRequest = pM.Value.Height;
+            }
+
             Enunciado.OnPaintSurface += OnEnunciadoPaintSurface;
         }
 
