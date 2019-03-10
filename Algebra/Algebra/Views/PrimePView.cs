@@ -21,13 +21,40 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Algebra.Models;
+using CSharpMath.SkiaSharp;
+using SkiaSharp;
+
+[assembly: MenuItemViewer(typeof(Algebra.Views.PrimePView), EMenu.PrimeP);
 
 namespace Algebra.Views
 {
-    public class PrimePView : BoardItemView
+    public class PrimePView : BoardItemView<ViewModels.AskExpressionViewModel, bool>
     {
-        new public ViewModels.AskExpressionViewModel AskViewModel => base.AskViewModel as ViewModels.AskExpressionViewModel;
+        protected override bool IsPropertyToInvalidateView(string p) => base.IsPropertyToInvalidateView(p) || p == nameof(AskViewModel.Expr);
 
         protected override string EnunciadoStr => $"Averigua si el número {Core.Exprs.NodeExprLaTexBuilderVisitor.ToString(AskViewModel.Expr)} es primo";
+
+        protected override void OnResultadoPaintSurface(SKSurface s, SKImageInfo i)
+        {
+            base.OnResultadoPaintSurface(s, i);
+
+            if (ViewModel == null)
+                return;
+
+            var p = new MathPainter(12) { TextColor = SKColors.White };
+
+            p.LaTeX = (Result) ? @"\text{Es un número primo}" : @"\text{No es un número primo}";
+
+            var pM = p.Measure;
+
+            if (pM.HasValue)
+            {
+                Resultado.WidthRequest = pM.Value.Width;
+                Resultado.HeightRequest = pM.Value.Height;
+            }
+
+            p.Draw(s.Canvas, alignment: CSharpMath.Rendering.TextAlignment.Left);
+        }
     }
 }

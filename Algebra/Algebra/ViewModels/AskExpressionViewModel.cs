@@ -22,13 +22,11 @@ using System.Text;
 
 namespace Algebra.ViewModels
 {
-    public class AskExpressionViewModel : BaseViewModel
+    public class AskExpressionViewModel : AskViewModel
     {
-        private Core.Session mSession;
         private string mExprStr;
         private Core.Exprs.NodeExpr mExpr;
 
-        public Core.Session Session { get => mSession; set => SetProperty(ref mSession, value); }
         public string ExprStr { get => mExprStr; set => SetProperty(ref mExprStr, value); }
         public Core.Exprs.NodeExpr Expr { get => mExpr; set => SetProperty(ref mExpr, value); }
     }

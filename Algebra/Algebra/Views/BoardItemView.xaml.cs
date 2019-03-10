@@ -22,6 +22,7 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,26 +34,24 @@ namespace Algebra.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class BoardItemView : ContentView
     {
-        private MathPainter mEnunciadoPainter;
-
         public BoardItemView()
         {
             InitializeComponent();
-            mEnunciadoPainter = new MathPainter(12) { TextColor = SKColors.White, LaTeX = $@"\text{{{ViewModel?.Numero}. {EnunciadoStr}}}" };
-
-            var pM = mEnunciadoPainter.Measure;
-
-            if (pM.HasValue)
-            {
-                Enunciado.WidthRequest = pM.Value.Width;
-                Enunciado.HeightRequest = pM.Value.Height;
-            }
 
             Enunciado.OnPaintSurface += OnEnunciadoPaintSurface;
+            Resultado.OnPaintSurface += OnResultadoPaintSurface;
         }
 
         public ViewModels.BoardItemViewModel ViewModel => BindingContext as ViewModels.BoardItemViewModel;
         public object AskViewModel => ViewModel?.AskViewModel;
+        public object Result => ViewModel?.Result;
+
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            base.OnPropertyChanged(propertyName);
+            if (IsPropertyToInvalidateView(propertyName))
+                Invalidate();
+        }
 
         virtual protected void OnEnunciadoPaintSurface(SKSurface s, SKImageInfo i)
         {
@@ -61,11 +60,40 @@ namespace Algebra.Views
             if (ViewModel == null)
                 return;
 
-            var p = new MathPainter(12) { TextColor = SKColors.White, LaTeX = $@"\text{{{ViewModel?.Numero}. {EnunciadoStr}}}" };
+            var p = new MathPainter(12) { TextColor = SKColors.White };
+
+            p.LaTeX = $@"\text{{{ViewModel?.Numero}. {EnunciadoStr}}}";
+
+            var pM = p.Measure;
+
+            if (pM.HasValue)
+            {
+                Enunciado.WidthRequest = pM.Value.Width;
+                Enunciado.HeightRequest = pM.Value.Height;
+            }
 
             p.Draw(s.Canvas, alignment: CSharpMath.Rendering.TextAlignment.Left);
         }
 
+        virtual protected void OnResultadoPaintSurface(SKSurface s, SKImageInfo i)
+        {
+            s.Canvas.Clear(SKColors.Green);
+        }
+
         virtual protected string EnunciadoStr => string.Empty;
+
+        virtual protected bool IsPropertyToInvalidateView(string p) => p == nameof(ViewModel.Numero) || p == nameof(ViewModel.Result);
+
+        protected void Invalidate()
+        {
+            Enunciado?.Invalidate();
+            Resultado?.Invalidate();
+        }
+    }
+
+    public class BoardItemView<A, R> : BoardItemView
+    {
+        new public A AskViewModel => (base.AskViewModel is A pVM) ? pVM : default(A);
+        new public R Result => (base.Result is R pVM) ? pVM : default(R);
     }
 }

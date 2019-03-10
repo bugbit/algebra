@@ -30,9 +30,10 @@ namespace Algebra.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AddPage : ContentPage
     {
-        public AddPage()
+        public AddPage(Core.Session argSession)
         {
             InitializeComponent();
+            vm.Session = argSession;
         }
 
         private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)

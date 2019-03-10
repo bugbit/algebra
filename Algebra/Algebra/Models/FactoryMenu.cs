@@ -66,6 +66,16 @@ namespace Algebra.Models
                         pMenuItem.AskViewType = v.ViewType;
                 }
             }
+
+            var pViewers = typeof(EMenu).Assembly.GetCustomAttributes<MenuItemViewerAttribute>();
+
+            foreach (var v in pViewers)
+            {
+                MenuItem pMenuItem;
+
+                if (mMapMenuItems.TryGetValue(v.Id, out pMenuItem))
+                    pMenuItem.ViewerType = v.ViewerType;
+            }
         }
 
         private Grupo GetGrupo(EMenu argMenu)

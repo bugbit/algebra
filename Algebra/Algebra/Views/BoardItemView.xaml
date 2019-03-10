@@ -4,8 +4,11 @@
              xmlns:s="clr-namespace:SkiaForms;assembly=SkiaForms"
              x:Class="Algebra.Views.BoardItemView">
     <ContentView.Content>
-        <StackLayout BackgroundColor="Green">
+        <StackLayout BackgroundColor="Green" Padding="3">
             <s:SkiaView x:Name="Enunciado" WidthRequest="300" HeightRequest="100"></s:SkiaView>
+            <StackLayout Margin="10,5">
+                <s:SkiaView x:Name="Resultado" x:FieldModifier="protected" WidthRequest="300" HeightRequest="100"></s:SkiaView>
+            </StackLayout>
         </StackLayout>
     </ContentView.Content>
 </ContentView>

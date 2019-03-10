@@ -52,6 +52,18 @@ namespace Algebra.Models
         }
     }
 
+    [AttributeUsage(AttributeTargets.Assembly)]
+    public class MenuItemViewerAttribute : Attribute
+    {
+        public Type ViewerType { get; set; }
+        public EMenu Id { get; set; }
+        public MenuItemViewerAttribute(Type argType, EMenu argId)
+        {
+            ViewerType = argType;
+            Id = argId;
+        }
+    }
+
     public enum EMenu
     {
         NumberTheory,
@@ -65,6 +77,7 @@ namespace Algebra.Models
         public string TitleKey => $"{Id}_Title";
         public string Title { get; set; }
         public Type AskViewType { get; set; }
+        public Type ViewerType { get; set; }
 
         public bool Equals(MenuItem other)
         {

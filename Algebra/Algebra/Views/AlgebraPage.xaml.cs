@@ -152,7 +152,7 @@ namespace Algebra.Views
 
         private async void AddItem_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new AddPage());
+            await Navigation.PushModalAsync(new AddPage(vm.Session));
         }
     }
 }
