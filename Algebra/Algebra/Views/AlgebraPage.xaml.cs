@@ -84,15 +84,16 @@ namespace Algebra.Views
             //await AddInBoard(skiaView);
 
             var pSession = ((ViewModels.AlgebraViewModel)BindingContext).Session;
-            var pAskVM = new ViewModels.AskExpressionViewModel
+            var pAskVM = new ViewModels.PrimePViewModel()
             {
                 Session = pSession,
                 ExprStr = "11"
             };
 
             pAskVM.Expr = await pSession.Alg.Parse("11", System.Threading.CancellationToken.None);
+            await pAskVM.Calculate();
 
-            var pItemVM = new ViewModels.BoardItemViewModel { Numero = 1, AskViewModel = pAskVM, Result = await pSession.Alg.PrimeP(pAskVM.Expr, Core.Math.EAlgorithmPrimeP.Default, System.Threading.CancellationToken.None) };
+            var pItemVM = new ViewModels.BoardItemViewModel { Numero = 1, AskViewModel = pAskVM, /*Result = await pSession.Alg.PrimeP(pAskVM.Expr, Core.Math.EAlgorithmPrimeP.Default, System.Threading.CancellationToken.None) */};
             var pItemView = new PrimePView();
 
             pItemView.BindingContext = pItemVM;

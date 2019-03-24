@@ -22,7 +22,7 @@ using System.Text;
 
 namespace Algebra.ViewModels
 {
-    public class AskExpressionViewModel : AskViewModel
+    public class AskExpressionViewModel<T> : AskViewModel<T>
     {
         private string mExprStr;
         private Core.Exprs.NodeExpr mExpr;

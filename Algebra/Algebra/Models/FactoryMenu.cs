@@ -67,6 +67,16 @@ namespace Algebra.Models
                 }
             }
 
+            var pViewModels = typeof(EMenu).Assembly.GetCustomAttributes<AskViewModelAttribute>();
+
+            foreach (var v in pViewModels)
+            {
+                MenuItem pMenuItem;
+
+                if (mMapMenuItems.TryGetValue(v.Id, out pMenuItem))
+                    pMenuItem.AskViewModelType = v.ViewModelType;
+            }
+
             var pViewers = typeof(EMenu).Assembly.GetCustomAttributes<MenuItemViewerAttribute>();
 
             foreach (var v in pViewers)

@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Algebra.ViewModels
@@ -25,11 +26,29 @@ namespace Algebra.ViewModels
     public class BoardItemViewModel : BaseViewModel
     {
         private int mNumero;
-        private object mAskViewModel;
+        private AskViewModel mAskViewModel;
         private object mResult;
 
         public int Numero { get => mNumero; set => SetProperty(ref mNumero, value); }
-        public object AskViewModel { get => mAskViewModel; set => SetProperty(ref mAskViewModel, value); }
+        public AskViewModel AskViewModel
+        {
+            get => mAskViewModel;
+            set
+            {
+                if (mAskViewModel != null)
+                    mAskViewModel.PropertyChanged -= OnAskViewModelPropertyChanged;
+                SetProperty(ref mAskViewModel, value);
+                Result = mAskViewModel.Result;
+                mAskViewModel.PropertyChanged += OnAskViewModelPropertyChanged;
+            }
+        }
+
         public object Result { get => mResult; set => SetProperty(ref mResult, value); }
+
+        protected virtual void OnAskViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AskViewModel.Result) && (sender is AskViewModel pAskViewModel))
+                Result = pAskViewModel.Result;
+        }
     }
 }

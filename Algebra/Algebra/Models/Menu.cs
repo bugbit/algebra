@@ -40,6 +40,19 @@ namespace Algebra.Models
     }
 
     [AttributeUsage(AttributeTargets.Assembly)]
+    public class AskViewModelAttribute : Attribute
+    {
+        public Type ViewModelType { get; set; }
+        public EMenu Id { get; set; }
+
+        public AskViewModelAttribute(Type argType, EMenu argId)
+        {
+            ViewModelType = argType;
+            Id = argId;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Assembly)]
     public class AskViewAttribute : Attribute
     {
         public EMenu[] Ids { get; set; }
@@ -77,6 +90,7 @@ namespace Algebra.Models
         public string TitleKey => $"{Id}_Title";
         public string Title { get; set; }
         public Type AskViewType { get; set; }
+        public Type AskViewModelType { get; set; }
         public Type ViewerType { get; set; }
 
         public bool Equals(MenuItem other)

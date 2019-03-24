@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Algebra.ViewModels
 {
@@ -26,8 +27,18 @@ namespace Algebra.ViewModels
     {
         private Core.Session mSession;
         private Models.Menu mMenu;
+        private object mResult;
 
         public Core.Session Session { get => mSession; set => SetProperty(ref mSession, value); }
         public Models.Menu Menu { get => mMenu; set => SetProperty(ref mMenu, value); }
+        public object Result { get => mResult; set => SetProperty(ref mResult, value); }
+
+#pragma warning disable CS1998 // El método asincrónico carece de operadores "await" y se ejecutará de forma sincrónica
+        public virtual async Task Calculate() { }
+#pragma warning restore CS1998 // El método asincrónico carece de operadores "await" y se ejecutará de forma sincrónica
+    }
+    public class AskViewModel<T> : AskViewModel
+    {
+        public new T Result { get => (T)base.Result; set => base.Result = value; }
     }
 }
