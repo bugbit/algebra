@@ -42,6 +42,15 @@ namespace Algebra.Views
             {
                 var pPage = new AskPage { Title = pMenuItem.Title };
                 var pViewObj = Activator.CreateInstance(pMenuItem.AskViewType);
+                var pViewModel = Activator.CreateInstance(pMenuItem.AskViewModelType);
+
+                if (pViewModel is ViewModels.AskViewModel pAskViewModel)
+                {
+                    pAskViewModel.Menu = vm.Menu;
+                    pAskViewModel.Session = vm.Session;
+                }
+
+                pPage.BindingContext = pViewModel;
 
                 if (pViewObj is ContentView pView)
                     pPage.View.Children.Add(pView);

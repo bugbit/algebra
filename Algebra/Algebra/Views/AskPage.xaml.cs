@@ -27,17 +27,31 @@ using Xamarin.Forms.Xaml;
 
 namespace Algebra.Views
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AskPage : ContentPage
-	{
-		public AskPage ()
-		{
-			InitializeComponent ();
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class AskPage : ContentPage
+    {
+        public AskPage()
+        {
+            InitializeComponent();
         }
 
         private async void BackButton_Clicked(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
+        }
+
+        private async void CalculeButton_Clicked(object sender, EventArgs e)
+        {
+            if (BindingContext is ViewModels.AskViewModel pAskViewModel)
+            {
+                await pAskViewModel.Calculate();
+
+                var pItemVM = new ViewModels.BoardItemViewModel
+                {
+                    Numero = 1,
+                    AskViewModel = pAskViewModel
+                };
+            }
         }
     }
 }
