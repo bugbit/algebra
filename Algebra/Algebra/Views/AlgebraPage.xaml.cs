@@ -44,6 +44,18 @@ namespace Algebra.Views
             await Scroll.ScrollToAsync(v, ScrollToPosition.MakeVisible, true);
         }
 
+        public async Task<BoardItemView> AddInBoard(ViewModels.AskViewModel argViewModel)
+        {
+            var pItemVM = new ViewModels.BoardItemViewModel { Numero = 1, AskViewModel = argViewModel };
+            var pItemView = new PrimePView();
+
+            pItemView.BindingContext = pItemVM;
+
+            await AddInBoard(pItemView);
+
+            return pItemView;
+        }
+
         public async Task Start()
         {
             var s = new StackLayout { Spacing = 0 };
