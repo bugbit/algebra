@@ -16,6 +16,8 @@
 */
 #endregion
 
+using Algebra.Services;
+using Algebra.ViewModels;
 using CSharpMath.SkiaSharp;
 using SkiaForms;
 using SkiaSharp;
@@ -27,11 +29,10 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-
 namespace Algebra.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AlgebraPage : ContentPage
+    public partial class AlgebraPage : ContentPage, IBoard
     {
         public AlgebraPage()
         {
@@ -44,10 +45,13 @@ namespace Algebra.Views
             await Scroll.ScrollToAsync(v, ScrollToPosition.MakeVisible, true);
         }
 
-        public async Task<BoardItemView> AddInBoard(ViewModels.AskViewModel argViewModel)
+        public async Task<BoardItemView> AddInBoard(AskViewModel argViewModel)
         {
-            var pItemVM = new ViewModels.BoardItemViewModel { Numero = 1, AskViewModel = argViewModel };
-            var pItemView = new PrimePView();
+            var pItemVM = new BoardItemViewModel { Numero = NuevoNumeroItem(), AskViewModel = argViewModel };
+            var pItemViewObj = Activator.CreateInstance(argViewModel.MenuItem.ViewerType);
+
+            if (!(pItemViewObj is BoardItemView pItemView))
+                return null;
 
             pItemView.BindingContext = pItemVM;
 
@@ -55,6 +59,8 @@ namespace Algebra.Views
 
             return pItemView;
         }
+
+        Task IBoard.AddInBoard(AskViewModel argViewModel) => AddInBoard(argViewModel);
 
         public async Task Start()
         {
@@ -95,22 +101,24 @@ namespace Algebra.Views
 
             //await AddInBoard(skiaView);
 
-            var pSession = ((ViewModels.AlgebraViewModel)BindingContext).Session;
-            var pAskVM = new ViewModels.PrimePViewModel()
-            {
-                Session = pSession,
-                ExprStr = "11"
-            };
+            //var pSession = ((AlgebraViewModel)BindingContext).Session;
+            //var pAskVM = new PrimePViewModel()
+            //{
+            //    Session = pSession,
+            //    ExprStr = "11"
+            //};
 
-            pAskVM.Expr = await pSession.Alg.Parse("11", System.Threading.CancellationToken.None);
-            await pAskVM.Calculate();
+            //pAskVM.Expr = await pSession.Alg.Parse("11", System.Threading.CancellationToken.None);
+            //await pAskVM.Calculate(System.Threading.CancellationToken.None);
 
-            var pItemVM = new ViewModels.BoardItemViewModel { Numero = 1, AskViewModel = pAskVM, /*Result = await pSession.Alg.PrimeP(pAskVM.Expr, Core.Math.EAlgorithmPrimeP.Default, System.Threading.CancellationToken.None) */};
-            var pItemView = new PrimePView();
+            //var pItemVM = new BoardItemViewModel { Numero = NuevoNumeroItem(), AskViewModel = pAskVM, /*Result = await pSession.Alg.PrimeP(pAskVM.Expr, Core.Math.EAlgorithmPrimeP.Default, System.Threading.CancellationToken.None) */};
+            //var pItemView = new PrimePView();
 
-            pItemView.BindingContext = pItemVM;
+            //pItemView.BindingContext = pItemVM;
 
-            await AddInBoard(pItemView);
+            //await AddInBoard(pItemView);
+
+
             //var pAddBtn = new Button { Text = Core.Algebra_Resources.AddBtn_Text };
 
             //pAddBtn.Clicked += AddItem_Clicked;
@@ -163,9 +171,15 @@ namespace Algebra.Views
     */
         }
 
+        private int NuevoNumeroItem()
+        {
+            lock (Board)
+                return (from v in Board.Children.OfType<BoardItemView>() let n = v.ViewModel.Numero orderby n descending select n).FirstOrDefault() + 1;
+        }
+
         private async void AddItem_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new AddPage(vm.Session));
+            await Navigation.PushModalAsync(new AddPage(vm.Session, this));
         }
     }
 }

@@ -106,6 +106,15 @@ namespace Algebra.Core {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Aceptar.
+        /// </summary>
+        internal static string OkBtn_Text {
+            get {
+                return ResourceManager.GetString("OkBtn_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a No esperaba {0}.
         /// </summary>
         internal static string ParserExceptionUnExpectedToken {

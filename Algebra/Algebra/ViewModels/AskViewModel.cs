@@ -19,23 +19,32 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace Algebra.ViewModels
 {
     public class AskViewModel : BaseViewModel
     {
         private Core.Session mSession;
-        private Models.Menu mMenu;
+        private Models.MenuItem mMenu;
         private object mResult;
+        private IBoard mBoard;
 
         public Core.Session Session { get => mSession; set => SetProperty(ref mSession, value); }
-        public Models.Menu Menu { get => mMenu; set => SetProperty(ref mMenu, value); }
+        public Models.MenuItem MenuItem { get => mMenu; set => SetProperty(ref mMenu, value); }
         public object Result { get => mResult; set => SetProperty(ref mResult, value); }
+        public IBoard Board { get => mBoard; set => SetProperty(ref mBoard, value); }
 
 #pragma warning disable CS1998 // El método asincrónico carece de operadores "await" y se ejecutará de forma sincrónica
-        public virtual async Task Calculate() { }
+        public virtual async Task Calculate(CancellationToken t) { }
 #pragma warning restore CS1998 // El método asincrónico carece de operadores "await" y se ejecutará de forma sincrónica
+        public async Task AddInBoard(CancellationToken t)
+        {
+            await Calculate(t);
+            await Board.AddInBoard(this);
+        }
     }
     public class AskViewModel<T> : AskViewModel
     {

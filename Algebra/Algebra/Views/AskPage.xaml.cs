@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -42,15 +43,17 @@ namespace Algebra.Views
 
         private async void CalculeButton_Clicked(object sender, EventArgs e)
         {
-            if (BindingContext is ViewModels.AskViewModel pAskViewModel)
-            {
-                await pAskViewModel.Calculate();
+            if (!(BindingContext is ViewModels.AskViewModel pAskViewModel))
+                return;
 
-                var pItemVM = new ViewModels.BoardItemViewModel
-                {
-                    Numero = 1,
-                    AskViewModel = pAskViewModel
-                };
+            try
+            {
+                await pAskViewModel.AddInBoard(CancellationToken.None);
+                await Navigation.PopModalAsync();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert(Title, ex.Message, Core.Algebra_Resources.OkBtn_Text);
             }
         }
     }

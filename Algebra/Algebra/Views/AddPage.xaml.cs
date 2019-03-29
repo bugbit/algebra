@@ -30,10 +30,11 @@ namespace Algebra.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AddPage : ContentPage
     {
-        public AddPage(Core.Session argSession)
+        public AddPage(Core.Session argSession, ViewModels.IBoard argBoard)
         {
             InitializeComponent();
             vm.Session = argSession;
+            vm.Board = argBoard;
         }
 
         private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -46,8 +47,9 @@ namespace Algebra.Views
 
                 if (pViewModel is ViewModels.AskViewModel pAskViewModel)
                 {
-                    pAskViewModel.Menu = vm.Menu;
+                    pAskViewModel.MenuItem = pMenuItem;
                     pAskViewModel.Session = vm.Session;
+                    pAskViewModel.Board = vm.Board;
                 }
 
                 pPage.BindingContext = pViewModel;

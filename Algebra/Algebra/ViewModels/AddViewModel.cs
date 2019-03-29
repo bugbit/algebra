@@ -27,6 +27,7 @@ namespace Algebra.ViewModels
     {
         private Menu mMenu;
         private Core.Session mSession;
+        private IBoard mBoard;
 
         public AddViewModel()
         {
@@ -35,5 +36,6 @@ namespace Algebra.ViewModels
 
         public Menu Menu { get => mMenu; set { SetProperty(ref mMenu, value); } }
         public Core.Session Session { get => mSession; set => SetProperty(ref mSession, value); }
+        public IBoard Board { get => mBoard; set => SetProperty(ref mBoard, value); }
     }
 }

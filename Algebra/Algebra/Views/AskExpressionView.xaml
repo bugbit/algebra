@@ -4,7 +4,7 @@
              x:Class="Algebra.Views.AskExpressionView">
     <ContentView.Content>
         <StackLayout>
-            <Editor VerticalOptions="FillAndExpand"  BackgroundColor="Green" TextColor="White" AutoSize="TextChanges"></Editor>
+            <Editor VerticalOptions="FillAndExpand"  BackgroundColor="Green" TextColor="White" AutoSize="TextChanges" Text="{Binding ExprStr}" TabIndex="0"></Editor>
         </StackLayout>
     </ContentView.Content>
 </ContentView>

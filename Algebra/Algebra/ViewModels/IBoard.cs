@@ -16,27 +16,16 @@
 */
 #endregion
 
+using Algebra.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Algebra.ViewModels
 {
-    public class AskExpressionViewModel<T> : AskViewModel<T>
+    public interface IBoard
     {
-        private string mExprStr;
-        private Core.Exprs.NodeExpr mExpr;
-
-        public string ExprStr { get => mExprStr; set => SetProperty(ref mExprStr, value); }
-        public Core.Exprs.NodeExpr Expr { get => mExpr; set => SetProperty(ref mExpr, value); }
-
-        public override async Task Calculate(CancellationToken t)
-        {
-            Expr = await Session.Alg.Parse(ExprStr, t);
-
-            await base.Calculate(t);
-        }
+        Task AddInBoard(AskViewModel argViewModel);
     }
 }
