@@ -26,6 +26,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Views\AlgebraPageOld.xaml.cs">
+      <DependentUpon>AlgebraPageOld.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +39,7 @@
     <EmbeddedResource Update="Views\AddPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\AlgebraPage.xaml">
+    <EmbeddedResource Update="Views\AlgebraPageOld.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\AskExpressionView.xaml">

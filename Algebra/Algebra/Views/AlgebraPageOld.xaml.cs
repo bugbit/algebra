@@ -32,9 +32,9 @@ using Xamarin.Forms.Xaml;
 namespace Algebra.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AlgebraPage : ContentPage, IBoard
+    public partial class AlgebraPageOld : ContentPage, IBoard
     {
-        public AlgebraPage()
+        public AlgebraPageOld()
         {
             InitializeComponent();
         }
