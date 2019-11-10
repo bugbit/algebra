@@ -26,14 +26,14 @@ namespace Algebra
 {
     public partial class App : Application
     {
-        private AlgebraPage mPage;
+        //private AlgebraPage mPage;
         public App()
         {
             InitializeComponent();
 
-            //MainPage = new MainPage();
-            mPage = new AlgebraPage();
-            MainPage = new NavigationPage(mPage);
+            MainPage = new MainPage();
+            //mPage = new AlgebraPage();
+            //MainPage = new NavigationPage(mPage);
         }
 
         /*

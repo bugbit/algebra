@@ -1,4 +1,5 @@
-﻿#region LICENSE
+﻿
+#region LICENSE
 /*
     Algebra Software free CAS
     Copyright © 2018 Óscar Hernández Bañó
@@ -25,11 +26,11 @@ using Algebra.Models;
 using CSharpMath.SkiaSharp;
 using SkiaSharp;
 
-[assembly: MenuItemViewer(typeof(Algebra.Views.PrimePView), EMenu.PrimeP)]
+[assembly: MenuItemViewer(typeof(Algebra.Views.PrimePViewOld), EMenu.PrimeP)]
 
 namespace Algebra.Views
 {
-    public class PrimePView : BoardItemView<ViewModels.PrimePViewModel, bool>
+    public class PrimePViewOld : BoardItemView<ViewModels.PrimePViewModel, bool>
     {
         protected override bool IsPropertyToInvalidateView(string p) => base.IsPropertyToInvalidateView(p) || p == nameof(AskViewModel.Expr);
 

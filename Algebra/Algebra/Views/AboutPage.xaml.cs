@@ -20,6 +20,9 @@ using System;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Algebra.Models;
+
+[assembly: PageItem(EItemId.PrimeP, typeof(Algebra.Views.AboutPage))]
 
 namespace Algebra.Views
 {
