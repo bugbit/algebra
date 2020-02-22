@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\build\Xamarin.Forms.props" Condition="Exists('..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\build\Xamarin.Forms.props')" />
+  <Import Project="..\..\packages\Xamarin.Forms.4.4.0.991640\build\Xamarin.Forms.props" Condition="Exists('..\..\packages\Xamarin.Forms.4.4.0.991640\build\Xamarin.Forms.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,16 +38,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSharpMath, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSharpMath.0.2.0\lib\netstandard1.1\CSharpMath.dll</HintPath>
+      <HintPath>..\..\packages\CSharpMath.0.3.0\lib\netstandard2.0\CSharpMath.dll</HintPath>
     </Reference>
     <Reference Include="CSharpMath.Editor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSharpMath.Editor.0.2.0\lib\netstandard1.3\CSharpMath.Editor.dll</HintPath>
+      <HintPath>..\..\packages\CSharpMath.Editor.0.3.0\lib\netstandard2.0\CSharpMath.Editor.dll</HintPath>
     </Reference>
     <Reference Include="CSharpMath.Rendering, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSharpMath.Rendering.0.2.0\lib\netstandard1.3\CSharpMath.Rendering.dll</HintPath>
+      <HintPath>..\..\packages\CSharpMath.Rendering.0.3.0\lib\netstandard2.0\CSharpMath.Rendering.dll</HintPath>
     </Reference>
     <Reference Include="CSharpMath.SkiaSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSharpMath.SkiaSharp.0.2.0\lib\netstandard1.3\CSharpMath.SkiaSharp.dll</HintPath>
+      <HintPath>..\..\packages\CSharpMath.SkiaSharp.0.3.0\lib\netstandard2.0\CSharpMath.SkiaSharp.dll</HintPath>
     </Reference>
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL" />
@@ -56,8 +56,11 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OpenTK, Version=3.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xamarin.Forms.Platform.GTK.4.0.0.135214-pre4\lib\net45\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OpenTK.GLControl.3.1.0\lib\net20\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="SkiaForms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SkiaForms.1.0.0-pre3\lib\netstandard2.0\SkiaForms.dll</HintPath>
@@ -66,16 +69,22 @@
       <HintPath>..\..\packages\SkiaForms.Gtk2.1.0.0-pre3\lib\SkiaForms.Gtk2.dll</HintPath>
     </Reference>
     <Reference Include="SkiaSharp, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SkiaSharp.1.68.0\lib\net45\SkiaSharp.dll</HintPath>
+      <HintPath>..\..\packages\SkiaSharp.1.68.1.1\lib\net45\SkiaSharp.dll</HintPath>
     </Reference>
     <Reference Include="SkiaSharp.Views.Desktop, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SkiaSharp.Views.1.68.0\lib\net45\SkiaSharp.Views.Desktop.dll</HintPath>
+      <HintPath>..\..\packages\SkiaSharp.Views.1.68.1.1\lib\net45\SkiaSharp.Views.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="SkiaSharp.Views.Desktop.Common, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SkiaSharp.Views.Desktop.Common.1.68.1.1\lib\net45\SkiaSharp.Views.Desktop.Common.dll</HintPath>
     </Reference>
     <Reference Include="SkiaSharp.Views.Gtk, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SkiaSharp.Views.1.68.0\lib\net45\SkiaSharp.Views.Gtk.dll</HintPath>
+      <HintPath>..\..\packages\SkiaSharp.Views.Gtk2.1.68.1.1\lib\net45\SkiaSharp.Views.Gtk.dll</HintPath>
+    </Reference>
+    <Reference Include="SkiaSharp.Views.WindowsForms, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SkiaSharp.Views.WindowsForms.1.68.1.1\lib\net45\SkiaSharp.Views.WindowsForms.dll</HintPath>
     </Reference>
     <Reference Include="SkiaSharp.Views.WPF, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SkiaSharp.Views.1.68.0\lib\net45\SkiaSharp.Views.WPF.dll</HintPath>
+      <HintPath>..\..\packages\SkiaSharp.Views.WPF.1.68.1.1\lib\net45\SkiaSharp.Views.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -93,8 +102,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.4.5.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.4.7.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
@@ -148,8 +157,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Memory.4.5.2\lib\netstandard2.0\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Net.Http.4.3.4\lib\net46\System.Net.Http.dll</HintPath>
@@ -175,8 +184,8 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
@@ -214,7 +223,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <HintPath>..\..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
@@ -232,19 +241,19 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="webkit-sharp, Version=1.1.15.0, Culture=neutral, PublicKeyToken=eaa1d335d2e19745, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xamarin.Forms.Platform.GTK.4.0.0.135214-pre4\lib\net45\webkit-sharp.dll</HintPath>
+      <HintPath>..\..\packages\Xamarin.Forms.Platform.GTK.4.4.0.991640\lib\net45\webkit-sharp.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\lib\netstandard2.0\Xamarin.Forms.Core.dll</HintPath>
+      <HintPath>..\..\packages\Xamarin.Forms.4.4.0.991640\lib\netstandard2.0\Xamarin.Forms.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Forms.Platform, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\lib\netstandard2.0\Xamarin.Forms.Platform.dll</HintPath>
+    <Reference Include="Xamarin.Forms.Platform, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Xamarin.Forms.4.4.0.991640\lib\netstandard2.0\Xamarin.Forms.Platform.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Platform.GTK, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xamarin.Forms.Platform.GTK.4.0.0.135214-pre4\lib\net45\Xamarin.Forms.Platform.GTK.dll</HintPath>
+      <HintPath>..\..\packages\Xamarin.Forms.Platform.GTK.4.4.0.991640\lib\net45\Xamarin.Forms.Platform.GTK.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Xaml, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\lib\netstandard2.0\Xamarin.Forms.Xaml.dll</HintPath>
+      <HintPath>..\..\packages\Xamarin.Forms.4.4.0.991640\lib\netstandard2.0\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -278,12 +287,12 @@
     <PropertyGroup>
       <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\SkiaSharp.1.68.0\build\net45\SkiaSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SkiaSharp.1.68.0\build\net45\SkiaSharp.targets'))" />
-    <Error Condition="!Exists('..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\build\Xamarin.Forms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\build\Xamarin.Forms.props'))" />
-    <Error Condition="!Exists('..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\build\Xamarin.Forms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\build\Xamarin.Forms.targets'))" />
     <Error Condition="!Exists('..\..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
+    <Error Condition="!Exists('..\..\packages\SkiaSharp.1.68.1.1\build\net45\SkiaSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SkiaSharp.1.68.1.1\build\net45\SkiaSharp.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Xamarin.Forms.4.4.0.991640\build\Xamarin.Forms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Xamarin.Forms.4.4.0.991640\build\Xamarin.Forms.props'))" />
+    <Error Condition="!Exists('..\..\packages\Xamarin.Forms.4.4.0.991640\build\Xamarin.Forms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Xamarin.Forms.4.4.0.991640\build\Xamarin.Forms.targets'))" />
   </Target>
-  <Import Project="..\..\packages\SkiaSharp.1.68.0\build\net45\SkiaSharp.targets" Condition="Exists('..\..\packages\SkiaSharp.1.68.0\build\net45\SkiaSharp.targets')" />
-  <Import Project="..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\build\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.4.0.0.135214-pre4\build\Xamarin.Forms.targets')" />
   <Import Project="..\..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
+  <Import Project="..\..\packages\SkiaSharp.1.68.1.1\build\net45\SkiaSharp.targets" Condition="Exists('..\..\packages\SkiaSharp.1.68.1.1\build\net45\SkiaSharp.targets')" />
+  <Import Project="..\..\packages\Xamarin.Forms.4.4.0.991640\build\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.4.4.0.991640\build\Xamarin.Forms.targets')" />
 </Project>

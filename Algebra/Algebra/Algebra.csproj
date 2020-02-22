@@ -12,12 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpMath.SkiaSharp" Version="0.2.0" />
-    <PackageReference Include="DecimalMath.DecimalEx" Version="1.0.0" />
+    <PackageReference Include="CSharpMath.SkiaSharp" Version="0.3.0" />
+    <PackageReference Include="DecimalMath.DecimalEx" Version="1.0.1" />
     <PackageReference Include="SkiaForms" Version="1.0.0-pre3" />
-    <PackageReference Include="SkiaSharp" Version="1.68.0" />
+    <PackageReference Include="SkiaSharp" Version="1.68.1.1" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
-    <PackageReference Include="Xamarin.Forms" Version="4.0.0.135214-pre4" />  
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.991640" />  
   </ItemGroup>
 
   <ItemGroup>
