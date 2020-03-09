@@ -726,15 +726,15 @@ namespace Algebra.Core.Syntax
 
         public LinkedList<Token> Tokens { get; } = new LinkedList<Token>();
 
-        public async Task ReadTokens()
+        public async Task ReadTokens(bool argCanNextLine = true)
         {
-            if (!await NextChar(true))
+            if (!await NextChar(argCanNextLine))
                 return;
 
             while (!EOF)
             {
                 mTokenCancel.ThrowIfCancellationRequested();
-                await NextToken();
+                await NextToken(argCanNextLine);
             }
         }
 
@@ -742,7 +742,7 @@ namespace Algebra.Core.Syntax
         {
             var pTokenizer = new Tokenizer(argReader, argTokenCancel);
 
-            await pTokenizer.ReadTokens();
+            await pTokenizer.ReadTokens(false);
 
             return pTokenizer.Tokens;
         }
@@ -819,7 +819,7 @@ namespace Algebra.Core.Syntax
             return await NextChar(true);
         }
 
-        private async Task NextToken()
+        private async Task NextToken(bool argCanNextLine)
         {
             if (EOF)
                 return;
