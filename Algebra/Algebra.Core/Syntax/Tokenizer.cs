@@ -677,6 +677,7 @@ Public License instead of this License.  But first, please read
 */
 #endregion
 
+using Deveel.Math;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -724,23 +725,25 @@ namespace Algebra.Core.Syntax
 
         public bool EOF { get; private set; }
         public bool EOL { get; private set; }
+        public int Line { get; internal set; }
+        public int Position { get; internal set; }
 
-        public LinkedList<Token> Tokens { get; } = new LinkedList<Token>();
+        public ETokenType Token { get; private set; }
+        public BigDecimal Number { get; private set; }
+        public string Identifier { get; private set; }
 
         public async Task NextToken()
         {
             if (EOF)
                 return;
 
-            var pToken = new Token();
             var pTokenStr = "";
 
             if (EOL)
-            {
                 EOL = false;
-                if (!await NextChar())
-                    return;
-            }
+
+            if (!await NextChar())
+                return;
 
             while (char.IsWhiteSpace(mCurrentChar))
             {
@@ -749,28 +752,31 @@ namespace Algebra.Core.Syntax
                     break;
             }
 
-            pToken.Line = mLine;
-            pToken.Position = mPosition;
+            Line = mLine;
+            Position = mPosition;
 
             if (char.IsLetter(mCurrentChar))
             {
+                Identifier = "";
+                Token = ETokenType.Identifier;
                 do
                 {
                     mTokenCancel.ThrowIfCancellationRequested();
-                    pTokenStr += mCurrentChar;
+                    Identifier += mCurrentChar;
                     if (!await NextChar())
                         break;
-                } while (char.IsLetterOrDigit(mCurrentChar) || mCurrentChar == '%');
-                pToken.Type = ETokenType.Variable;
+                } while (char.IsLetterOrDigit(mCurrentChar));
             }
             else if (char.IsDigit(mCurrentChar) || mCurrentChar == '.')
             {
                 var pHaveDecimalPoint = false;
+                var pNumberStr = "";
 
+                Token = ETokenType.Number;
                 do
                 {
                     mTokenCancel.ThrowIfCancellationRequested();
-                    pTokenStr += mCurrentChar;
+                    pNumberStr += mCurrentChar;
                     if (mCurrentChar == '.')
                     {
                         if (pHaveDecimalPoint)
@@ -781,43 +787,19 @@ namespace Algebra.Core.Syntax
                     if (!await NextChar())
                         break;
                 } while (char.IsDigit(mCurrentChar));
-                pToken.Type = ETokenType.Number;
+                Number = BigDecimal.Parse(pNumberStr);
             }
             else
             {
                 if (mDictTypeSymbol.TryGetValue(mCurrentChar, out ETokenType pType))
                 {
-                    pToken.Type = pType;
+                    Token = pType;
                     pTokenStr += mCurrentChar;
                     await NextChar();
                 }
                 else
                     throw new STException(string.Format(Properties.Resources.NoRecognizeStError, mCurrentChar), mLine, mPosition);
             }
-
-            pToken.TokenStr = pTokenStr;
-            Tokens.AddLast(pToken);
-        }
-
-        public async Task ReadTokens()
-        {
-            if (!await NextChar())
-                return;
-
-            while (!EOF)
-            {
-                mTokenCancel.ThrowIfCancellationRequested();
-                await NextToken();
-            }
-        }
-
-        public async static Task<LinkedList<Token>> ReadTokens(TextReader argReader, CancellationToken argTokenCancel)
-        {
-            var pTokenizer = new Tokenizer(argReader, argTokenCancel);
-
-            await pTokenizer.ReadTokens();
-
-            return pTokenizer.Tokens;
         }
 
         private async Task<bool> NextChar()

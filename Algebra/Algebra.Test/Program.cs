@@ -717,10 +717,10 @@ namespace Algebra.Test
             var pTexts = new[]
             {
                 "20",
-                "20x",
-                "(20)",
-                "20x+30y+20x^2",
-                "(sin x)^2+(cos x)^2=1"
+                //"20x",
+                //"(20)",
+                //"20x+30y+20x^2",
+                //"(sin x)^2+(cos x)^2=1"
                 //"x",
                 //"20;",
                 //"50$100;"
@@ -730,16 +730,31 @@ namespace Algebra.Test
             {
                 var pTokenizer = new ST.Tokenizer(new StringReader(pText), CancellationToken.None);
 
+                Console.WriteLine($"{pText} :");
                 for (; ; )
                 {
-                    //pTokenizer.
+                    await pTokenizer.NextToken();
+                    if (pTokenizer.EOF)
+                        break;
+                    if (pTokenizer.EOL)
+                        Console.WriteLine("EOL");
+                    else
+                    {
+                        Console.Write($"Token : {pTokenizer.Token}");
+                        switch (pTokenizer.Token)
+                        {
+                            case ST.ETokenType.Number:
+                                Console.WriteLine(pTokenizer.Number);
+                                break;
+                            case ST.ETokenType.Identifier:
+                                Console.WriteLine(pTokenizer.Identifier);
+                                break;
+                            default:
+                                Console.WriteLine();
+                                break;
+                        }
+                    }
                 }
-
-                var pTokens = await ST.Tokenizer.ReadTokens(new StringReader(pText), CancellationToken.None);
-
-                Console.WriteLine($"{pText} :");
-                foreach (var pToken in pTokens)
-                    Console.WriteLine($"{pToken.Type} : {pToken.TokenStr}");
             }
         }
     }

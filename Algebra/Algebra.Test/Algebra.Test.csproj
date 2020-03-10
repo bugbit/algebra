@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Algebra.Core\Algebra.Core.csproj" />
+    <ProjectReference Include="..\Deveel Math\Deveel.Math.Core\Deveel.Math.Core.csproj" />
   </ItemGroup>
 
 </Project>

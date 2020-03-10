@@ -696,9 +696,9 @@ namespace Algebra.Core.Syntax
             mTokenizer = new Tokenizer(argReader, argTokenCancel);
         }
 
-        public async Task Parse()
-        {
-            await mTokenizer.ReadTokens();
-        }
+        //public async Task Parse()
+        //{
+        //    await mTokenizer.ReadTokens();
+        //}
     }
 }
