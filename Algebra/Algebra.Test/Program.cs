@@ -728,6 +728,13 @@ namespace Algebra.Test
 
             foreach (var pText in pTexts)
             {
+                var pTokenizer = new ST.Tokenizer(new StringReader(pText), CancellationToken.None);
+
+                for (; ; )
+                {
+                    //pTokenizer.
+                }
+
                 var pTokens = await ST.Tokenizer.ReadTokens(new StringReader(pText), CancellationToken.None);
 
                 Console.WriteLine($"{pText} :");

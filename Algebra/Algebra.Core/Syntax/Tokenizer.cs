@@ -713,7 +713,6 @@ namespace Algebra.Core.Syntax
         private char mCurrentChar;
         private int mLine = 0;
         private int mPosition;
-        private bool mReturnLine;
 
         public Tokenizer(TextReader argReader, CancellationToken argTokenCancel)
         {
@@ -721,20 +720,94 @@ namespace Algebra.Core.Syntax
             mTokenCancel = argTokenCancel;
         }
 
+        public bool IsNewLineEndExpr { get; set; }
+
         public bool EOF { get; private set; }
         public bool EOL { get; private set; }
 
         public LinkedList<Token> Tokens { get; } = new LinkedList<Token>();
 
-        public async Task ReadTokens(bool argCanNextLine = true)
+        public async Task NextToken()
         {
-            if (!await NextChar(argCanNextLine))
+            if (EOF)
+                return;
+
+            var pToken = new Token();
+            var pTokenStr = "";
+
+            if (EOL)
+            {
+                EOL = false;
+                if (!await NextChar())
+                    return;
+            }
+
+            while (char.IsWhiteSpace(mCurrentChar))
+            {
+                mTokenCancel.ThrowIfCancellationRequested();
+                if (!await NextChar())
+                    break;
+            }
+
+            pToken.Line = mLine;
+            pToken.Position = mPosition;
+
+            if (char.IsLetter(mCurrentChar))
+            {
+                do
+                {
+                    mTokenCancel.ThrowIfCancellationRequested();
+                    pTokenStr += mCurrentChar;
+                    if (!await NextChar())
+                        break;
+                } while (char.IsLetterOrDigit(mCurrentChar) || mCurrentChar == '%');
+                pToken.Type = ETokenType.Variable;
+            }
+            else if (char.IsDigit(mCurrentChar) || mCurrentChar == '.')
+            {
+                var pHaveDecimalPoint = false;
+
+                do
+                {
+                    mTokenCancel.ThrowIfCancellationRequested();
+                    pTokenStr += mCurrentChar;
+                    if (mCurrentChar == '.')
+                    {
+                        if (pHaveDecimalPoint)
+                            break;
+
+                        pHaveDecimalPoint = true;
+                    }
+                    if (!await NextChar())
+                        break;
+                } while (char.IsDigit(mCurrentChar));
+                pToken.Type = ETokenType.Number;
+            }
+            else
+            {
+                if (mDictTypeSymbol.TryGetValue(mCurrentChar, out ETokenType pType))
+                {
+                    pToken.Type = pType;
+                    pTokenStr += mCurrentChar;
+                    await NextChar();
+                }
+                else
+                    throw new STException(string.Format(Properties.Resources.NoRecognizeStError, mCurrentChar), mLine, mPosition);
+            }
+
+            pToken.TokenStr = pTokenStr;
+            Tokens.AddLast(pToken);
+        }
+
+        public async Task ReadTokens()
+        {
+            if (!await NextChar())
                 return;
 
             while (!EOF)
             {
                 mTokenCancel.ThrowIfCancellationRequested();
-                await NextToken(argCanNextLine);
+                await NextToken();
             }
         }
 
@@ -742,15 +815,14 @@ namespace Algebra.Core.Syntax
         {
             var pTokenizer = new Tokenizer(argReader, argTokenCancel);
 
-            await pTokenizer.ReadTokens(false);
+            await pTokenizer.ReadTokens();
 
             return pTokenizer.Tokens;
         }
 
-        private async Task<bool> NextChar(bool argCanNextLine)
+        private async Task<bool> NextChar()
         {
             mTokenCancel.ThrowIfCancellationRequested();
-            mReturnLine = false;
             if (EOF)
             {
                 mCurrentChar = '\x0';
@@ -764,7 +836,7 @@ namespace Algebra.Core.Syntax
             }
             else if (mPosition >= mLineStr.Length)
             {
-                if (!argCanNextLine)
+                if (IsNewLineEndExpr)
                 {
                     EOL = true;
 
@@ -779,7 +851,6 @@ namespace Algebra.Core.Syntax
                 else
                     mLineStr = mLinesReads[mLine++];
                 mPosition = 0;
-                mReturnLine = true;
             }
 
             mCurrentChar = mLineStr[mPosition++];
@@ -802,90 +873,6 @@ namespace Algebra.Core.Syntax
             mPosition = 0;
 
             return true;
-        }
-
-        private async Task<bool> BackChar()
-        {
-            if (mPosition > 0)
-                mPosition--;
-            else
-            {
-                if (mLine <= 0)
-                    return false;
-
-                mLine--;
-            }
-
-            return await NextChar(true);
-        }
-
-        private async Task NextToken(bool argCanNextLine)
-        {
-            if (EOF)
-                return;
-
-            var pToken = new Token();
-            var pTokenStr = "";
-
-            if (EOL)
-                if (!await NextChar(true))
-                    return;
-
-            while (char.IsWhiteSpace(mCurrentChar))
-            {
-                mTokenCancel.ThrowIfCancellationRequested();
-                if (!await NextChar(false))
-                    break;
-            }
-
-            pToken.Line = mLine;
-            pToken.Position = mPosition;
-
-            if (char.IsLetter(mCurrentChar))
-            {
-                do
-                {
-                    mTokenCancel.ThrowIfCancellationRequested();
-                    pTokenStr += mCurrentChar;
-                    if (!await NextChar(false))
-                        break;
-                } while (char.IsLetterOrDigit(mCurrentChar) || mCurrentChar == '%');
-                pToken.Type = ETokenType.Variable;
-            }
-            else if (char.IsDigit(mCurrentChar) || mCurrentChar == '.')
-            {
-                var pHaveDecimalPoint = false;
-
-                do
-                {
-                    mTokenCancel.ThrowIfCancellationRequested();
-                    pTokenStr += mCurrentChar;
-                    if (mCurrentChar == '.')
-                    {
-                        if (pHaveDecimalPoint)
-                            break;
-
-                        pHaveDecimalPoint = true;
-                    }
-                    if (!await NextChar(false))
-                        break;
-                } while (char.IsDigit(mCurrentChar));
-                pToken.Type = ETokenType.Number;
-            }
-            else
-            {
-                if (mDictTypeSymbol.TryGetValue(mCurrentChar, out ETokenType pType))
-                {
-                    pToken.Type = pType;
-                    pTokenStr += mCurrentChar;
-                    await NextChar(false);
-                }
-                else
-                    throw new STException(string.Format(Properties.Resources.NoRecognizeStError, mCurrentChar), mLine, mPosition);
-            }
-
-            pToken.TokenStr = pTokenStr;
-            Tokens.AddLast(pToken);
         }
     }
 }
