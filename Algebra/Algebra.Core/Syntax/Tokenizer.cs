@@ -722,6 +722,7 @@ namespace Algebra.Core.Syntax
         }
 
         public bool IsNewLineEndExpr { get; set; }
+        public bool ResetEOL { get; set; }
 
         public bool EOF { get; private set; }
         public bool EOL { get; private set; }
@@ -732,18 +733,18 @@ namespace Algebra.Core.Syntax
         public BigDecimal Number { get; private set; }
         public string Identifier { get; private set; }
 
-        public async Task NextToken()
+        public async Task<bool> NextToken()
         {
-            if (EOF)
-                return;
+            if (ResetEOL)
+                EOL = false;
+
+            if (EOF || EOL)
+                return false;
 
             var pTokenStr = "";
 
-            if (EOL)
-                EOL = false;
-
             if (!await NextChar())
-                return;
+                return false;
 
             while (char.IsWhiteSpace(mCurrentChar))
             {
@@ -800,6 +801,8 @@ namespace Algebra.Core.Syntax
                 else
                     throw new STException(string.Format(Properties.Resources.NoRecognizeStError, mCurrentChar), mLine, mPosition);
             }
+
+            return true;
         }
 
         private async Task<bool> NextChar()

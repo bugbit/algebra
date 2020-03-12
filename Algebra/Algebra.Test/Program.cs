@@ -731,11 +731,10 @@ namespace Algebra.Test
                 var pTokenizer = new ST.Tokenizer(new StringReader(pText), CancellationToken.None);
 
                 Console.WriteLine($"{pText} :");
-                for (; ; )
+                while (await pTokenizer.NextToken())
                 {
-                    await pTokenizer.NextToken();
                     if (pTokenizer.EOF)
-                        break;
+                        Console.WriteLine("EOF");
                     if (pTokenizer.EOL)
                         Console.WriteLine("EOL");
                     else
