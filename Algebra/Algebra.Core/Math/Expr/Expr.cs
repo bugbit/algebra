@@ -678,125 +678,20 @@ Public License instead of this License.  But first, please read
 #endregion
 
 using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Text;
 
-using ST = Algebra.Core.Syntax;
-
-using static System.Console;
-
-namespace Algebra.Test
+namespace Algebra.Core.Math.Expr
 {
-    class Program
+    #region Descripcion expresiones soportadas
+    /*
+            SubExpressiones:
+                Numero
+                Variable
+     */
+    #endregion
+
+    public class Expr
     {
-        static void Main(string[] args)
-        {
-            RunTest().Wait();
-            Console.WriteLine("Tests done. press ENTER to exit");
-            Console.ReadLine();
-        }
-
-        static async Task RunTest()
-        {
-            var pMethods = typeof(Program).Assembly.GetTypes().Select(t => t.FindMembers(MemberTypes.Method, BindingFlags.Static | BindingFlags.NonPublic, (m, c) => ((MethodInfo)m).GetCustomAttributes((Type)c, true).Length != 0, typeof(TestAttribute)).OfType<MethodInfo>()).SelectMany(m => m);
-
-            foreach (var pMethod in pMethods)
-            {
-                if (pMethod.ReturnType == typeof(Task))
-                    await ((TestHandler)pMethod.CreateDelegate(typeof(TestHandler))).Invoke();
-                else
-                    pMethod.Invoke(null, null);
-                break;
-            }
-        }
-
-        [Test]
-        static async Task TokernizerTest()
-        {
-            var pTexts = new[]
-            {
-                //"20$",
-                //"20",
-                //"20x",
-                //"(20)",
-                //"20x+30y+20x^2",
-                //"(sin (x))^2+(cos (x))^2=1"
-                //"x",
-                //"2x=3",
-                "20a+3b+c=1\nb=20",
-            };
-
-            foreach (var pText in pTexts)
-            {
-                try
-                {
-                    using (var pReader = new StringReader(pText))
-                    {
-                        var pTokenizer = new ST.Tokenizer(pReader, CancellationToken.None, true);
-
-                        Console.WriteLine($"{pText} :");
-                        while (await pTokenizer.NextToken())
-                        {
-                            Console.Write($"Token : {pTokenizer.Token} ");
-                            switch (pTokenizer.Token)
-                            {
-                                case ST.ETokenType.Number:
-                                    Console.WriteLine(pTokenizer.Number);
-                                    break;
-                                case ST.ETokenType.Identifier:
-                                    Console.WriteLine(pTokenizer.Identifier);
-                                    break;
-                                default:
-                                    Console.WriteLine();
-                                    break;
-                            }
-                            if (pTokenizer.EOF)
-                                Console.WriteLine("EOF");
-                            if (pTokenizer.EOL)
-                            {
-                                Console.WriteLine("EOL");
-                                pTokenizer.ResetEOL = true;
-                            }
-                        }
-                    }
-                }
-                catch (ST.STException ex)
-                {
-                    var pLine = string.Empty;
-
-                    using (var pReader = new StringReader(pText))
-                    {
-                        for (var i = ex.Line; i > 0; i--)
-                            pLine = pReader.ReadLine();
-                    }
-                    PrintError(ex.Message);
-                    PrintError(pLine);
-                    PrintError($"{new string(' ', ex.Position - 1)}^");
-                }
-                catch (Exception ex)
-                {
-                    PrintError(ex.Message);
-                }
-
-            }
-        }
-
-        public static void PrintError(string argError)
-        {
-            var pForeColor = ForegroundColor;
-
-            try
-            {
-                ForegroundColor = ConsoleColor.Red;
-                WriteLine(argError);
-            }
-            finally
-            {
-                ForegroundColor = pForeColor;
-            }
-        }
     }
 }

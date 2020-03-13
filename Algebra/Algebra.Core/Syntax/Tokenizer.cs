@@ -715,10 +715,11 @@ namespace Algebra.Core.Syntax
         private int mLine = 0;
         private int mPosition;
 
-        public Tokenizer(TextReader argReader, CancellationToken argTokenCancel)
+        public Tokenizer(TextReader argReader, CancellationToken argTokenCancel, bool argIsNewLineEndExpr = false)
         {
             mReader = argReader;
             mTokenCancel = argTokenCancel;
+            IsNewLineEndExpr = argIsNewLineEndExpr;
         }
 
         public bool IsNewLineEndExpr { get; set; }
@@ -736,15 +737,20 @@ namespace Algebra.Core.Syntax
         public async Task<bool> NextToken()
         {
             if (ResetEOL)
+            {
+                ResetEOL = false;
                 EOL = false;
+                mLineStr = null;
+            }
 
             if (EOF || EOL)
                 return false;
 
             var pTokenStr = "";
 
-            if (!await NextChar())
-                return false;
+            if (mLineStr == null)
+                if (!await NextChar())
+                    return false;
 
             while (char.IsWhiteSpace(mCurrentChar))
             {
