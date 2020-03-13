@@ -683,18 +683,8 @@ using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
-    #region Descripcion expresiones soportadas
-    /*
-            SubExpressiones:
-                Constante:
-                    Numero
-                incógnitas:
-                    Variable
-     */
-    #endregion
-
-    public class Expr : ExprBase
+    public enum ETypeSubExpr
     {
-        public ETypeExpr Type { get; }
+        Number, Variable
     }
 }
