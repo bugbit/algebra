@@ -689,27 +689,9 @@ namespace Algebra.Core.Syntax
 {
     public sealed class Tokenizer
     {
-        private static readonly Dictionary<char, ETokenType> mDictTypeSymbol = new Dictionary<char, ETokenType>
-        {
-            ['('] = ETokenType.OpenParens,
-            [')'] = ETokenType.CloseParens,
-            ['+'] = ETokenType.Add,
-            ['-'] = ETokenType.Minus,
-            ['*'] = ETokenType.Mul,
-            ['/'] = ETokenType.Div,
-            ['^'] = ETokenType.Pow,
-            ['='] = ETokenType.Equal,
-        };
-
-        private static readonly IDictionary<string, ETokenType> mDictTypeFunc = new Dictionary<string, ETokenType>(StringComparer.InvariantCultureIgnoreCase)
-        {
-            ["sin"] = ETokenType.Sin,
-            ["cos"] = ETokenType.Cos,
-        };
-
         private TextReader mReader;
         private CancellationToken mTokenCancel;
-        private List<string> mLinesReads = new List<string>();
+        private bool mBacked = false;
         private string mLineStr;
         private char mCurrentChar;
         private int mLine = 0;
@@ -736,6 +718,12 @@ namespace Algebra.Core.Syntax
 
         public async Task<bool> NextToken()
         {
+            if (mBacked)
+            {
+                mBacked = false;
+
+                return true;
+            }
             if (ResetEOL)
             {
                 ResetEOL = false;
@@ -798,7 +786,7 @@ namespace Algebra.Core.Syntax
             }
             else
             {
-                if (mDictTypeSymbol.TryGetValue(mCurrentChar, out ETokenType pType))
+                if (Symbols.DictTypeSymbol.TryGetValue(mCurrentChar, out ETokenType pType))
                 {
                     Token = pType;
                     pTokenStr += mCurrentChar;
@@ -810,6 +798,8 @@ namespace Algebra.Core.Syntax
 
             return true;
         }
+
+        public void Back() => mBacked = true;
 
         private async Task<bool> NextChar()
         {
@@ -833,14 +823,9 @@ namespace Algebra.Core.Syntax
 
                     return false;
                 }
+                if (!await ReadNextLine())
+                    return false;
 
-                if (mLine >= mLinesReads.Count)
-                {
-                    if (!await ReadNextLine())
-                        return false;
-                }
-                else
-                    mLineStr = mLinesReads[mLine++];
                 mPosition = 0;
             }
 
@@ -860,7 +845,6 @@ namespace Algebra.Core.Syntax
             }
             EOL = false;
             mLine++;
-            mLinesReads.Add(mLineStr);
             mPosition = 0;
 
             return true;

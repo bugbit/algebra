@@ -689,7 +689,6 @@ namespace Algebra.Core.Syntax
     public sealed class Parser
     {
         private Tokenizer mTokenizer;
-        private TokensReader mReader;
 
         public Parser(TextReader argReader, CancellationToken argTokenCancel)
         {

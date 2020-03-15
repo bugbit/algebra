@@ -690,6 +690,19 @@ namespace Algebra.Core.Math.Expr
                     Numero
                 incógnitas:
                     Variable
+                funcions:
+                    sin,cos,.... : Puede serque tiene su parametro Constante o incógnitas
+                Operations:
+                    Div, Exp
+
+            Expressiones:
+
+                Terminos: productos de subexpressiones
+
+                Operaciones con Terminos:
+                    +,/,^
+                    
+                Ecuación
      */
     #endregion
 

@@ -679,19 +679,28 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace Algebra.Core.Syntax
 {
-    [DebuggerDisplay("Type : {Type} TokenStr : {TokenStr} Line : {Line} Position: {Position}")]
-    public class Token
+    public static class Symbols
     {
-        public ETokenType Type { get; internal set; }
-        public int Line { get; internal set; }
-        public int Position { get; internal set; }
-        public string TokenStr { get; internal set; }
+        public static readonly Dictionary<char, ETokenType> DictTypeSymbol = new Dictionary<char, ETokenType>
+        {
+            ['('] = ETokenType.OpenParens,
+            [')'] = ETokenType.CloseParens,
+            ['+'] = ETokenType.Add,
+            ['-'] = ETokenType.Minus,
+            ['*'] = ETokenType.Mul,
+            ['/'] = ETokenType.Div,
+            ['^'] = ETokenType.Pow,
+            ['='] = ETokenType.Equal,
+        };
 
-        public override string ToString() => TokenStr;
+        public static readonly IDictionary<string, ETokenType> DictTypeFuncs = new Dictionary<string, ETokenType>(StringComparer.InvariantCultureIgnoreCase)
+        {
+            ["sin"] = ETokenType.Sin,
+            ["cos"] = ETokenType.Cos,
+        };
     }
 }

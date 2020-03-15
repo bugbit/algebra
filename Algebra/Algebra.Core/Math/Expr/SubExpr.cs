@@ -683,8 +683,9 @@ using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
-    public class SubExpr : ExprBase
+    public abstract class SubExpr : ExprBase
     {
         public ETypeSubExpr Type { get; }
+        public virtual bool IsConstant => false;
     }
 }
