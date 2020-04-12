@@ -706,15 +706,16 @@ namespace Algebra.Core.Math.Expr
 
     public abstract class Expr
     {
-        public ETypeExpr Type { get; }
+        public ETypeExpr TypeExpr { get; }
         public virtual bool IsConstant => false;
 
         public Expr(ETypeExpr argType)
         {
-            Type = argType;
+            TypeExpr = argType;
         }
 
-        public static Expr Null { get; } = new OperatorExpr(EOperators.Mul, new Expr[0]);
+        public static Expr Null => NullExpr.Null;
+
         /// <summary>
         /// case 1 = (op e1 e2)
         /// 2 * 3 = (* 2 3) case 1
@@ -725,26 +726,19 @@ namespace Algebra.Core.Math.Expr
         /// (2 + 3) * (4 + 5) (* (+ 2 3) (+ 4 5) case 1
         /// (2 * 3) * (4 * 5) (* 2 3 4 5)
         /// </summary>
-        /// <param name="e1"></param>
         /// <param name="op"></param>
+        /// <param name="e1"></param>
         /// <param name="e2"></param>
         /// <returns></returns>
-        public static OperatorExpr Operator(Expr e1, EOperators op, Expr e2, CancellationToken token)
-        {
-            /*
-            Task<Expr[]> ne1, ne2;
 
-            Task.WaitAll(ne1, ne2);
-            var pTasks = new ta
-            var pExprs = new List<Expr>();
+        //public static NumberExpr Number(Big)
+        public static OperatorExpr Operator(EOperators op, params Expr[] exprs) => new OperatorExpr(op, exprs);
+        public static FunctionExpr Function(EFunctions fn, Expr argArg) => new FunctionExpr(fn, argArg);
 
-            OperatorExpr.FixExprs(op, e1, pExprs);
-            OperatorExpr.FixExprs(op, e2, pExprs);
-
-            return new OperatorExpr(op, pExprs);
-            */
-
-            return null;
-        }
+        public static Expr operator +(Expr e1, Expr e2) => Operator(EOperators.Add, e1, e2);
+        public static Expr operator -(Expr e1, Expr e2) => Operator(EOperators.Minus, e1, e2);
+        public static Expr operator *(Expr e1, Expr e2) => Operator(EOperators.Mul, e1, e2);
+        public static Expr operator /(Expr e1, Expr e2) => Operator(EOperators.Div, e1, e2);
+        public static Expr operator ^(Expr e1, Expr e2) => Operator(EOperators.Pow, e1, e2);
     }
 }

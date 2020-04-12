@@ -9,38 +9,53 @@ namespace Algebra.Core.Math.Expr
 {
     public class OperatorExpr : Expr
     {
-        new public EOperators Operator { get; }
+        public EOperators TypeOperator { get; }
         public Expr[] Exprs { get; }
 
+        /// <summary>
+        /// case 1 = (op e1 e2)
+        /// 2 * 3 = (* 2 3) case 1
+        /// (2 + 3) * 5 = (* (+ 2 3) 5) case 1
+        /// (2 * 3) * 5 = (* 2 3 5) case 2
+        /// 2 * (3 + 4) = (* 2 (+ 3 4)) case 1
+        /// 2 * (3 * 4) = (* 2 3 4) case 2
+        /// (2 + 3) * (4 + 5) (* (+ 2 3) (+ 4 5) case 1
+        /// (2 * 3) * (4 * 5) (* 2 3 4 5)
+        /// </summary>
+        /// <param name="argOperator"></param>
+        /// <param name="argExprs"></param>
         public OperatorExpr(EOperators argOperator, IEnumerable<Expr> argExprs) : base(ETypeExpr.Operator)
         {
-            Operator = argOperator;
-            Exprs = argExprs?.ToArray() ?? new Expr[0];
+            TypeOperator = argOperator;
+            Exprs =
+                (argExprs == null)
+                    ? new Expr[0]
+                    : (from e in argExprs where e != null let op = e as OperatorExpr select (op == null) ? new[] { e } : (IEnumerable<Expr>)op.Exprs).SelectMany(e => e).ToArray();
         }
+
+        public OperatorExpr(EOperators argOperator, params Expr[] argExprs) : this(argOperator, argExprs.AsEnumerable()) { }
 
         public override bool IsConstant => Exprs.Length > 0 && Exprs.All(e => e.IsConstant);
 
-        public Expr[] FixExprs(EOperators op, Expr e, CancellationToken token)
+        public static int GetPriority(EOperators op)
         {
-            if (e is OperatorExpr pOp && pOp.Operator == op)
+            switch (op)
             {
-                var pExprs = new List<Expr[]>(pOp.Exprs.Length);
-
-                Parallel.For(0, pExprs.Count, new ParallelOptions { CancellationToken = token }, i => pExprs[i] = FixExprs(op, pOp.Exprs[i], token));
-
-                return pExprs.SelectMany(e => e).ToArray();
+                case EOperators.Equal:
+                    return 5;
+                case EOperators.Pow:
+                    return 4;
+                case EOperators.Mul:
+                case EOperators.Div:
+                    return 3;
+                case EOperators.Add:
+                case EOperators.Minus:
+                    return 1;
+                default:
+                    return 0;
             }
-
-            return new[] { e };
         }
 
-        public OperatorExpr FixExprs(CancellationToken token)
-        {
-            var pExprs = new List<Expr[]>(Exprs.Length);
-
-            Parallel.For(0, pExprs.Count, new ParallelOptions { CancellationToken = token }, i => pExprs[i] = FixExprs(Operator, Exprs[i], token));
-
-            return new OperatorExpr(Operator, pExprs.SelectMany(e => e));
-        }
+        public int GetPriority() => GetPriority(TypeOperator);
     }
 }

@@ -6,12 +6,12 @@ namespace Algebra.Core.Math.Expr
 {
     public class FunctionExpr : Expr
     {
-        public EFunctions Function { get; }
+        public EFunctions TypeFunction { get; }
         public Expr Argument { get; }
 
         public FunctionExpr(EFunctions argFunc, Expr argArg) : base(ETypeExpr.Function)
         {
-            Function = argFunc;
+            TypeFunction = argFunc;
             Argument = argArg ?? Expr.Null;
         }
 

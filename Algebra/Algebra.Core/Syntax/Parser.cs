@@ -683,6 +683,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Algebra.Core.Math.Expr;
 
 namespace Algebra.Core.Syntax
 {
@@ -699,5 +700,55 @@ namespace Algebra.Core.Syntax
         //{
         //    await mTokenizer.ReadTokens();
         //}
+
+        private async Task<LinkedList<Cell>> Split()
+        {
+            var pCells = new LinkedList<Cell>();
+            Cell pCell = null;
+
+            while (await mTokenizer.NextToken())
+            {
+                switch (mTokenizer.Token)
+                {
+                    case ETokenType.Equal:
+                        return pCells;
+                    case ETokenType.Number:
+                        if (pCell==null)
+                        {
+                            //pCell=new Cell { Expr= Expr.n }
+                        }
+                        break;
+                }
+
+            }
+
+            return pCells;
+        }
+
+        private bool CanMergeCells(Cell l, Cell r) => OperatorExpr.GetPriority(l.TypeOp) >= OperatorExpr.GetPriority(r.TypeOp);
+
+        private void MergeCells(Cell l, Cell r)
+        {
+            l.Expr = Expr.Operator(l.TypeOp, l.Expr, r.Expr);
+            l.TypeOp = r.TypeOp;
+        }
+
+        private Expr Merge(Cell cell, LinkedListNode<Cell> List, bool argOneOnly = false)
+        {
+            var e = List;
+
+            while (e != null)
+            {
+                var next = e.Next;
+
+                while (!CanMergeCells(cell, next.Value))
+                    Merge(next.Value, next, true);
+                MergeCells(cell, next.Value);
+                if (argOneOnly)
+                    return cell.Expr;
+            }
+
+            return cell.Expr;
+        }
     }
 }

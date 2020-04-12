@@ -702,5 +702,15 @@ namespace Algebra.Core.Syntax
             ["sin"] = ETokenType.Sin,
             ["cos"] = ETokenType.Cos,
         };
+
+        public static readonly IDictionary<Math.Expr.EOperators, ETokenType> DictOperators = new Dictionary<Math.Expr.EOperators, ETokenType>
+        {
+            [Math.Expr.EOperators.Add] = ETokenType.Add,
+            [Math.Expr.EOperators.Minus] = ETokenType.Minus,
+            [Math.Expr.EOperators.Mul] = ETokenType.Mul,
+            [Math.Expr.EOperators.Div] = ETokenType.Div,
+            [Math.Expr.EOperators.Pow] = ETokenType.Pow,
+            [Math.Expr.EOperators.Equal] = ETokenType.Equal,
+        };
     }
 }
