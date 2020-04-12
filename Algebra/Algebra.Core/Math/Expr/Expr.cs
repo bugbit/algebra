@@ -679,35 +679,72 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.Expr
 {
     #region Descripcion expresiones soportadas
     /*
-            SubExpressiones:
+            Expressiones:
                 Constante:
                     Numero
                 incógnitas:
                     Variable
-                funcions:
-                    sin,cos,.... : Puede serque tiene su parametro Constante o incógnitas
+
+                funcions (1 parametro):
+                    sin,cos,.... : su parametro puede ser Constante o incógnitas
                 Operations:
                     Div, Exp
 
-            Expressiones:
-
-                Terminos: productos de subexpressiones
-
-                Operaciones con Terminos:
-                    +,/,^
-                    
-                Ecuación
+                Conjunto de expressiones:
+                    *,+,/,^,=
      */
     #endregion
 
-    public class Expr : ExprBase
+    public abstract class Expr
     {
         public ETypeExpr Type { get; }
+        public virtual bool IsConstant => false;
+
+        public Expr(ETypeExpr argType)
+        {
+            Type = argType;
+        }
+
+        public static Expr Null { get; } = new OperatorExpr(EOperators.Mul, new Expr[0]);
+        /// <summary>
+        /// case 1 = (op e1 e2)
+        /// 2 * 3 = (* 2 3) case 1
+        /// (2 + 3) * 5 = (* (+ 2 3) 5) case 1
+        /// (2 * 3) * 5 = (* 2 3 5) case 2
+        /// 2 * (3 + 4) = (* 2 (+ 3 4)) case 1
+        /// 2 * (3 * 4) = (* 2 3 4) case 2
+        /// (2 + 3) * (4 + 5) (* (+ 2 3) (+ 4 5) case 1
+        /// (2 * 3) * (4 * 5) (* 2 3 4 5)
+        /// </summary>
+        /// <param name="e1"></param>
+        /// <param name="op"></param>
+        /// <param name="e2"></param>
+        /// <returns></returns>
+        public static OperatorExpr Operator(Expr e1, EOperators op, Expr e2, CancellationToken token)
+        {
+            /*
+            Task<Expr[]> ne1, ne2;
+
+            Task.WaitAll(ne1, ne2);
+            var pTasks = new ta
+            var pExprs = new List<Expr>();
+
+            OperatorExpr.FixExprs(op, e1, pExprs);
+            OperatorExpr.FixExprs(op, e2, pExprs);
+
+            return new OperatorExpr(op, pExprs);
+            */
+
+            return null;
+        }
     }
 }

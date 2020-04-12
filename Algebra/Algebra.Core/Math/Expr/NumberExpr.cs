@@ -680,12 +680,19 @@ Public License instead of this License.  But first, please read
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Deveel.Math;
 
 namespace Algebra.Core.Math.Expr
 {
-    public abstract class SubExpr : ExprBase
+    public class NumberExpr : Expr
     {
-        public ETypeSubExpr Type { get; }
-        public virtual bool IsConstant => false;
+        public BigDecimal Value { get; }
+
+        public NumberExpr(BigDecimal argValue) : base(ETypeExpr.Number)
+        {
+            Value = argValue;
+        }
+
+        public override bool IsConstant => true;
     }
 }
