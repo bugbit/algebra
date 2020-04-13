@@ -683,12 +683,13 @@ using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
-    public sealed class NullExpr : Expr
+    public class MinusExpr : Expr
     {
-        private static readonly Lazy<NullExpr> mInstance = new Lazy<NullExpr>(() => new NullExpr());
+        public Expr Expr { get; }
 
-        private NullExpr() : base(ETypeExpr.Null) { }
-
-        public NullExpr Instance => mInstance.Value;
+        public MinusExpr(Expr e) : base(ETypeExpr.Minus)
+        {
+            Expr = e;
+        }
     }
 }

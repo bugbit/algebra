@@ -683,6 +683,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Deveel.Math;
 
 namespace Algebra.Core.Math.Expr
 {
@@ -716,23 +717,10 @@ namespace Algebra.Core.Math.Expr
 
         public static Expr Null => NullExpr.Null;
 
-        /// <summary>
-        /// case 1 = (op e1 e2)
-        /// 2 * 3 = (* 2 3) case 1
-        /// (2 + 3) * 5 = (* (+ 2 3) 5) case 1
-        /// (2 * 3) * 5 = (* 2 3 5) case 2
-        /// 2 * (3 + 4) = (* 2 (+ 3 4)) case 1
-        /// 2 * (3 * 4) = (* 2 3 4) case 2
-        /// (2 + 3) * (4 + 5) (* (+ 2 3) (+ 4 5) case 1
-        /// (2 * 3) * (4 * 5) (* 2 3 4 5)
-        /// </summary>
-        /// <param name="op"></param>
-        /// <param name="e1"></param>
-        /// <param name="e2"></param>
-        /// <returns></returns>
-
-        //public static NumberExpr Number(Big)
-        public static OperatorExpr Operator(EOperators op, params Expr[] exprs) => new OperatorExpr(op, exprs);
+        public static NumberExpr Number(BigDecimal n) => new NumberExpr(n);
+        public static LiteralExpr Literal(string name) => new LiteralExpr(name);
+        public static Expr Minus(Expr e) => (e is NumberExpr n) ? (Expr)new NumberExpr(-n.Value) : new MinusExpr(e);
+        public static Expr Operator(EOperators op, params Expr[] exprs) => (op == EOperators.None) ? exprs.FirstOrDefault() ?? Null : new OperatorExpr(op, exprs);
         public static FunctionExpr Function(EFunctions fn, Expr argArg) => new FunctionExpr(fn, argArg);
 
         public static Expr operator +(Expr e1, Expr e2) => Operator(EOperators.Add, e1, e2);

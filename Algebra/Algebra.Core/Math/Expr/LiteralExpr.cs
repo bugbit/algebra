@@ -683,11 +683,11 @@ using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
-    public class VariableExpr : Expr
+    public class LiteralExpr : Expr
     {
         public string Name { get; }
 
-        public VariableExpr(string argName) : base(ETypeExpr.Variable)
+        public LiteralExpr(string argName) : base(ETypeExpr.Literal)
         {
             Name = argName;
         }

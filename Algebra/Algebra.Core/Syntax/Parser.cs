@@ -705,25 +705,73 @@ namespace Algebra.Core.Syntax
         {
             var pCells = new LinkedList<Cell>();
             Cell pCell = null;
+            var pMinus = false;
 
             while (await mTokenizer.NextToken())
             {
-                switch (mTokenizer.Token)
+                if (Symbols.DictOperators.TryGetValue(mTokenizer.Token, out EOperators op))
                 {
-                    case ETokenType.Equal:
+                    if (op == EOperators.Equal)
+                    {
+                        if (pCell != null)
+                            pCells.AddLast(pCell);
+
                         return pCells;
-                    case ETokenType.Number:
-                        if (pCell==null)
+                    }
+                    if (pCell != null)
+                    {
+                        if (pMinus)
                         {
-                            //pCell=new Cell { Expr= Expr.n }
+                            pCell.Expr = Expr.Minus(pCell.Expr);
+                            pMinus = false;
                         }
-                        break;
+                        pCell.TypeOp = op;
+                        pCells.AddLast(pCell);
+                        pCell = null;
+                    }
+                    else
+                    {
+                        if (pMinus)
+                        {
+                            switch (op)
+                            {
+                                case EOperators.Minus:
+                                    pMinus = false;
+                                    continue;
+                                case EOperators.Add:
+                                    continue;
+                                default:
+                                    throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+                            }
+                        }
+                        throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+                    }
                 }
+                else
+                {
+
+                }
+
+                //switch (mTokenizer.Token)
+                //{
+                //    case ETokenType.Equal:
+                //        return pCells;
+                //    case ETokenType.Number:
+                //        if (pCell != null)
+                //        {
+                //            pCell.TypeOp = EOperators.Mul;
+                //            pCells.AddLast(pCell);
+                //        }
+                //        pCell = new Cell { Expr = Expr.Number(mTokenizer.Number) };
+                //        break;
+                //}
 
             }
 
             return pCells;
         }
+
+        private Cell CreateCellFromToken() => new Cell((mTokenizer.Token == ETokenType.Number) ? (Expr)Expr.Number(mTokenizer.Number) : Expr.Literal(mTokenizer.Identifier));
 
         private bool CanMergeCells(Cell l, Cell r) => OperatorExpr.GetPriority(l.TypeOp) >= OperatorExpr.GetPriority(r.TypeOp);
 

@@ -685,6 +685,6 @@ namespace Algebra.Core.Math.Expr
 {
     public enum ETypeExpr
     {
-        Null, Number, Variable, Operator, Function
+        Null, Number, Literal, Minus, Operator, Function
     }
 }

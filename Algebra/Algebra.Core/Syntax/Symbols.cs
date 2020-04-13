@@ -703,14 +703,14 @@ namespace Algebra.Core.Syntax
             ["cos"] = ETokenType.Cos,
         };
 
-        public static readonly IDictionary<Math.Expr.EOperators, ETokenType> DictOperators = new Dictionary<Math.Expr.EOperators, ETokenType>
+        public static readonly IDictionary<ETokenType, Math.Expr.EOperators> DictOperators = new Dictionary<ETokenType, Math.Expr.EOperators>
         {
-            [Math.Expr.EOperators.Add] = ETokenType.Add,
-            [Math.Expr.EOperators.Minus] = ETokenType.Minus,
-            [Math.Expr.EOperators.Mul] = ETokenType.Mul,
-            [Math.Expr.EOperators.Div] = ETokenType.Div,
-            [Math.Expr.EOperators.Pow] = ETokenType.Pow,
-            [Math.Expr.EOperators.Equal] = ETokenType.Equal,
+            [ETokenType.Add] = Math.Expr.EOperators.Add,
+            [ETokenType.Minus] = Math.Expr.EOperators.Minus,
+            [ETokenType.Mul] = Math.Expr.EOperators.Mul,
+            [ETokenType.Div] = Math.Expr.EOperators.Div,
+            [ETokenType.Pow] = Math.Expr.EOperators.Pow,
+            [ETokenType.Equal] = Math.Expr.EOperators.Equal,
         };
     }
 }

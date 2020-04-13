@@ -713,6 +713,7 @@ namespace Algebra.Core.Syntax
         public int Position { get; internal set; }
 
         public ETokenType Token { get; private set; }
+        public string TokenStr { get; private set; }
         public BigDecimal Number { get; private set; }
         public string Identifier { get; private set; }
 
@@ -734,7 +735,7 @@ namespace Algebra.Core.Syntax
             if (EOF || EOL)
                 return false;
 
-            var pTokenStr = "";
+            TokenStr = "";
 
             if (mLineStr == null)
                 if (!await NextChar())
@@ -752,26 +753,25 @@ namespace Algebra.Core.Syntax
 
             if (char.IsLetter(mCurrentChar))
             {
-                Identifier = "";
                 Token = ETokenType.Identifier;
                 do
                 {
                     mTokenCancel.ThrowIfCancellationRequested();
-                    Identifier += mCurrentChar;
+                    TokenStr += mCurrentChar;
                     if (!await NextChar())
                         break;
                 } while (char.IsLetterOrDigit(mCurrentChar));
+                Identifier = TokenStr;
             }
             else if (char.IsDigit(mCurrentChar) || mCurrentChar == '.')
             {
                 var pHaveDecimalPoint = false;
-                var pNumberStr = "";
 
                 Token = ETokenType.Number;
                 do
                 {
                     mTokenCancel.ThrowIfCancellationRequested();
-                    pNumberStr += mCurrentChar;
+                    TokenStr += mCurrentChar;
                     if (mCurrentChar == '.')
                     {
                         if (pHaveDecimalPoint)
@@ -782,14 +782,14 @@ namespace Algebra.Core.Syntax
                     if (!await NextChar())
                         break;
                 } while (char.IsDigit(mCurrentChar));
-                Number = BigDecimal.Parse(pNumberStr);
+                Number = BigDecimal.Parse(TokenStr);
             }
             else
             {
                 if (Symbols.DictTypeSymbol.TryGetValue(mCurrentChar, out ETokenType pType))
                 {
                     Token = pType;
-                    pTokenStr += mCurrentChar;
+                    TokenStr += mCurrentChar;
                     await NextChar();
                 }
                 else
