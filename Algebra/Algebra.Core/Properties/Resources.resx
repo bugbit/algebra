@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExpectTokenException" xml:space="preserve">
+    <value>I expect a {0}.</value>
+  </data>
   <data name="NoExpectTokenException" xml:space="preserve">
-    <value>NoExpectTokenException</value>
+    <value>I didn't expect a {0}.</value>
   </data>
   <data name="NoRecognizeStError" xml:space="preserve">
     <value>I don't recognize '{0}'</value>

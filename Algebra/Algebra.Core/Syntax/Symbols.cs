@@ -685,10 +685,13 @@ namespace Algebra.Core.Syntax
 {
     public static class Symbols
     {
+        public const char OpenParensChar = '(';
+        public const char CloseParensChars = '(';
+
         public static readonly Dictionary<char, ETokenType> DictTypeSymbol = new Dictionary<char, ETokenType>
         {
-            ['('] = ETokenType.OpenParens,
-            [')'] = ETokenType.CloseParens,
+            [OpenParensChar] = ETokenType.OpenParens,
+            [CloseParensChars] = ETokenType.CloseParens,
             ['+'] = ETokenType.Add,
             ['-'] = ETokenType.Minus,
             ['*'] = ETokenType.Mul,
@@ -711,6 +714,12 @@ namespace Algebra.Core.Syntax
             [ETokenType.Div] = Math.Expr.EOperators.Div,
             [ETokenType.Pow] = Math.Expr.EOperators.Pow,
             [ETokenType.Equal] = Math.Expr.EOperators.Equal,
+        };
+
+        public static readonly IDictionary<ETokenType, Math.Expr.EFunctions> DictFuncs = new Dictionary<ETokenType, Math.Expr.EFunctions>
+        {
+            [ETokenType.Sin] = Math.Expr.EFunctions.Sin,
+            [ETokenType.Cos] = Math.Expr.EFunctions.Cos,
         };
     }
 }

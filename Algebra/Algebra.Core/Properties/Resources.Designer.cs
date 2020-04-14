@@ -61,7 +61,16 @@ namespace Algebra.Core.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a NoExpectTokenException.
+        ///   Busca una cadena traducida similar a I expect a {0}..
+        /// </summary>
+        internal static string ExpectTokenException {
+            get {
+                return ResourceManager.GetString("ExpectTokenException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a I didn&apos;t expect a {0}..
         /// </summary>
         internal static string NoExpectTokenException {
             get {

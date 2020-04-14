@@ -696,10 +696,97 @@ namespace Algebra.Core.Syntax
             mTokenizer = new Tokenizer(argReader, argTokenCancel);
         }
 
-        //public async Task Parse()
-        //{
-        //    await mTokenizer.ReadTokens();
-        //}
+        public async Task<Expr> Parse()
+        {
+            Expr pExpr = null;
+            List<Expr> pExprsEquals = null;
+
+            do
+            {
+                var pCells = await Split();
+                //var pExpr2=merg
+
+                if (mTokenizer.EOF || mTokenizer.EOL)
+                    break;
+                switch (mTokenizer.Token)
+                {
+                    case ETokenType.CloseParens:
+                        if (pExprsEquals != null)
+                            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+
+                        return pExpr ?? Expr.Null;
+                    case ETokenType.Equal:
+                        (pExprsEquals ?? (pExprsEquals = new List<Expr>())).Add(pExpr);
+                        break;
+                }
+            } while (!mTokenizer.EOF && !mTokenizer.EOL);
+            //    await mTokenizer.ReadTokens();
+
+            return pExpr ?? Expr.Null;
+        }
+
+        private async Task<Expr> ParseExpr()
+        {
+            //Expr pExpr = Expr.Null;
+            bool pOpenParens = mTokenizer.Token == ETokenType.OpenParens;
+
+            if (mTokenizer.EOF || mTokenizer.EOL)
+            {
+                if (pOpenParens)
+                    throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.CloseParensChars), mTokenizer.Line, mTokenizer.Position);
+
+                return Expr.Null;
+            }
+
+            var pCells = await Split();
+            Expr pExpr;
+
+            if (pCells.Count == 0)
+                pExpr = Expr.Null;
+            else
+            {
+                var pFirst = pCells.First;
+
+                pExpr = Merge(pFirst.Value, pFirst.Next);
+            }
+
+            if (mTokenizer.EOF || mTokenizer.EOL)
+            {
+                if (pOpenParens)
+                    throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.CloseParensChars), mTokenizer.Line, mTokenizer.Position);
+
+                return pExpr;
+            }
+
+            switch (mTokenizer.Token)
+            {
+                case ETokenType.Equal:
+                    var pExprsEquals = new List<Expr>();
+
+                    pExprsEquals.Add(pExpr);
+                    for (; ; )
+                    {
+                        pExpr = await ParseExpr();
+                        if (!pExpr)
+                            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+                        if (mTokenizer.EOF || mTokenizer.EOL)
+                            break;
+                        if (mTokenizer.Token != ETokenType.Equal)
+                            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+                    }
+
+                    return Expr.Operator(EOperators.Equal, pExprsEquals.ToArray());
+                case ETokenType.CloseParens:
+                    if (!pOpenParens)
+                        throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+                    if (!pExpr)
+                        throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+
+                    return pExpr;
+                default:
+                    throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+            }
+        }
 
         private async Task<LinkedList<Cell>> Split()
         {
@@ -749,29 +836,47 @@ namespace Algebra.Core.Syntax
                 }
                 else
                 {
+                    Expr pExpr;
 
+                    if (Symbols.DictFuncs.TryGetValue(mTokenizer.Token, out EFunctions fn))
+                    {
+                        if (!await mTokenizer.NextToken())
+                            throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.OpenParensChar), mTokenizer.Line, mTokenizer.Position);
+
+                        mTokenizer.Back();
+
+                        var pExprArg = await ParseExpr();
+
+                        pExpr = Expr.Function(fn, pExprArg);
+                    }
+                    else
+                        switch (mTokenizer.Token)
+                        {
+                            case ETokenType.CloseParens:
+                                return pCells;
+                            case ETokenType.OpenParens:
+                                pExpr = await ParseExpr();
+                                break;
+                            case ETokenType.Number:
+                                pExpr = Expr.Number(mTokenizer.Number);
+                                break;
+                            case ETokenType.Identifier:
+                                pExpr = Expr.Literal(mTokenizer.Identifier);
+                                break;
+                            default:
+                                throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+                        }
+                    if (pCell != null)
+                    {
+                        pCell.TypeOp = EOperators.Mul;
+                        pCells.AddLast(pCell);
+                    }
+                    pCell = new Cell(pExpr);
                 }
-
-                //switch (mTokenizer.Token)
-                //{
-                //    case ETokenType.Equal:
-                //        return pCells;
-                //    case ETokenType.Number:
-                //        if (pCell != null)
-                //        {
-                //            pCell.TypeOp = EOperators.Mul;
-                //            pCells.AddLast(pCell);
-                //        }
-                //        pCell = new Cell { Expr = Expr.Number(mTokenizer.Number) };
-                //        break;
-                //}
-
             }
 
             return pCells;
         }
-
-        private Cell CreateCellFromToken() => new Cell((mTokenizer.Token == ETokenType.Number) ? (Expr)Expr.Number(mTokenizer.Number) : Expr.Literal(mTokenizer.Identifier));
 
         private bool CanMergeCells(Cell l, Cell r) => OperatorExpr.GetPriority(l.TypeOp) >= OperatorExpr.GetPriority(r.TypeOp);
 

@@ -723,6 +723,7 @@ namespace Algebra.Core.Math.Expr
         public static Expr Operator(EOperators op, params Expr[] exprs) => (op == EOperators.None) ? exprs.FirstOrDefault() ?? Null : new OperatorExpr(op, exprs);
         public static FunctionExpr Function(EFunctions fn, Expr argArg) => new FunctionExpr(fn, argArg);
 
+        public static bool operator !(Expr ex) => ex == null || ex.TypeExpr == ETypeExpr.Null;
         public static Expr operator +(Expr e1, Expr e2) => Operator(EOperators.Add, e1, e2);
         public static Expr operator -(Expr e1, Expr e2) => Operator(EOperators.Minus, e1, e2);
         public static Expr operator *(Expr e1, Expr e2) => Operator(EOperators.Mul, e1, e2);

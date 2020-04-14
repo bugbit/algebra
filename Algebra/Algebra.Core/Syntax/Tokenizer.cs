@@ -753,7 +753,6 @@ namespace Algebra.Core.Syntax
 
             if (char.IsLetter(mCurrentChar))
             {
-                Token = ETokenType.Identifier;
                 do
                 {
                     mTokenCancel.ThrowIfCancellationRequested();
@@ -761,7 +760,13 @@ namespace Algebra.Core.Syntax
                     if (!await NextChar())
                         break;
                 } while (char.IsLetterOrDigit(mCurrentChar));
-                Identifier = TokenStr;
+                if (Symbols.DictTypeFuncs.TryGetValue(TokenStr, out ETokenType pToken))
+                    Token = pToken;
+                else
+                {
+                    Token = ETokenType.Identifier;
+                    Identifier = TokenStr;
+                }
             }
             else if (char.IsDigit(mCurrentChar) || mCurrentChar == '.')
             {
