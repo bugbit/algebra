@@ -679,6 +679,7 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -686,6 +687,7 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.Expr
 {
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} TypeOperator : {TypeOperator} {ExprsStr}")]
     public class OperatorExpr : Expr
     {
         public EOperators TypeOperator { get; }
@@ -715,6 +717,44 @@ namespace Algebra.Core.Math.Expr
         public OperatorExpr(EOperators argOperator, params Expr[] argExprs) : this(argOperator, argExprs.AsEnumerable()) { }
 
         public override bool IsConstant => Exprs.Length > 0 && Exprs.All(e => e.IsConstant);
+        public override string ToString() => ExprsStr;
+
+        public int GetPriority() => GetPriority(TypeOperator);
+
+        /// <summary>
+        /// true:
+        ///     2*(3+4) => Parent(*), Expr(+) 3>1
+        /// </summary>
+        /// <param name="argExprParent"></param>
+        /// <returns></returns>
+        public bool PutParens(OperatorExpr argExprParent) => argExprParent.GetPriority() > GetPriority();
+        public char? Symbol(int argIdx)
+            =>
+                (argIdx <= 0)
+                ? (char?)null
+                : (Exprs[argIdx].TypeExpr == ETypeExpr.Number && Exprs[argIdx + 1].TypeExpr == ETypeExpr.Number)
+                    ? Syntax.Symbols.DictOperatorsChars[TypeOperator]
+                    : (char?)null;
+
+        public string ExprsStr => ExprsToString(OperatorExprWriterInfo.WriterInfo(this));
+
+        public static string ExprsToString(OperatorExprWriterInfo argInfo)
+        {
+            var pStrBuilder = new StringBuilder();
+
+            foreach (var i in argInfo.Exprs)
+            {
+                if (i.Symbol.HasValue)
+                    pStrBuilder.Append(i.Symbol.Value);
+                if (i.PutParens)
+                    pStrBuilder.Append(Syntax.Symbols.OpenParensChar);
+                pStrBuilder.Append(i.Expr.ToString());
+                if (i.PutParens)
+                    pStrBuilder.Append(Syntax.Symbols.CloseParensChars);
+            }
+
+            return pStrBuilder.ToString();
+        }
 
         public static int GetPriority(EOperators op)
         {
@@ -734,7 +774,5 @@ namespace Algebra.Core.Math.Expr
                     return 0;
             }
         }
-
-        public int GetPriority() => GetPriority(TypeOperator);
     }
 }

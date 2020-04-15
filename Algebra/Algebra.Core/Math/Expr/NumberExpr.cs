@@ -679,11 +679,13 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Deveel.Math;
 
 namespace Algebra.Core.Math.Expr
 {
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} Value : {Value}")]
     public class NumberExpr : Expr
     {
         public BigDecimal Value { get; }
@@ -694,5 +696,7 @@ namespace Algebra.Core.Math.Expr
         }
 
         public override bool IsConstant => true;
+
+        public override string ToString() => Value.ToString();
     }
 }

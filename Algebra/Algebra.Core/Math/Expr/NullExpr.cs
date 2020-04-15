@@ -679,16 +679,20 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant}")]
     public sealed class NullExpr : Expr
     {
         private static readonly Lazy<NullExpr> mInstance = new Lazy<NullExpr>(() => new NullExpr());
 
         private NullExpr() : base(ETypeExpr.Null) { }
 
-        public NullExpr Instance => mInstance.Value;
+        public static NullExpr Instance => mInstance.Value;
+
+        public override string ToString() => "null";
     }
 }

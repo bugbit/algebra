@@ -679,10 +679,12 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} Name : {Name}")]
     public class LiteralExpr : Expr
     {
         public string Name { get; }
@@ -691,5 +693,7 @@ namespace Algebra.Core.Math.Expr
         {
             Name = argName;
         }
+
+        public override string ToString() => Name;
     }
 }

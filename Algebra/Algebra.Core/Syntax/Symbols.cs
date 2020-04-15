@@ -679,6 +679,7 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Algebra.Core.Syntax
@@ -688,7 +689,7 @@ namespace Algebra.Core.Syntax
         public const char OpenParensChar = '(';
         public const char CloseParensChars = '(';
 
-        public static readonly Dictionary<char, ETokenType> DictTypeSymbol = new Dictionary<char, ETokenType>
+        public static readonly IDictionary<char, ETokenType> DictTypeSymbol = new Dictionary<char, ETokenType>
         {
             [OpenParensChar] = ETokenType.OpenParens,
             [CloseParensChars] = ETokenType.CloseParens,
@@ -721,5 +722,12 @@ namespace Algebra.Core.Syntax
             [ETokenType.Sin] = Math.Expr.EFunctions.Sin,
             [ETokenType.Cos] = Math.Expr.EFunctions.Cos,
         };
+
+        public static readonly IDictionary<Math.Expr.EOperators, char> DictOperatorsChars =
+        (
+            from s in DictTypeSymbol
+            join o in DictOperators on s.Value equals o.Key
+            select new { k = o.Value, v = s.Key }
+        ).ToDictionary(q => q.k, q => q.v);
     }
 }

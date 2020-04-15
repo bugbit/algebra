@@ -698,31 +698,14 @@ namespace Algebra.Core.Syntax
 
         public async Task<Expr> Parse()
         {
-            Expr pExpr = null;
-            List<Expr> pExprsEquals = null;
+            mTokenizer.IsNewLineEndExpr = false;
 
-            do
-            {
-                var pCells = await Split();
-                //var pExpr2=merg
+            var pExpr = await ParseExpr();
 
-                if (mTokenizer.EOF || mTokenizer.EOL)
-                    break;
-                switch (mTokenizer.Token)
-                {
-                    case ETokenType.CloseParens:
-                        if (pExprsEquals != null)
-                            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+            if (mTokenizer.EOF || mTokenizer.EOL)
+                return pExpr;
 
-                        return pExpr ?? Expr.Null;
-                    case ETokenType.Equal:
-                        (pExprsEquals ?? (pExprsEquals = new List<Expr>())).Add(pExpr);
-                        break;
-                }
-            } while (!mTokenizer.EOF && !mTokenizer.EOL);
-            //    await mTokenizer.ReadTokens();
-
-            return pExpr ?? Expr.Null;
+            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
         }
 
         private async Task<Expr> ParseExpr()

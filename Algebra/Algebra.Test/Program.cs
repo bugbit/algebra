@@ -684,7 +684,10 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Algebra.Core;
+
 using ST = Algebra.Core.Syntax;
+using Expr = Algebra.Core.Math.Expr;
 
 using static System.Console;
 
@@ -713,7 +716,7 @@ namespace Algebra.Test
             }
         }
 
-        [Test]
+        //[Test]
         static async Task TokernizerTest()
         {
             var pTexts = new[]
@@ -761,6 +764,56 @@ namespace Algebra.Test
                                 pTokenizer.ResetEOL = true;
                             }
                         }
+                    }
+                }
+                catch (ST.STException ex)
+                {
+                    var pLine = string.Empty;
+
+                    using (var pReader = new StringReader(pText))
+                    {
+                        for (var i = ex.Line; i > 0; i--)
+                            pLine = pReader.ReadLine();
+                    }
+                    PrintError(ex.Message);
+                    PrintError(pLine);
+                    PrintError($"{new string(' ', ex.Position - 1)}^");
+                }
+                catch (Exception ex)
+                {
+                    PrintError(ex.Message);
+                }
+
+            }
+        }
+        [Test]
+        static async Task ParseTest()
+        {
+            var pTexts = new[]
+            {
+                //"20$",
+                "20",
+                //"20x",
+                //"(20)",
+                //"20x+30y+20x^2",
+                //"(sin (x))^2+(cos (x))^2=1"
+                //"x",
+                //"2x=3",
+                //"20a+3b+c=1\nb=20",
+            };
+
+            foreach (var pText in pTexts)
+            {
+                try
+                {
+                    using (var pReader = new StringReader(pText))
+                    {
+                        Console.WriteLine($"{pText} :");
+
+                        var pParser = new ST.Parser(pReader, CancellationToken.None);
+                        var pExpr = await pParser.Parse();
+
+                        Console.WriteLine(pExpr);
                     }
                 }
                 catch (ST.STException ex)

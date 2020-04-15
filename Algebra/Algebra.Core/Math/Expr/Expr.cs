@@ -679,6 +679,7 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -705,6 +706,7 @@ namespace Algebra.Core.Math.Expr
      */
     #endregion
 
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant}")]
     public abstract class Expr
     {
         public ETypeExpr TypeExpr { get; }
@@ -715,13 +717,22 @@ namespace Algebra.Core.Math.Expr
             TypeExpr = argType;
         }
 
-        public static Expr Null => NullExpr.Null;
+        public static Expr Null => NullExpr.Instance;
 
         public static NumberExpr Number(BigDecimal n) => new NumberExpr(n);
         public static LiteralExpr Literal(string name) => new LiteralExpr(name);
         public static Expr Minus(Expr e) => (e is NumberExpr n) ? (Expr)new NumberExpr(-n.Value) : new MinusExpr(e);
         public static Expr Operator(EOperators op, params Expr[] exprs) => (op == EOperators.None) ? exprs.FirstOrDefault() ?? Null : new OperatorExpr(op, exprs);
         public static FunctionExpr Function(EFunctions fn, Expr argArg) => new FunctionExpr(fn, argArg);
+        /// <summary>
+        /// expr=2*(3+4)
+        /// e1 = * 2 (+ 3 4)
+        /// e2 = + 3 4
+        /// </summary>
+        /// <param name="e1"></param>
+        /// <param name="e2"></param>
+        /// <returns></returns>
+        public static bool PutParens(Expr e1, Expr e2) => (e1 is OperatorExpr op1) && (e2 is OperatorExpr op2) && op2.PutParens(op1);
 
         public static bool operator !(Expr ex) => ex == null || ex.TypeExpr == ETypeExpr.Null;
         public static Expr operator +(Expr e1, Expr e2) => Operator(EOperators.Add, e1, e2);

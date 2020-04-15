@@ -679,10 +679,12 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant : {IsConstant} TypeFunction : {TypeFunction} Arg : {Argument}")]
     public class FunctionExpr : Expr
     {
         public EFunctions TypeFunction { get; }
@@ -695,5 +697,7 @@ namespace Algebra.Core.Math.Expr
         }
 
         public override bool IsConstant => Argument.IsConstant;
+
+        public override string ToString() => $"{TypeFunction}({Argument})";
     }
 }
