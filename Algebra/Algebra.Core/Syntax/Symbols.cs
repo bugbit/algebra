@@ -687,7 +687,7 @@ namespace Algebra.Core.Syntax
     public static class Symbols
     {
         public const char OpenParensChar = '(';
-        public const char CloseParensChars = '(';
+        public const char CloseParensChars = ')';
 
         public static readonly IDictionary<char, ETokenType> DictTypeSymbol = new Dictionary<char, ETokenType>
         {

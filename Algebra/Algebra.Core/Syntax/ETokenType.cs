@@ -685,6 +685,6 @@ namespace Algebra.Core.Syntax
 {
     public enum ETokenType
     {
-        Identifier, Variable, Number, OpenParens, CloseParens, Add, Minus, Mul, Div, Pow, Equal, Sin, Cos
+        None, Identifier, Variable, Number, OpenParens, CloseParens, Add, Minus, Mul, Div, Pow, Equal, Sin, Cos
     }
 }

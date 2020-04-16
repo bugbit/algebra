@@ -725,6 +725,7 @@ namespace Algebra.Core.Syntax
 
                 return true;
             }
+            Token = ETokenType.None;
             if (ResetEOL)
             {
                 ResetEOL = false;

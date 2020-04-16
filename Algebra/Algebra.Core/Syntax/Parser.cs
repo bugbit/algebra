@@ -729,16 +729,9 @@ namespace Algebra.Core.Syntax
             else
             {
                 var pFirst = pCells.First;
+                var pNext = pFirst.Next;
 
-                pExpr = Merge(pFirst.Value, pFirst.Next);
-            }
-
-            if (mTokenizer.EOF || mTokenizer.EOL)
-            {
-                if (pOpenParens)
-                    throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.CloseParensChars), mTokenizer.Line, mTokenizer.Position);
-
-                return pExpr;
+                pExpr = Merge(pFirst.Value, ref pNext);
             }
 
             switch (mTokenizer.Token)
@@ -765,6 +758,8 @@ namespace Algebra.Core.Syntax
                     if (!pExpr)
                         throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
 
+                    return pExpr;
+                case ETokenType.None:
                     return pExpr;
                 default:
                     throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
@@ -850,11 +845,9 @@ namespace Algebra.Core.Syntax
                                 throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
                         }
                     if (pCell != null)
-                    {
                         pCell.TypeOp = EOperators.Mul;
-                        pCells.AddLast(pCell);
-                    }
                     pCell = new Cell(pExpr);
+                    pCells.AddLast(pCell);
                 }
             }
 
@@ -869,16 +862,15 @@ namespace Algebra.Core.Syntax
             l.TypeOp = r.TypeOp;
         }
 
-        private Expr Merge(Cell cell, LinkedListNode<Cell> List, bool argOneOnly = false)
+        private Expr Merge(Cell cell, ref LinkedListNode<Cell> argList, bool argOneOnly = false)
         {
-            var e = List;
-
-            while (e != null)
+            while (argList != null)
             {
-                var next = e.Next;
+                var next = argList;
 
+                argList = next.Next;
                 while (!CanMergeCells(cell, next.Value))
-                    Merge(next.Value, next, true);
+                    Merge(next.Value, ref argList, true);
                 MergeCells(cell, next.Value);
                 if (argOneOnly)
                     return cell.Expr;

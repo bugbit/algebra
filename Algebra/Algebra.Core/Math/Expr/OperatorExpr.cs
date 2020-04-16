@@ -685,6 +685,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ST = Algebra.Core.Syntax;
+
 namespace Algebra.Core.Math.Expr
 {
     [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} TypeOperator : {TypeOperator} {ExprsStr}")]
@@ -728,29 +730,24 @@ namespace Algebra.Core.Math.Expr
         /// <param name="argExprParent"></param>
         /// <returns></returns>
         public bool PutParens(OperatorExpr argExprParent) => argExprParent.GetPriority() > GetPriority();
-        public char? Symbol(int argIdx)
-            =>
-                (argIdx <= 0)
-                ? (char?)null
-                : (Exprs[argIdx].TypeExpr == ETypeExpr.Number && Exprs[argIdx + 1].TypeExpr == ETypeExpr.Number)
-                    ? Syntax.Symbols.DictOperatorsChars[TypeOperator]
-                    : (char?)null;
+        public bool PutSymbol(int argIdx) => (argIdx > 0 && argIdx + 1 < Exprs.Length) && (Exprs[argIdx].TypeExpr == ETypeExpr.Number && Exprs[argIdx + 1].TypeExpr == ETypeExpr.Number);
 
         public string ExprsStr => ExprsToString(OperatorExprWriterInfo.WriterInfo(this));
 
         public static string ExprsToString(OperatorExprWriterInfo argInfo)
         {
+            char? pSymbol = (ST.Symbols.DictOperatorsChars.TryGetValue(argInfo.Operator, out char pSymbol2)) ? pSymbol2 : (char?)null;
             var pStrBuilder = new StringBuilder();
 
             foreach (var i in argInfo.Exprs)
             {
-                if (i.Symbol.HasValue)
-                    pStrBuilder.Append(i.Symbol.Value);
+                if (i.PutSymbol && pSymbol.HasValue)
+                    pStrBuilder.Append(pSymbol.Value);
                 if (i.PutParens)
-                    pStrBuilder.Append(Syntax.Symbols.OpenParensChar);
+                    pStrBuilder.Append(ST.Symbols.OpenParensChar);
                 pStrBuilder.Append(i.Expr.ToString());
                 if (i.PutParens)
-                    pStrBuilder.Append(Syntax.Symbols.CloseParensChars);
+                    pStrBuilder.Append(ST.Symbols.CloseParensChars);
             }
 
             return pStrBuilder.ToString();
