@@ -707,7 +707,7 @@ namespace Algebra.Core.Math.Expr
                 pExprs[i] = new ExprsInfo
                 {
                     PutParens = Expr.PutParens(e, e1),
-                    PutSymbol = e.PutSymbol(i),
+                    PutSymbol = e.PutSymbol(e.TypeOperator, i),
                     Expr = e1,
                 };
             }

@@ -713,7 +713,7 @@ namespace Algebra.Core.Math.Expr
             Exprs =
                 (argExprs == null)
                     ? new Expr[0]
-                    : (from e in argExprs where e != null let op = e as OperatorExpr select (op == null) ? new[] { e } : (IEnumerable<Expr>)op.Exprs).SelectMany(e => e).ToArray();
+                    : (from e in argExprs where e != null let op = e as OperatorExpr select (op == null || op.TypeOperator != argOperator) ? new[] { e } : (IEnumerable<Expr>)op.Exprs).SelectMany(e => e).ToArray();
         }
 
         public OperatorExpr(EOperators argOperator, params Expr[] argExprs) : this(argOperator, argExprs.AsEnumerable()) { }
@@ -730,7 +730,7 @@ namespace Algebra.Core.Math.Expr
         /// <param name="argExprParent"></param>
         /// <returns></returns>
         public bool PutParens(OperatorExpr argExprParent) => argExprParent.GetPriority() > GetPriority();
-        public bool PutSymbol(int argIdx) => (argIdx > 0 && argIdx + 1 < Exprs.Length) && (Exprs[argIdx].TypeExpr == ETypeExpr.Number && Exprs[argIdx + 1].TypeExpr == ETypeExpr.Number);
+        public bool PutSymbol(EOperators op, int argIdx) => (argIdx > 0) && (op != EOperators.Mul || (Exprs[argIdx - 1].TypeExpr == ETypeExpr.Number && Exprs[argIdx].TypeExpr == ETypeExpr.Number));
 
         public string ExprsStr => ExprsToString(OperatorExprWriterInfo.WriterInfo(this));
 

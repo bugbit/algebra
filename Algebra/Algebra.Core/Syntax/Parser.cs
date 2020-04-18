@@ -766,6 +766,10 @@ namespace Algebra.Core.Syntax
             }
         }
 
+        /// <summary>
+        /// Splitting (“3 - 2 * 6 - 1”) = [3, ‘-’], [2, ‘*’], [6, ‘-’], [1, ‘’]
+        /// </summary>
+        /// <returns></returns>
         private async Task<LinkedList<Cell>> Split()
         {
             var pCells = new LinkedList<Cell>();
@@ -777,12 +781,8 @@ namespace Algebra.Core.Syntax
                 if (Symbols.DictOperators.TryGetValue(mTokenizer.Token, out EOperators op))
                 {
                     if (op == EOperators.Equal)
-                    {
-                        if (pCell != null)
-                            pCells.AddLast(pCell);
-
                         return pCells;
-                    }
+
                     if (pCell != null)
                     {
                         if (pMinus)
@@ -791,7 +791,6 @@ namespace Algebra.Core.Syntax
                             pMinus = false;
                         }
                         pCell.TypeOp = op;
-                        pCells.AddLast(pCell);
                         pCell = null;
                     }
                     else
@@ -862,6 +861,17 @@ namespace Algebra.Core.Syntax
             l.TypeOp = r.TypeOp;
         }
 
+        /// <summary>
+        /// 3 - 2 * 6 - 1:
+        /// Merging([3, ‘-’], [2, ‘*’], [6, ‘-’], [1, ‘’]) =>
+        /// Merging([3, ‘-’], Merging ([2, ‘*’], [6, ‘-’]), [1, ‘’]) =>
+        /// Merging([3, ‘-’], [12, ‘-’], [1, ‘’]) =>
+        /// Merging([-9, ‘-’], [1, ‘’]) => [-9 - 1, ‘’] = [-10, ‘’]
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="argList"></param>
+        /// <param name="argOneOnly"></param>
+        /// <returns></returns>
         private Expr Merge(Cell cell, ref LinkedListNode<Cell> argList, bool argOneOnly = false)
         {
             while (argList != null)

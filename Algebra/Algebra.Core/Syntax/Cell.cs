@@ -679,11 +679,13 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Algebra.Core.Math.Expr;
 
 namespace Algebra.Core.Syntax
 {
+    [DebuggerDisplay("TypeOp : {TypeOp} Expr: {Expr}")]
     class Cell
     {
         public Expr Expr { get; set; }
