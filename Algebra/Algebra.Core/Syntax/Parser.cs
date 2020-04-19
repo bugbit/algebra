@@ -737,9 +737,8 @@ namespace Algebra.Core.Syntax
             switch (mTokenizer.Token)
             {
                 case ETokenType.Equal:
-                    var pExprsEquals = new List<Expr>();
+                    var pLeft = pExpr;
 
-                    pExprsEquals.Add(pExpr);
                     for (; ; )
                     {
                         pExpr = await ParseExpr();
@@ -749,9 +748,13 @@ namespace Algebra.Core.Syntax
                             break;
                         if (mTokenizer.Token != ETokenType.Equal)
                             throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+
+                        var pTmp = Expr.Binary(ETypeExpr.Equal, pLeft, pExpr);
+
+                        pLeft = pTmp;
                     }
 
-                    return Expr.Operator(EOperators.Equal, pExprsEquals.ToArray());
+                    return pLeft;
                 case ETokenType.CloseParens:
                     if (!pOpenParens)
                         throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
@@ -774,35 +777,35 @@ namespace Algebra.Core.Syntax
         {
             var pCells = new LinkedList<Cell>();
             Cell pCell = null;
-            var pMinus = false;
+            var pNegative = false;
 
             while (await mTokenizer.NextToken())
             {
-                if (Symbols.DictOperators.TryGetValue(mTokenizer.Token, out EOperators op))
+                if (Symbols.DictOperators.TryGetValue(mTokenizer.Token, out ETypeExpr op))
                 {
-                    if (op == EOperators.Equal)
+                    if (op == ETypeExpr.Equal)
                         return pCells;
 
                     if (pCell != null)
                     {
-                        if (pMinus)
+                        if (pNegative)
                         {
-                            pCell.Expr = Expr.Minus(pCell.Expr);
-                            pMinus = false;
+                            pCell.Expr = Expr.Negative(pCell.Expr);
+                            pNegative = false;
                         }
                         pCell.TypeOp = op;
                         pCell = null;
                     }
                     else
                     {
-                        if (pMinus)
+                        if (pNegative)
                         {
                             switch (op)
                             {
-                                case EOperators.Minus:
-                                    pMinus = false;
+                                case ETypeExpr.Subtract:
+                                    pNegative = false;
                                     continue;
-                                case EOperators.Add:
+                                case ETypeExpr.Add:
                                     continue;
                                 default:
                                     throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
@@ -815,7 +818,7 @@ namespace Algebra.Core.Syntax
                 {
                     Expr pExpr;
 
-                    if (Symbols.DictFuncs.TryGetValue(mTokenizer.Token, out EFunctions fn))
+                    if (Symbols.DictFuncs.TryGetValue(mTokenizer.Token, out ETypeExpr fn))
                     {
                         if (!await mTokenizer.NextToken())
                             throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.OpenParensChar), mTokenizer.Line, mTokenizer.Position);
@@ -844,7 +847,7 @@ namespace Algebra.Core.Syntax
                                 throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
                         }
                     if (pCell != null)
-                        pCell.TypeOp = EOperators.Mul;
+                        pCell.TypeOp = ETypeExpr.Multiply;
                     pCell = new Cell(pExpr);
                     pCells.AddLast(pCell);
                 }
@@ -853,11 +856,11 @@ namespace Algebra.Core.Syntax
             return pCells;
         }
 
-        private bool CanMergeCells(Cell l, Cell r) => OperatorExpr.GetPriority(l.TypeOp) >= OperatorExpr.GetPriority(r.TypeOp);
+        private bool CanMergeCells(Cell l, Cell r) => BinaryExpr.GetPriority(l.TypeOp) >= BinaryExpr.GetPriority(r.TypeOp);
 
         private void MergeCells(Cell l, Cell r)
         {
-            l.Expr = Expr.Operator(l.TypeOp, l.Expr, r.Expr);
+            l.Expr = Expr.Binary(l.TypeOp, l.Expr, r.Expr);
             l.TypeOp = r.TypeOp;
         }
 

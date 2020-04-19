@@ -679,97 +679,18 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
-using ST = Algebra.Core.Syntax;
-
-namespace Algebra.Core.Math.Expr
+namespace Algebra.Core.Math.Expr.Visitor
 {
-    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} TypeOperator : {TypeOperator} {ExprsStr}")]
-    public class OperatorExpr : Expr
+    public class ExprVisitorRetExpr<T>
     {
-        public EOperators TypeOperator { get; }
-        public Expr[] Exprs { get; }
-
-        /// <summary>
-        /// case 1 = (op e1 e2)
-        /// 2 * 3 = (* 2 3) case 1
-        /// (2 + 3) * 5 = (* (+ 2 3) 5) case 1
-        /// (2 * 3) * 5 = (* 2 3 5) case 2
-        /// 2 * (3 + 4) = (* 2 (+ 3 4)) case 1
-        /// 2 * (3 * 4) = (* 2 3 4) case 2
-        /// (2 + 3) * (4 + 5) (* (+ 2 3) (+ 4 5) case 1
-        /// (2 * 3) * (4 * 5) (* 2 3 4 5)
-        /// </summary>
-        /// <param name="argOperator"></param>
-        /// <param name="argExprs"></param>
-        public OperatorExpr(EOperators argOperator, IEnumerable<Expr> argExprs) : base(ETypeExpr.Operator)
-        {
-            TypeOperator = argOperator;
-            Exprs =
-                (argExprs == null)
-                    ? new Expr[0]
-                    : (from e in argExprs where e != null let op = e as OperatorExpr select (op == null || op.TypeOperator != argOperator) ? new[] { e } : (IEnumerable<Expr>)op.Exprs).SelectMany(e => e).ToArray();
-        }
-
-        public OperatorExpr(EOperators argOperator, params Expr[] argExprs) : this(argOperator, argExprs.AsEnumerable()) { }
-
-        public override bool IsConstant => Exprs.Length > 0 && Exprs.All(e => e.IsConstant);
-        public override string ToString() => ExprsStr;
-
-        public int GetPriority() => GetPriority(TypeOperator);
-
-        /// <summary>
-        /// true:
-        ///     2*(3+4) => Parent(*), Expr(+) 3>1
-        /// </summary>
-        /// <param name="argExprParent"></param>
-        /// <returns></returns>
-        public bool PutParens(OperatorExpr argExprParent) => argExprParent.GetPriority() > GetPriority();
-        public bool PutSymbol(EOperators op, int argIdx) => (argIdx > 0) && (op != EOperators.Mul || (Exprs[argIdx - 1].TypeExpr == ETypeExpr.Number && Exprs[argIdx].TypeExpr == ETypeExpr.Number));
-
-        public string ExprsStr => ExprsToString(OperatorExprWriterInfo.WriterInfo(this));
-
-        public static string ExprsToString(OperatorExprWriterInfo argInfo)
-        {
-            char? pSymbol = (ST.Symbols.DictOperatorsChars.TryGetValue(argInfo.Operator, out char pSymbol2)) ? pSymbol2 : (char?)null;
-            var pStrBuilder = new StringBuilder();
-
-            foreach (var i in argInfo.Exprs)
-            {
-                if (i.PutSymbol && pSymbol.HasValue)
-                    pStrBuilder.Append(pSymbol.Value);
-                if (i.PutParens)
-                    pStrBuilder.Append(ST.Symbols.OpenParensChar);
-                pStrBuilder.Append(i.Expr.ToString());
-                if (i.PutParens)
-                    pStrBuilder.Append(ST.Symbols.CloseParensChars);
-            }
-
-            return pStrBuilder.ToString();
-        }
-
-        public static int GetPriority(EOperators op)
-        {
-            switch (op)
-            {
-                case EOperators.Equal:
-                    return 5;
-                case EOperators.Pow:
-                    return 4;
-                case EOperators.Mul:
-                case EOperators.Div:
-                    return 3;
-                case EOperators.Add:
-                case EOperators.Minus:
-                    return 1;
-                default:
-                    return 0;
-            }
-        }
+        public virtual T Visit(Expr e) => e.Accept(this);
+        public virtual T Visit(NullExpr e) => default(T);
+        public virtual T Visit(NumberExpr e) => default(T);
+        public virtual T Visit(LiteralExpr e) => default(T);
+        public virtual T Visit(UnaryExpr e) => default(T);
+        public virtual T Visit(BinaryExpr e) => default(T);
+        public virtual T Visit(FunctionExpr e) => default(T);
     }
 }

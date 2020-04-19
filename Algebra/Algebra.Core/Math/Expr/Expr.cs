@@ -684,6 +684,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Algebra.Core.Math.Expr.Visitor;
 using Deveel.Math;
 
 namespace Algebra.Core.Math.Expr
@@ -706,39 +707,43 @@ namespace Algebra.Core.Math.Expr
      */
     #endregion
 
-    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant}")]
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} {DebugView}")]
     public abstract class Expr
     {
+        private static readonly ExprToString mExprToString = new ExprToString();
+
         public ETypeExpr TypeExpr { get; }
         public virtual bool IsConstant => false;
+        protected string DebugView => ToString();
 
         public Expr(ETypeExpr argType)
         {
             TypeExpr = argType;
         }
+        public virtual bool NeedsParentheses(Expr child) => false;
+        public virtual int GetOperatorPrecedence() => 0;
+
+        public abstract T Accept<T>(ExprVisitorRetExpr<T> visitor);
+
+        public override string ToString() => mExprToString.Visit(this);
 
         public static Expr Null => NullExpr.Instance;
 
         public static NumberExpr Number(BigDecimal n) => new NumberExpr(n);
         public static LiteralExpr Literal(string name) => new LiteralExpr(name);
-        public static Expr Minus(Expr e) => (e is NumberExpr n) ? (Expr)new NumberExpr(-n.Value) : new MinusExpr(e);
-        public static Expr Operator(EOperators op, params Expr[] exprs) => (op == EOperators.None) ? exprs.FirstOrDefault() ?? Null : new OperatorExpr(op, exprs);
-        public static FunctionExpr Function(EFunctions fn, Expr argArg) => new FunctionExpr(fn, argArg);
-        /// <summary>
-        /// expr=2*(3+4)
-        /// e1 = * 2 (+ 3 4)
-        /// e2 = + 3 4
-        /// </summary>
-        /// <param name="e1"></param>
-        /// <param name="e2"></param>
-        /// <returns></returns>
-        public static bool PutParens(Expr e1, Expr e2) => (e1 is OperatorExpr op1) && (e2 is OperatorExpr op2) && op2.PutParens(op1);
+        public static Expr Unary(ETypeExpr op, Expr operand)
+        {
+            return (op == ETypeExpr.Negate && (operand is NumberExpr n)) ? (Expr)new NumberExpr(-n.Value) : new UnaryExpr(op, operand);
+        }
+        public static Expr Negative(Expr e) => Unary(ETypeExpr.Negate, e);
+        public static BinaryExpr Binary(ETypeExpr op, Expr l, Expr r) => new BinaryExpr(op, l, r);
+        public static FunctionExpr Function(ETypeExpr fn, Expr argArg) => new FunctionExpr(fn, argArg);
 
         public static bool operator !(Expr ex) => ex == null || ex.TypeExpr == ETypeExpr.Null;
-        public static Expr operator +(Expr e1, Expr e2) => Operator(EOperators.Add, e1, e2);
-        public static Expr operator -(Expr e1, Expr e2) => Operator(EOperators.Minus, e1, e2);
-        public static Expr operator *(Expr e1, Expr e2) => Operator(EOperators.Mul, e1, e2);
-        public static Expr operator /(Expr e1, Expr e2) => Operator(EOperators.Div, e1, e2);
-        public static Expr operator ^(Expr e1, Expr e2) => Operator(EOperators.Pow, e1, e2);
+        public static Expr operator +(Expr e1, Expr e2) => Binary(ETypeExpr.Add, e1, e2);
+        public static Expr operator -(Expr e1, Expr e2) => Binary(ETypeExpr.Subtract, e1, e2);
+        public static Expr operator *(Expr e1, Expr e2) => Binary(ETypeExpr.Multiply, e1, e2);
+        public static Expr operator /(Expr e1, Expr e2) => Binary(ETypeExpr.Divide, e1, e2);
+        public static Expr operator ^(Expr e1, Expr e2) => Binary(ETypeExpr.Power, e1, e2);
     }
 }

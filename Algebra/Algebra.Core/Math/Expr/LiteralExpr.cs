@@ -681,10 +681,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Algebra.Core.Math.Expr.Visitor;
 
 namespace Algebra.Core.Math.Expr
 {
-    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} Name : {Name}")]
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} {DebugView}")]
     public class LiteralExpr : Expr
     {
         public string Name { get; }
@@ -694,6 +695,6 @@ namespace Algebra.Core.Math.Expr
             Name = argName;
         }
 
-        public override string ToString() => Name;
+        public override T Accept<T>(ExprVisitorRetExpr<T> visitor) => visitor.Visit(this);
     }
 }

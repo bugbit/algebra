@@ -681,23 +681,30 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Algebra.Core.Math.Expr.Visitor;
 
 namespace Algebra.Core.Math.Expr
 {
-    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant : {IsConstant} TypeFunction : {TypeFunction} Arg : {Argument}")]
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} {DebugView}")]
     public class FunctionExpr : Expr
     {
-        public EFunctions TypeFunction { get; }
         public Expr Argument { get; }
 
-        public FunctionExpr(EFunctions argFunc, Expr argArg) : base(ETypeExpr.Function)
+        public FunctionExpr(ETypeExpr argFunc, Expr argArg) : base(argFunc)
         {
-            TypeFunction = argFunc;
-            Argument = argArg ?? Expr.Null;
+            switch (argFunc)
+            {
+                case ETypeExpr.Sin:
+                case ETypeExpr.Cos:
+                    Argument = argArg ?? Null;
+                    break;
+                default:
+                    throw new ArgumentException($"{argFunc} not function operator");
+            }
         }
 
         public override bool IsConstant => Argument.IsConstant;
 
-        public override string ToString() => $"{TypeFunction}({Argument})";
+        public override T Accept<T>(ExprVisitorRetExpr<T> visitor) => visitor.Visit(this);
     }
 }

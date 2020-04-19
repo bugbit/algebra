@@ -679,10 +679,13 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using Algebra.Core.Math.Expr.Visitor;
 
 namespace Algebra.Core.Math.Expr
 {
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} {DebugView}")]
     public class UnaryExpr : Expr
     {
         public Expr Operand { get; }
@@ -692,11 +695,15 @@ namespace Algebra.Core.Math.Expr
             switch (op)
             {
                 case ETypeExpr.Negate:
-                    Operand = operand;
+                    Operand = operand ?? Null;
                     break;
                 default:
                     throw new ArgumentException($"{op} not unary operator");
             }
         }
+
+        public override bool IsConstant => Operand.IsConstant;
+
+        public override T Accept<T>(ExprVisitorRetExpr<T> visitor) => visitor.Visit(this);
     }
 }

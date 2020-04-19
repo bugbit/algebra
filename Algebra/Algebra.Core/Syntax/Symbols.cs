@@ -707,27 +707,20 @@ namespace Algebra.Core.Syntax
             ["cos"] = ETokenType.Cos,
         };
 
-        public static readonly IDictionary<ETokenType, Math.Expr.EOperators> DictOperators = new Dictionary<ETokenType, Math.Expr.EOperators>
+        public static readonly IDictionary<ETokenType, Math.Expr.ETypeExpr> DictOperators = new Dictionary<ETokenType, Math.Expr.ETypeExpr>
         {
-            [ETokenType.Add] = Math.Expr.EOperators.Add,
-            [ETokenType.Minus] = Math.Expr.EOperators.Minus,
-            [ETokenType.Mul] = Math.Expr.EOperators.Mul,
-            [ETokenType.Div] = Math.Expr.EOperators.Div,
-            [ETokenType.Pow] = Math.Expr.EOperators.Pow,
-            [ETokenType.Equal] = Math.Expr.EOperators.Equal,
+            [ETokenType.Add] = Math.Expr.ETypeExpr.Add,
+            [ETokenType.Minus] = Math.Expr.ETypeExpr.Subtract,
+            [ETokenType.Mul] = Math.Expr.ETypeExpr.Multiply,
+            [ETokenType.Div] = Math.Expr.ETypeExpr.Divide,
+            [ETokenType.Pow] = Math.Expr.ETypeExpr.Power,
+            [ETokenType.Equal] = Math.Expr.ETypeExpr.Equal,
         };
 
-        public static readonly IDictionary<ETokenType, Math.Expr.EFunctions> DictFuncs = new Dictionary<ETokenType, Math.Expr.EFunctions>
+        public static readonly IDictionary<ETokenType, Math.Expr.ETypeExpr> DictFuncs = new Dictionary<ETokenType, Math.Expr.ETypeExpr>
         {
-            [ETokenType.Sin] = Math.Expr.EFunctions.Sin,
-            [ETokenType.Cos] = Math.Expr.EFunctions.Cos,
+            [ETokenType.Sin] = Math.Expr.ETypeExpr.Sin,
+            [ETokenType.Cos] = Math.Expr.ETypeExpr.Cos,
         };
-
-        public static readonly IDictionary<Math.Expr.EOperators, char> DictOperatorsChars =
-        (
-            from s in DictTypeSymbol
-            join o in DictOperators on s.Value equals o.Key
-            select new { k = o.Value, v = s.Key }
-        ).ToDictionary(q => q.k, q => q.v);
     }
 }

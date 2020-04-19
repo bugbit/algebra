@@ -681,11 +681,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Algebra.Core.Math.Expr.Visitor;
 using Deveel.Math;
 
 namespace Algebra.Core.Math.Expr
 {
-    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} Value : {Value}")]
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} {DebugView}")]
     public class NumberExpr : Expr
     {
         public BigDecimal Value { get; }
@@ -697,6 +698,6 @@ namespace Algebra.Core.Math.Expr
 
         public override bool IsConstant => true;
 
-        public override string ToString() => Value.ToString();
+        public override T Accept<T>(ExprVisitorRetExpr<T> visitor) => visitor.Visit(this);
     }
 }

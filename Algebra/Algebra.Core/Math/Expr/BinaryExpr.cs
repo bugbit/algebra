@@ -679,10 +679,13 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using Algebra.Core.Math.Expr.Visitor;
 
 namespace Algebra.Core.Math.Expr
 {
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} {DebugView}")]
     public class BinaryExpr : Expr
     {
         public Expr Left { get; }
@@ -694,14 +697,40 @@ namespace Algebra.Core.Math.Expr
             {
                 case ETypeExpr.Add:
                 case ETypeExpr.Divide:
-                case ETypeExpr.Minus:
                 case ETypeExpr.Multiply:
                 case ETypeExpr.Subtract:
-                    Left = left;
-                    Right = right;
+                case ETypeExpr.Power:
+                case ETypeExpr.Equal:
+                    Left = left ?? Null;
+                    Right = right ?? Null;
                     break;
                 default:
                     throw new ArgumentException($"{op} not binary operator");
+            }
+        }
+
+        public override bool IsConstant => Left.IsConstant && Right.IsConstant;
+
+        public override T Accept<T>(ExprVisitorRetExpr<T> visitor) => visitor.Visit(this);
+
+        public int GetPriority() => GetPriority(TypeExpr);
+
+        public static int GetPriority(ETypeExpr op)
+        {
+            switch (op)
+            {
+                case ETypeExpr.Equal:
+                    return 5;
+                case ETypeExpr.Power:
+                    return 4;
+                case ETypeExpr.Multiply:
+                case ETypeExpr.Divide:
+                    return 3;
+                case ETypeExpr.Add:
+                case ETypeExpr.Subtract:
+                    return 1;
+                default:
+                    return 0;
             }
         }
     }

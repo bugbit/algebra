@@ -689,9 +689,9 @@ namespace Algebra.Core.Syntax
     class Cell
     {
         public Expr Expr { get; set; }
-        public EOperators TypeOp { get; set; }
+        public ETypeExpr TypeOp { get; set; }
 
-        public Cell(Expr e, EOperators op = EOperators.None)
+        public Cell(Expr e, ETypeExpr op = ETypeExpr.Null)
         {
             Expr = e;
             TypeOp = op;

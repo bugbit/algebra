@@ -681,18 +681,21 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Algebra.Core.Math.Expr.Visitor;
 
 namespace Algebra.Core.Math.Expr
 {
-    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant}")]
+    [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} {DebugView}")]
     public sealed class NullExpr : Expr
     {
         private static readonly Lazy<NullExpr> mInstance = new Lazy<NullExpr>(() => new NullExpr());
 
         private NullExpr() : base(ETypeExpr.Null) { }
 
-        public static NullExpr Instance => mInstance.Value;
 
-        public override string ToString() => "null";
+        public override bool IsConstant => true;
+        public override T Accept<T>(ExprVisitorRetExpr<T> visitor) => visitor.Visit(this);
+
+        public static NullExpr Instance => mInstance.Value;
     }
 }
