@@ -683,8 +683,20 @@ using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
-    public enum ETypeExpr
+    public class UnaryExpr : Expr
     {
-        Null, Number, Literal, Minus, Unary, Operator, Function, Negate, Add, Divide, Multiply, Power, Subtract
+        public Expr Operand { get; }
+
+        public UnaryExpr(ETypeExpr op, Expr operand) : base(op)
+        {
+            switch (op)
+            {
+                case ETypeExpr.Negate:
+                    Operand = operand;
+                    break;
+                default:
+                    throw new ArgumentException($"{op} not unary operator");
+            }
+        }
     }
 }

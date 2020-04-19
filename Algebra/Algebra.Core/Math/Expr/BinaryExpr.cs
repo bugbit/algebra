@@ -683,8 +683,26 @@ using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
-    public enum ETypeExpr
+    public class BinaryExpr : Expr
     {
-        Null, Number, Literal, Minus, Unary, Operator, Function, Negate, Add, Divide, Multiply, Power, Subtract
+        public Expr Left { get; }
+        public Expr Right { get; }
+
+        public BinaryExpr(ETypeExpr op, Expr left, Expr right) : base(op)
+        {
+            switch (op)
+            {
+                case ETypeExpr.Add:
+                case ETypeExpr.Divide:
+                case ETypeExpr.Minus:
+                case ETypeExpr.Multiply:
+                case ETypeExpr.Subtract:
+                    Left = left;
+                    Right = right;
+                    break;
+                default:
+                    throw new ArgumentException($"{op} not binary operator");
+            }
+        }
     }
 }

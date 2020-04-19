@@ -683,8 +683,7 @@ using System.Text;
 
 namespace Algebra.Core.Math.Expr
 {
-    public enum ETypeExpr
+    public class ExprVisitor
     {
-        Null, Number, Literal, Minus, Unary, Operator, Function, Negate, Add, Divide, Multiply, Power, Subtract
     }
 }
