@@ -856,7 +856,7 @@ namespace Algebra.Core.Syntax
             return pCells;
         }
 
-        private bool CanMergeCells(Cell l, Cell r) => BinaryExpr.GetPriority(l.TypeOp) >= BinaryExpr.GetPriority(r.TypeOp);
+        private bool CanMergeCells(Cell l, Cell r) => Expr.GetOperatorPrecedence(l.TypeOp) >= Expr.GetOperatorPrecedence(r.TypeOp);
 
         private void MergeCells(Cell l, Cell r)
         {

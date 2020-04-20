@@ -720,8 +720,40 @@ namespace Algebra.Core.Math.Expr
         {
             TypeExpr = argType;
         }
-        public virtual bool NeedsParentheses(Expr child) => false;
-        public virtual int GetOperatorPrecedence() => 0;
+        public bool NeedsParentheses(Expr child)
+        {
+            if (!child)
+                return false;
+
+            var pPre = child.GetOperatorPrecedence();
+            var pPre2 = GetOperatorPrecedence();
+
+            return pPre < pPre2;
+        }
+        public int GetOperatorPrecedence() => GetOperatorPrecedence(TypeExpr);
+        public static int GetOperatorPrecedence(ETypeExpr op)
+        {
+            switch (op)
+            {
+                case ETypeExpr.Number:
+                case ETypeExpr.Literal:
+                    return 6;
+                case ETypeExpr.Power:
+                    return 5;
+                case ETypeExpr.Negate:
+                    return 4;
+                case ETypeExpr.Multiply:
+                case ETypeExpr.Divide:
+                    return 3;
+                case ETypeExpr.Add:
+                case ETypeExpr.Subtract:
+                    return 2;
+                case ETypeExpr.Equal:
+                    return 1;
+                default:
+                    return 0;
+            }
+        }
 
         public abstract T Accept<T>(ExprVisitorRetExpr<T> visitor);
 

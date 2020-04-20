@@ -712,26 +712,5 @@ namespace Algebra.Core.Math.Expr
         public override bool IsConstant => Left.IsConstant && Right.IsConstant;
 
         public override T Accept<T>(ExprVisitorRetExpr<T> visitor) => visitor.Visit(this);
-
-        public int GetPriority() => GetPriority(TypeExpr);
-
-        public static int GetPriority(ETypeExpr op)
-        {
-            switch (op)
-            {
-                case ETypeExpr.Equal:
-                    return 5;
-                case ETypeExpr.Power:
-                    return 4;
-                case ETypeExpr.Multiply:
-                case ETypeExpr.Divide:
-                    return 3;
-                case ETypeExpr.Add:
-                case ETypeExpr.Subtract:
-                    return 1;
-                default:
-                    return 0;
-            }
-        }
     }
 }
