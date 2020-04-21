@@ -744,14 +744,16 @@ namespace Algebra.Core.Syntax
                         pExpr = await ParseExpr();
                         if (!pExpr)
                             throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-                        if (mTokenizer.EOF || mTokenizer.EOL)
-                            break;
-                        if (mTokenizer.Token != ETokenType.Equal)
-                            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
 
                         var pTmp = Expr.Binary(ETypeExpr.Equal, pLeft, pExpr);
 
                         pLeft = pTmp;
+
+                        if (mTokenizer.EOF || mTokenizer.EOL)
+                            break;
+
+                        if (mTokenizer.Token != ETokenType.Equal)
+                            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
                     }
 
                     return pLeft;
@@ -798,12 +800,12 @@ namespace Algebra.Core.Syntax
                     }
                     else
                     {
-                        if (pNegative)
+                        if (!pNegative)
                         {
                             switch (op)
                             {
                                 case ETypeExpr.Subtract:
-                                    pNegative = false;
+                                    pNegative = true;
                                     continue;
                                 case ETypeExpr.Add:
                                     continue;
@@ -846,6 +848,11 @@ namespace Algebra.Core.Syntax
                             default:
                                 throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
                         }
+                    if (pNegative)
+                    {
+                        pExpr = Expr.Negative(pExpr);
+                        pNegative = false;
+                    }
                     if (pCell != null)
                         pCell.TypeOp = ETypeExpr.Multiply;
                     pCell = new Cell(pExpr);

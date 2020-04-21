@@ -688,13 +688,14 @@ namespace Algebra.Core.Syntax
     {
         public const char OpenParensChar = '(';
         public const char CloseParensChars = ')';
+        public const char MinusChars = '-';
 
         public static readonly IDictionary<char, ETokenType> DictTypeSymbol = new Dictionary<char, ETokenType>
         {
             [OpenParensChar] = ETokenType.OpenParens,
             [CloseParensChars] = ETokenType.CloseParens,
             ['+'] = ETokenType.Add,
-            ['-'] = ETokenType.Minus,
+            [MinusChars] = ETokenType.Minus,
             ['*'] = ETokenType.Mul,
             ['/'] = ETokenType.Div,
             ['^'] = ETokenType.Pow,
@@ -722,5 +723,19 @@ namespace Algebra.Core.Syntax
             [ETokenType.Sin] = Math.Expr.ETypeExpr.Sin,
             [ETokenType.Cos] = Math.Expr.ETypeExpr.Cos,
         };
+
+        public static readonly IDictionary<Math.Expr.ETypeExpr, char> DictOperatorsStr =
+        (
+            from o in DictOperators
+            join t in DictTypeSymbol on o.Key equals t.Value
+            select new { op = o.Value, car = t.Key }
+        ).Concat(new[] { new { op = Math.Expr.ETypeExpr.Negate, car = MinusChars } }).ToDictionary(q => q.op, q => q.car);
+
+        public static readonly IDictionary<Math.Expr.ETypeExpr, string> DictFuncsStr =
+        (
+            from o in DictFuncs
+            join t in DictTypeFuncs on o.Key equals t.Value
+            select new { op = o.Value, car = t.Key }
+        ).ToDictionary(q => q.op, q => q.car);
     }
 }
