@@ -739,6 +739,8 @@ namespace Algebra.Core.Syntax
                 case ETokenType.Equal:
                     var pLeft = pExpr;
 
+                    if (pOpenParens)
+                        throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.CloseParensChars), mTokenizer.Line, mTokenizer.Position);
                     for (; ; )
                     {
                         pExpr = await ParseExpr();
