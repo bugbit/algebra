@@ -700,12 +700,43 @@ namespace Algebra.Core.Syntax
         {
             mTokenizer.IsNewLineEndExpr = false;
 
+            var pExpr = await ParseInternal();
+
+            return pExpr;
+        }
+
+        private async Task<Expr> ParseInternal()
+        {
             var pExpr = await ParseExpr();
 
-            if (mTokenizer.EOF || mTokenizer.EOL)
-                return pExpr;
+            for (; ; )
+            {
+                if (mTokenizer.EOF || mTokenizer.EOL)
+                    return pExpr;
 
-            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+                if (mTokenizer.Token == ETokenType.Equal)
+                    pExpr = await ParseEquation(pExpr);
+                else
+                    throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+            }
+        }
+
+        private async Task<Expr> ParseEquation(Expr e)
+        {
+            var pExpr = e;
+
+            do
+            {
+                var pExpr2 = await ParseExpr();
+                var pExprTmp = Expr.Binary(ETypeExpr.Equal, pExpr, pExpr2);
+
+                pExpr = pExprTmp;
+
+                if (mTokenizer.EOF || mTokenizer.EOL)
+                    break;
+            } while (mTokenizer.Token == ETokenType.Equal);
+
+            return pExpr;
         }
 
         private async Task<Expr> ParseExpr()
@@ -736,29 +767,6 @@ namespace Algebra.Core.Syntax
 
             switch (mTokenizer.Token)
             {
-                case ETokenType.Equal:
-                    var pLeft = pExpr;
-
-                    if (pOpenParens)
-                        throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.CloseParensChars), mTokenizer.Line, mTokenizer.Position);
-                    for (; ; )
-                    {
-                        pExpr = await ParseExpr();
-                        if (!pExpr)
-                            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-
-                        var pTmp = Expr.Binary(ETypeExpr.Equal, pLeft, pExpr);
-
-                        pLeft = pTmp;
-
-                        if (mTokenizer.EOF || mTokenizer.EOL)
-                            break;
-
-                        if (mTokenizer.Token != ETokenType.Equal)
-                            throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-                    }
-
-                    return pLeft;
                 case ETokenType.CloseParens:
                     if (!pOpenParens)
                         throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
@@ -766,7 +774,11 @@ namespace Algebra.Core.Syntax
                         throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
 
                     return pExpr;
+                case ETokenType.Equal:
                 case ETokenType.None:
+                    if (pOpenParens)
+                        throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.CloseParensChars), mTokenizer.Line, mTokenizer.Position);
+
                     return pExpr;
                 default:
                     throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
@@ -782,6 +794,7 @@ namespace Algebra.Core.Syntax
             var pCells = new LinkedList<Cell>();
             Cell pCell = null;
             var pNegative = false;
+            Expr pExpr;
 
             while (await mTokenizer.NextToken())
             {
@@ -820,8 +833,6 @@ namespace Algebra.Core.Syntax
                 }
                 else
                 {
-                    Expr pExpr;
-
                     if (Symbols.DictFuncs.TryGetValue(mTokenizer.Token, out ETypeExpr fn))
                     {
                         if (!await mTokenizer.NextToken())
@@ -840,6 +851,8 @@ namespace Algebra.Core.Syntax
                                 return pCells;
                             case ETokenType.OpenParens:
                                 pExpr = await ParseExpr();
+                                if (mTokenizer.Token == ETokenType.Equal)
+                                    mTokenizer.Back();
                                 break;
                             case ETokenType.Number:
                                 pExpr = Expr.Number(mTokenizer.Number);
