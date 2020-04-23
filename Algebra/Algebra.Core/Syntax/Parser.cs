@@ -705,6 +705,25 @@ namespace Algebra.Core.Syntax
             return pExpr;
         }
 
+        public async Task<Expr[]> ParseLines()
+        {
+            var pExprs = new List<Expr>();
+
+            mTokenizer.IsNewLineEndExpr = true;
+            while (!mTokenizer.EOF)
+            {
+                var pExpr = await ParseInternal();
+
+                if (!!pExpr)
+                    pExprs.Add(pExpr);
+
+                if (mTokenizer.EOL)
+                    mTokenizer.ResetEOL = true;
+            }
+
+            return pExprs.ToArray();
+        }
+
         private async Task<Expr> ParseInternal()
         {
             var pExpr = await ParseExpr();

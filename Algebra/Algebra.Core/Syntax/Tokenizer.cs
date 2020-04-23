@@ -689,6 +689,7 @@ namespace Algebra.Core.Syntax
 {
     public sealed class Tokenizer
     {
+        private bool mEOL;
         private TextReader mReader;
         private CancellationToken mTokenCancel;
         private bool mBacked = false;
@@ -708,7 +709,7 @@ namespace Algebra.Core.Syntax
         public bool ResetEOL { get; set; }
 
         public bool EOF { get; private set; }
-        public bool EOL { get; private set; }
+        public bool EOL { get => mEOL && !ResetEOL; private set => mEOL = value; }
         public int Line { get; internal set; }
         public int Position { get; internal set; }
 
