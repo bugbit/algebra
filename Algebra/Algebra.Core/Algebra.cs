@@ -685,6 +685,10 @@ namespace Algebra.Core
 {
     /*
     urls:
+      https://es.wikipedia.org/wiki/Propiedades_de_los_n%C3%BAmeros_enteros
+      http://cimanet.uoc.edu/cursMates0/IniciacionMatematicas/inici/0_0.html
+      https://www.monografias.com/trabajos106/expresiones-algebraicas/expresiones-algebraicas.shtml
+      https://sites.google.com/site/mateosalmeronmayraalejandra/precalculo/simplifica-fracciones-compuestas
     . https://practicasdeprogramacion.wordpress.com/2011/09/08/raices-de-polinomios-regla-de-ruffini/
 https://es.wikipedia.org/wiki/Algoritmo_de_Horner
 https://es.wikipedia.org/wiki/Regla_de_Ruffini

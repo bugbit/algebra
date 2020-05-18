@@ -710,8 +710,6 @@ namespace Algebra.Core.Math.Expr
     [DebuggerDisplay("TypeExpr : {TypeExpr} IsConstant: {IsConstant} {DebugView}")]
     public abstract class Expr
     {
-        private static readonly ExprToString mExprToString = new ExprToString();
-
         public ETypeExpr TypeExpr { get; }
         public virtual bool IsConstant => false;
         protected string DebugView => ToString();
@@ -757,7 +755,7 @@ namespace Algebra.Core.Math.Expr
 
         public abstract T Accept<T>(ExprVisitorRetExpr<T> visitor);
 
-        public override string ToString() => mExprToString.Visit(this);
+        public override string ToString() => ExprToString.Instance.Visit(this);
 
         public static Expr Null => NullExpr.Instance;
 
@@ -765,7 +763,16 @@ namespace Algebra.Core.Math.Expr
         public static LiteralExpr Literal(string name) => new LiteralExpr(name);
         public static Expr Unary(ETypeExpr op, Expr operand)
         {
-            return (op == ETypeExpr.Negate && (operand is NumberExpr n)) ? (Expr)new NumberExpr(-n.Value) : new UnaryExpr(op, operand);
+            if (op == ETypeExpr.Negate)
+            {
+                if (operand is NumberExpr n)
+                    return new NumberExpr(-n.Value);
+
+                if (operand is UnaryExpr u && u.TypeExpr == ETypeExpr.Negate)
+                    return u.Operand;
+            }
+
+            return new UnaryExpr(op, operand);
         }
         public static Expr Negative(Expr e) => Unary(ETypeExpr.Negate, e);
         public static BinaryExpr Binary(ETypeExpr op, Expr l, Expr r) => new BinaryExpr(op, l, r);

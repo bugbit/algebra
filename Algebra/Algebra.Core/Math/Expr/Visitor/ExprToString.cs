@@ -7,6 +7,12 @@ namespace Algebra.Core.Math.Expr.Visitor
 {
     public class ExprToString : ExprVisitorRetExpr<string>
     {
+        private static readonly Lazy<ExprToString> mInstance = new Lazy<ExprToString>(() => new ExprToString());
+
+        private ExprToString() { }
+
+        public static ExprToString Instance => mInstance.Value;
+
         public override string Visit(NullExpr e) => "null";
 
         public override string Visit(NumberExpr e) => e.Value.ToString();
@@ -20,14 +26,9 @@ namespace Algebra.Core.Math.Expr.Visitor
 
         public override string Visit(BinaryExpr e)
         {
-            var pFlag = e.NeedsParentheses(e.Left);
-            var pFlag2 = e.NeedsParentheses(e.Right);
-            var pStr = string.Empty;
-
-            pStr += ParenthesizedVisit(pFlag, e.Left);
-            if (e.TypeExpr != ETypeExpr.Multiply || ((e.Left is NumberExpr) && (e.Right is NumberExpr)))
-                pStr += OpToCar(e);
-            pStr += ParenthesizedVisit(pFlag2, e.Right);
+            var l = e.Left;
+            var r = e.Right;
+            var pStr = VisitBinary(e, l, r);
 
             return pStr;
         }
@@ -40,6 +41,20 @@ namespace Algebra.Core.Math.Expr.Visitor
         }
 
         private string OpToCar(Expr e) => (ST.Symbols.DictOperatorsStr.TryGetValue(e.TypeExpr, out char car)) ? car.ToString() : string.Empty;
+
+        private string VisitBinary(Expr e, Expr l, Expr r)
+        {
+            var pFlag = e.NeedsParentheses(l);
+            var pFlag2 = e.NeedsParentheses(r);
+            var pStr = string.Empty;
+
+            pStr += ParenthesizedVisit(pFlag, l);
+            if (e.TypeExpr != ETypeExpr.Multiply || ((l is NumberExpr) && (r is NumberExpr)))
+                pStr += OpToCar(e);
+            pStr += ParenthesizedVisit(pFlag2, r);
+
+            return pStr;
+        }
 
         private string ParenthesizedVisit(Expr parent, Expr nodeToVisit) => ParenthesizedVisit(parent.NeedsParentheses(nodeToVisit), nodeToVisit);
 
