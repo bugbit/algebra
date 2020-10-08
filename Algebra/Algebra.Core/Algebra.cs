@@ -685,17 +685,20 @@ namespace Algebra.Core
 {
     /*
     urls:
-      https://es.wikipedia.org/wiki/Propiedades_de_los_n%C3%BAmeros_enteros
-      http://cimanet.uoc.edu/cursMates0/IniciacionMatematicas/inici/0_0.html
-      https://www.monografias.com/trabajos106/expresiones-algebraicas/expresiones-algebraicas.shtml
-      https://sites.google.com/site/mateosalmeronmayraalejandra/precalculo/simplifica-fracciones-compuestas
-    . https://practicasdeprogramacion.wordpress.com/2011/09/08/raices-de-polinomios-regla-de-ruffini/
-https://es.wikipedia.org/wiki/Algoritmo_de_Horner
-https://es.wikipedia.org/wiki/Regla_de_Ruffini
-https://www.solumaths.com/es/sitio/pagina-principal
-http://www.librosmaravillosos.com/eldiablodelosnumeros/
-https://www.smartick.es
-https://algebra2016.wordpress.com/
+        https://es.wikipedia.org/wiki/Propiedades_de_los_n%C3%BAmeros_enteros
+        http://cimanet.uoc.edu/cursMates0/IniciacionMatematicas/inici/0_0.html
+        https://www.monografias.com/trabajos106/expresiones-algebraicas/expresiones-algebraicas.shtml
+        https://sites.google.com/site/mateosalmeronmayraalejandra/precalculo/simplifica-fracciones-compuestas
+        https://practicasdeprogramacion.wordpress.com/2011/09/08/raices-de-polinomios-regla-de-ruffini/
+        https://es.wikipedia.org/wiki/Algoritmo_de_Horner
+        https://es.wikipedia.org/wiki/Regla_de_Ruffini
+        https://www.solumaths.com/es/sitio/pagina-principal
+        http://www.librosmaravillosos.com/eldiablodelosnumeros/
+        https://www.smartick.es
+        https://algebra2016.wordpress.com/
+        http://www.minimath.net/simplificar-expresiones.htm
+        https://matrixcalc.org/es/slu.html
+        https://www.idomaths.com/sigfig.php
 prime factorization
 Simplificar
 http://www.montereyinstitute.org/courses/Algebra1/COURSE_TEXT_RESOURCE/U11_L1_T1_text_final_es.html
