@@ -1,18 +1,7 @@
 ﻿@page "/"
 
-<h1>@Say</h1>
+<h1>Hello, world!</h1>
 
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
-
-@code
-{
-    private string Say;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        Say = new Algebra.Core.Class1().Say();
-    }
-}

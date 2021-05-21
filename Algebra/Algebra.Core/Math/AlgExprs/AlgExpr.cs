@@ -677,246 +677,44 @@ Public License instead of this License.  But first, please read
 */
 #endregion
 
+using Deveel.Math;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 
-using Algebra.Core;
-
-using ST = Algebra.Core.Syntax;
-using Expr = Algebra.Core.Math.Expr;
-
-using AExpr = Algebra.Core.Math.AlgExprs;
-
-using static System.Console;
-using Deveel.Math;
-
-namespace Algebra.Test
+namespace Algebra.Core.Math.AlgExprs
 {
-    class Program
+    public class AlgExpr : ICloneable
     {
-        static void Main(string[] args)
+        protected AlgExpr(EAlgExprTypeP typeP, EAlgExprTypeS typeS)
         {
-            RunTest().Wait();
-            Console.WriteLine("Tests done. press ENTER to exit");
-            Console.ReadLine();
+            TypeP = typeP;
+            TypeS = typeS;
         }
 
-        static async Task RunTest()
-        {
-            var pMethods = typeof(Program).Assembly.GetTypes().Select(t => t.FindMembers(MemberTypes.Method, BindingFlags.Static | BindingFlags.NonPublic, (m, c) => ((MethodInfo)m).GetCustomAttributes((Type)c, true).Length != 0, typeof(TestAttribute)).OfType<MethodInfo>()).SelectMany(m => m);
+        public EAlgExprTypeP TypeP { get; }
+        public EAlgExprTypeS TypeS { get; }
 
-            foreach (var pMethod in pMethods)
-            {
-                if (pMethod.ReturnType == typeof(Task))
-                    await ((TestHandler)pMethod.CreateDelegate(typeof(TestHandler))).Invoke();
-                else
-                    pMethod.Invoke(null, null);
-                break;
-            }
+        public static IntegerNumberExpr Number(BigInteger number) => new IntegerNumberExpr(number);
+
+        public static NumericalExpr Number(BigDecimal number)
+        {
+            if (number.Scale == 0)
+                return Number(number.ToBigInteger());
+
+            return Number(number.UnscaledValue) / Number(BigIntegerMath.Pow(BigInteger.Ten, number.Scale));
         }
 
-        [Test]
-        static void AlgExpr()
+        public static AlgExpr operator /(AlgExpr e1, AlgExpr e2)
         {
-            var n1 = BigDecimal.Parse("20");
-            var e1 = AExpr.AlgExpr.Number(n1);
-            var n2 = BigDecimal.Parse("20.334");
-            var e2 = AExpr.AlgExpr.Number(n2);
+            if ((e1 is NumericalExpr n1) && (e2 is NumericalExpr n2))
+                return n1 / n2;
 
-            Console.WriteLine($"{n1} = {e1}");
-            Console.WriteLine($"{n2} = {e2}");
+            return null;
         }
 
-        //[Test]
-        static async Task TokernizerTest()
-        {
-            var pTexts = new[]
-            {
-                //"20$",
-                //"20",
-                //"20x",
-                //"(20)",
-                //"20x+30y+20x^2",
-                //"(sin (x))^2+(cos (x))^2=1"
-                //"x",
-                //"2x=3",
-                "20a+3b+c=1\nb=20",
-            };
-
-            foreach (var pText in pTexts)
-            {
-                try
-                {
-                    using (var pReader = new StringReader(pText))
-                    {
-                        var pTokenizer = new ST.Tokenizer(pReader, CancellationToken.None, true);
-
-                        Console.WriteLine($"{pText} :");
-                        while (await pTokenizer.NextToken())
-                        {
-                            Console.Write($"Token : {pTokenizer.Token} ");
-                            switch (pTokenizer.Token)
-                            {
-                                case ST.ETokenType.Number:
-                                    Console.WriteLine(pTokenizer.Number);
-                                    break;
-                                case ST.ETokenType.Identifier:
-                                    Console.WriteLine(pTokenizer.Identifier);
-                                    break;
-                                default:
-                                    Console.WriteLine();
-                                    break;
-                            }
-                            if (pTokenizer.EOF)
-                                Console.WriteLine("EOF");
-                            if (pTokenizer.EOL)
-                            {
-                                Console.WriteLine("EOL");
-                                pTokenizer.ResetEOL = true;
-                            }
-                        }
-                    }
-                }
-                catch (ST.STException ex)
-                {
-                    var pLine = string.Empty;
-
-                    using (var pReader = new StringReader(pText))
-                    {
-                        for (var i = ex.Line; i > 0; i--)
-                            pLine = pReader.ReadLine();
-                    }
-                    PrintError(ex.Message);
-                    PrintError(pLine);
-                    PrintError($"{new string(' ', ex.Position - 1)}^");
-                }
-                catch (Exception ex)
-                {
-                    PrintError(ex.Message);
-                }
-
-            }
-        }
-
-        //[Test]
-        static async Task ParseTest()
-        {
-            var pTexts = new[]
-            {
-                //"20$",
-                //"20",
-                //"20x",
-                //"(20)",
-                //"3 - 2 * 6 - 1",
-                //"20x+30y+20x^2-x+100",
-                //"-(3x-2)",
-                //"2x(3+x)(x-2)6",
-                //"20a+3b+c=1",
-                //"2x(3+x",
-                //"(sin (x))^2=1",
-                //"(sin (x))^2+(cos (x))^2=1"
-                //"x",
-                "2x=3",
-                //"20a+3b+c=1\nb=20",
-            };
-
-            foreach (var pText in pTexts)
-            {
-                try
-                {
-                    using (var pReader = new StringReader(pText))
-                    {
-                        Console.WriteLine($"{pText} :");
-
-                        var pParser = new ST.Parser(pReader, CancellationToken.None);
-                        var pExpr = await pParser.Parse();
-
-                        Console.WriteLine(pExpr);
-                    }
-                }
-                catch (ST.STException ex)
-                {
-                    var pLine = string.Empty;
-
-                    using (var pReader = new StringReader(pText))
-                    {
-                        for (var i = ex.Line; i > 0; i--)
-                            pLine = pReader.ReadLine();
-                    }
-                    PrintError(ex.Message);
-                    PrintError(pLine);
-                    PrintError($"{new string(' ', ex.Position - 1)}^");
-                }
-                catch (Exception ex)
-                {
-                    PrintError(ex.Message);
-                }
-
-            }
-        }
-
-        //[Test]
-        static async Task ParseLinesTest()
-        {
-            var pTexts = new[]
-            {
-                "20a+3b+c=1",
-                "20a+3b+c=1\nb=20",
-            };
-
-            foreach (var pText in pTexts)
-            {
-                try
-                {
-                    using (var pReader = new StringReader(pText))
-                    {
-                        Console.WriteLine($"{pText} :");
-
-                        var pParser = new ST.Parser(pReader, CancellationToken.None);
-                        var pExprs = await pParser.ParseLines();
-
-                        foreach (var e in pExprs)
-                            Console.WriteLine(e);
-                    }
-                }
-                catch (ST.STException ex)
-                {
-                    var pLine = string.Empty;
-
-                    using (var pReader = new StringReader(pText))
-                    {
-                        for (var i = ex.Line; i > 0; i--)
-                            pLine = pReader.ReadLine();
-                    }
-                    PrintError(ex.Message);
-                    PrintError(pLine);
-                    PrintError($"{new string(' ', ex.Position - 1)}^");
-                }
-                catch (Exception ex)
-                {
-                    PrintError(ex.Message);
-                }
-
-            }
-        }
-
-        public static void PrintError(string argError)
-        {
-            var pForeColor = ForegroundColor;
-
-            try
-            {
-                ForegroundColor = ConsoleColor.Red;
-                WriteLine(argError);
-            }
-            finally
-            {
-                ForegroundColor = pForeColor;
-            }
-        }
+        object ICloneable.Clone() => new AlgExpr(TypeP, TypeS);
     }
 }

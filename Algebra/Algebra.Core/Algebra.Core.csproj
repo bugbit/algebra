@@ -1,26 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Deveel Math\Deveel.Math.Core\Deveel.Math.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+    <TargetFramework>net5.0</TargetFramework><Description>Algebra</Description>
+    <Authors>Óscar Hernández Bañó</Authors>
+    <PackageProjectUrl>https://github.com/bugbit/algebra</PackageProjectUrl>
+    <Product>Algebra Edition Nieblita</Product>
+    <Copyright>Copyright © 2018 Óscar Hernández Bañó</Copyright>
+  </PropertyGroup>  
 
 </Project>
