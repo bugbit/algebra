@@ -687,11 +687,11 @@ namespace Algebra.Core.Math.AlgExprs
 {
     public enum EAlgExprTypeP
     {
-        Numerical
+        Number, Term, Polynomial
     }
 
     public enum EAlgExprTypeS
     {
-        Number, RationalNumber
+        Integer, Rational
     }
 }

@@ -680,15 +680,17 @@ Public License instead of this License.  But first, please read
 using Deveel.Math;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    public class IntegerNumberExpr : NumericalExpr, ICloneable
+    [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS} Number : {Number}")]
+    public class IntegerNumberExpr : NumberExpr, ICloneable
     {
-        public IntegerNumberExpr(BigInteger _number) : base(EAlgExprTypeS.Number)
+        public IntegerNumberExpr(BigInteger _number) : base(EAlgExprTypeS.Integer)
         {
             Number = _number;
         }
@@ -701,8 +703,8 @@ namespace Algebra.Core.Math.AlgExprs
 
         public override string ToString() => Number.ToString();
 
-        public static IntegerNumberExpr operator +(IntegerNumberExpr n1, IntegerNumberExpr n2) => new IntegerNumberExpr(n1.Number + n2.Number);
-        public static IntegerNumberExpr operator -(IntegerNumberExpr n1, IntegerNumberExpr n2) => new IntegerNumberExpr(n1.Number - n2.Number);
+        //public static IntegerNumberExpr operator +(IntegerNumberExpr n1, IntegerNumberExpr n2) => new IntegerNumberExpr(n1.Number + n2.Number);
+        //public static IntegerNumberExpr operator -(IntegerNumberExpr n1, IntegerNumberExpr n2) => new IntegerNumberExpr(n1.Number - n2.Number);
         //public static NumberExpr operator *(NumberExpr n1, NumberExpr n2) => new NumberExpr(n1.Number * n2.Number);
 
         object ICloneable.Clone() => Clone();

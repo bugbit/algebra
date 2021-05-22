@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algebra.Test", "Algebra.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Algebra.App", "Algebra.App\Algebra.App.csproj", "{1F32A6A8-5C4C-449F-A0AF-8BEBE0C5831D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathJaxBlazor", "MathJaxBlazor\MathJaxBlazor.csproj", "{50F790B0-E62B-4818-94D6-AB4899E7BA6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1F32A6A8-5C4C-449F-A0AF-8BEBE0C5831D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F32A6A8-5C4C-449F-A0AF-8BEBE0C5831D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F32A6A8-5C4C-449F-A0AF-8BEBE0C5831D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50F790B0-E62B-4818-94D6-AB4899E7BA6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50F790B0-E62B-4818-94D6-AB4899E7BA6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50F790B0-E62B-4818-94D6-AB4899E7BA6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50F790B0-E62B-4818-94D6-AB4899E7BA6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

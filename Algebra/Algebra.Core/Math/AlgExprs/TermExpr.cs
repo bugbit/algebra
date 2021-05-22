@@ -685,12 +685,11 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    public class NumericalExpr : AlgExpr, ICloneable
+    public class TermExpr
     {
-        protected NumericalExpr(EAlgExprTypeS typeS) : base(EAlgExprTypeP.Numerical, typeS) { }
+        public bool Sign { get; }
+        public AlgExpr[] Exprs { get; }
+        //public NumberExpr[] Coe => Exprs.Where(e => !e.IsLiteral).ToArray();
 
-        public static NumericalExpr operator /(NumericalExpr e1, NumericalExpr e2) => new RationalNumberExpr(e1, e2);
-
-        object ICloneable.Clone() => new NumericalExpr(TypeS);
     }
 }

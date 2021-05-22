@@ -677,48 +677,17 @@ Public License instead of this License.  But first, please read
 */
 #endregion
 
-using Deveel.Math;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS}")]
-    public class AlgExpr : ICloneable
+    public class PowExpr
     {
-        protected AlgExpr(EAlgExprTypeP typeP, EAlgExprTypeS typeS)
-        {
-            TypeP = typeP;
-            TypeS = typeS;
-        }
-
-        public EAlgExprTypeP TypeP { get; }
-        public EAlgExprTypeS TypeS { get; }
-
-        public virtual bool IsLiteral => false;
-
-        public static IntegerNumberExpr Number(BigInteger number) => new IntegerNumberExpr(number);
-
-        public static NumberExpr Number(BigDecimal number)
-        {
-            if (number.Scale == 0)
-                return Number(number.ToBigInteger());
-
-            return Number(number.UnscaledValue) / Number(BigIntegerMath.Pow(BigInteger.Ten, number.Scale));
-        }
-
-        public static AlgExpr operator /(AlgExpr e1, AlgExpr e2)
-        {
-            if ((e1 is NumberExpr n1) && (e2 is NumberExpr n2))
-                return n1 / n2;
-
-            return null;
-        }
-
-        object ICloneable.Clone() => new AlgExpr(TypeP, TypeS);
+        public AlgExpr Expr { get; }
+        public AlgExpr Exp { get; }
     }
 }
