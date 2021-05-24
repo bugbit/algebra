@@ -1,5 +1,6 @@
 ﻿@page "/"
-@inherits MathJaxBlazor.MathJaxContentComponent
+@using MathJaxBlazor;
+
 
 <h1>Hello, world!</h1>
 
@@ -7,4 +8,69 @@ Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
+@code
+{
+    int count = 1;
+    string f1 = @"\frac{\cancel{a}}{\cancel{a}}";
+    string f2;
+    string testMathML = @"<math display=""block"" xmlns=""http://www.w3.org/1998/Math/MathML"">
+<mrow>
+<munder>
+    <mo>∑</mo>
+    <mrow>
+        <mi>p</mi>
+        <mtext> prime</mtext>
+    </mrow>
+</munder>
+<mi>f</mi>
+<mo stretchy=""false"">(</mo>
+<mi>p</mi>
+<mo stretchy=""false"">)</mo>
+<mo>=</mo>
+<msub>
+    <mo stretchy=""false"">∫</mo>
+    <mrow>
+        <mi>t</mi>
+        <mo>&gt;</mo>
+        <mn>1</mn>
+    </mrow>
+</msub>
+<mi>f</mi>
+<mo stretchy=""false"">(</mo>
+<mi>t</mi>
+<mo stretchy=""false"">)</mo>
+<mspace width=""thinmathspace""></mspace>
+<mi>d</mi>
+<mi>π</mi>
+<mo stretchy=""false"">(</mo>
+<mi>t</mi>
+<mo stretchy=""false"">)</mo>
+</mrow>
+</math>";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        f2 = "$$ " + f1 + " $$";
+    }
+
+    private void f3_click()
+    {
+        if (count++ == 1)
+        {
+            f1 = @"\frac{\cancel{b}}{\cancel{b}}";
+            f2 = "$$ " + f1 + " $$";
+        }
+        else
+            f1 = testMathML;
+    }
+}
+
 $$ \frac{\cancel{a}}{\cancel{a}} $$
+$$ @f1 $$
+
+@f2
+
+<Equation Value=@f1 />
+
+<button @onclick="f3_click">f3</button>
