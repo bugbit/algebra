@@ -16,11 +16,11 @@ Welcome to your new app.
     string testMathML = @"<math display=""block"" xmlns=""http://www.w3.org/1998/Math/MathML"">
 <mrow>
 <munder>
-    <mo>∑</mo>
-    <mrow>
-        <mi>p</mi>
-        <mtext> prime</mtext>
-    </mrow>
+<mo>∑</mo>
+<mrow>
+    <mi>p</mi>
+    <mtext> prime</mtext>
+</mrow>
 </munder>
 <mi>f</mi>
 <mo stretchy=""false"">(</mo>
@@ -28,12 +28,12 @@ Welcome to your new app.
 <mo stretchy=""false"">)</mo>
 <mo>=</mo>
 <msub>
-    <mo stretchy=""false"">∫</mo>
-    <mrow>
-        <mi>t</mi>
-        <mo>&gt;</mo>
-        <mn>1</mn>
-    </mrow>
+<mo stretchy=""false"">∫</mo>
+<mrow>
+    <mi>t</mi>
+    <mo>&gt;</mo>
+    <mn>1</mn>
+</mrow>
 </msub>
 <mi>f</mi>
 <mo stretchy=""false"">(</mo>
@@ -47,6 +47,8 @@ Welcome to your new app.
 <mo stretchy=""false"">)</mo>
 </mrow>
 </math>";
+
+    string f3 = @"\begin{array} {r|r} 8 & 2 \\ 4 & 2 \\  1 &  \\   \end{array}";
 
     protected override void OnInitialized()
     {
@@ -62,7 +64,7 @@ Welcome to your new app.
             f2 = "$$ " + f1 + " $$";
         }
         else
-            f1 = testMathML;
+            f1 = f3;
     }
 }
 
