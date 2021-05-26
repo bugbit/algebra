@@ -702,6 +702,10 @@ namespace Algebra.Core
 prime factorization
 Simplificar
 http://www.montereyinstitute.org/courses/Algebra1/COURSE_TEXT_RESOURCE/U11_L1_T1_text_final_es.html
+latex
+    https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference
+    http://mathlex.org/doc/language
+    http://www.mat.uda.cl/hsalinas/cursos/2008/latex/apuntes5.pdf
         */
 
     public class Algebra
