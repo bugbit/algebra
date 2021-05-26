@@ -677,7 +677,6 @@ Public License instead of this License.  But first, please read
 */
 #endregion
 
-using Deveel.Math;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -687,26 +686,20 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS} Number : {Number}")]
-    public class IntegerNumberExpr : NumberExpr, ICloneable
+    [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS}")]
+    public class Expr : ICloneable
     {
-        public IntegerNumberExpr(BigInteger _number) : base(EExprTypeT.Integer)
+        public Expr(EExprTypeP typeP, EExprTypeS typeS, EExprTypeT typet = EExprTypeT.None)
         {
-            Number = _number;
+            TypeP = typeP;
+            TypeS = typeS;
+            TypeT = typet;
         }
 
-        public IntegerNumberExpr(IntegerNumberExpr e) : this(e.Number) { }
+        public EExprTypeP TypeP { get; }
+        public EExprTypeS TypeS { get; }
+        public EExprTypeT TypeT { get; }
 
-        public BigInteger Number { get; }
-
-        public IntegerNumberExpr Clone() => new IntegerNumberExpr(this);
-
-        public override string ToString() => Number.ToString();
-
-        //public static IntegerNumberExpr operator +(IntegerNumberExpr n1, IntegerNumberExpr n2) => new IntegerNumberExpr(n1.Number + n2.Number);
-        //public static IntegerNumberExpr operator -(IntegerNumberExpr n1, IntegerNumberExpr n2) => new IntegerNumberExpr(n1.Number - n2.Number);
-        //public static NumberExpr operator *(NumberExpr n1, NumberExpr n2) => new NumberExpr(n1.Number * n2.Number);
-
-        object ICloneable.Clone() => Clone();
+        object ICloneable.Clone() => new Expr(TypeP, TypeS);
     }
 }

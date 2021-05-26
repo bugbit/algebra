@@ -685,13 +685,23 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    public enum EAlgExprTypeP
+    public class PowNumericalExpr : NumericalExpr, ICloneable
     {
-        Number, Term, Polynomial
-    }
+        public PowNumericalExpr(NumericalExpr num, NumericalExpr exp) : base(EExprTypeS.Rational)
+        {
+            Number = num;
+            Exp = exp;
+        }
 
-    public enum EAlgExprTypeS
-    {
-        Integer, Rational
+        public PowNumericalExpr(PowNumericalExpr e) : this(e.Number, e.Exp) { }
+
+        public NumericalExpr Number { get; }
+        public NumericalExpr Exp { get; }
+
+        public PowNumericalExpr Clone() => new PowNumericalExpr(this);
+
+        public override string ToString() => $"{Number}/{Exp}";
+
+        object ICloneable.Clone() => Clone();
     }
 }

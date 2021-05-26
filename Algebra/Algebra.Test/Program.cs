@@ -722,13 +722,13 @@ namespace Algebra.Test
         [Test]
         static void AlgExpr()
         {
-            var n1 = BigDecimal.Parse("20");
-            var e1 = AExpr.AlgExpr.Number(n1);
-            var n2 = BigDecimal.Parse("20.334");
-            var e2 = AExpr.AlgExpr.Number(n2);
+            //var n1 = BigDecimal.Parse("20");
+            //var e1 = AExpr.AlgExpr.Number(n1);
+            //var n2 = BigDecimal.Parse("20.334");
+            //var e2 = AExpr.AlgExpr.Number(n2);
 
-            Console.WriteLine($"{n1} = {e1}");
-            Console.WriteLine($"{n2} = {e2}");
+            //Console.WriteLine($"{n1} = {e1}");
+            //Console.WriteLine($"{n2} = {e2}");
         }
 
         //[Test]

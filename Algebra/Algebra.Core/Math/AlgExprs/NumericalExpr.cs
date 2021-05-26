@@ -685,9 +685,10 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    public class PowExpr
+    public class NumericalExpr : Expr, ICloneable
     {
-        public AlgExpr Expr { get; }
-        public AlgExpr Exp { get; }
+        protected NumericalExpr(EExprTypeS typeS, EExprTypeT typet = EExprTypeT.None) : base(EExprTypeP.Numerical, typeS, typet) { }
+
+        object ICloneable.Clone() => new NumericalExpr(TypeS);
     }
 }

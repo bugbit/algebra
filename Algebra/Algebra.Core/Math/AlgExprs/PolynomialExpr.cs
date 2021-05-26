@@ -8,6 +8,6 @@ namespace Algebra.Core.Math.AlgExprs
 {
     public class PolynomialExpr
     {
-        public TermExpr[] Terms { get; }
+        public TermNumericalExpr[] Terms { get; }
     }
 }

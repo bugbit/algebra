@@ -679,31 +679,24 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS} Numer : {Numer} Denom : {Denom}")]
-    public class RationalNumberExpr : NumberExpr, ICloneable
+    public enum EExprTypeP
     {
-        public RationalNumberExpr(NumberExpr numer, NumberExpr denom) : base(EAlgExprTypeS.Rational)
-        {
-            Numer = numer;
-            Denom = denom;
-        }
+        Numerical, AlgExpr, Term, Polynomial
+    }
 
-        public RationalNumberExpr(RationalNumberExpr e) : this(e.Numer, e.Denom) { }
+    public enum EExprTypeS
+    {
+        Number, Rational, Pow, Term
+    }
 
-        public NumberExpr Numer { get; }
-        public NumberExpr Denom { get; }
-
-        public RationalNumberExpr Clone() => new RationalNumberExpr(this);
-
-        public override string ToString() => $"{Numer}/{Denom}";
-
-        object ICloneable.Clone() => Clone();
+    public enum EExprTypeT
+    {
+        None, Integer
     }
 }

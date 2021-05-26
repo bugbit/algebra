@@ -687,12 +687,12 @@ using System.Threading.Tasks;
 namespace Algebra.Core.Math.AlgExprs
 {
     [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS}")]
-    public class NumberExpr : AlgExpr, ICloneable
+    public class NumberExpr : NumericalExpr, ICloneable
     {
-        protected NumberExpr(EAlgExprTypeS typeS) : base(EAlgExprTypeP.Number, typeS) { }
+        protected NumberExpr(EExprTypeT typet) : base(EExprTypeS.Number, typet) { }
 
-        public static NumberExpr operator /(NumberExpr e1, NumberExpr e2) => new RationalNumberExpr(e1, e2);
+        //public static NumberExpr operator /(NumberExpr e1, NumberExpr e2) => new RationalNumberExpr(e1, e2);
 
-        object ICloneable.Clone() => new NumberExpr(TypeS);
+        object ICloneable.Clone() => new NumberExpr(TypeT);
     }
 }
