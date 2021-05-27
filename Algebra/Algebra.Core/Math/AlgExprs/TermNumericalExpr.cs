@@ -679,19 +679,33 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
+    [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS} Sign : {Sign}")]
     public class TermNumericalExpr : NumericalExpr, ICloneable
     {
-        public TermNumericalExpr() : base(EExprTypeS.Term) { }
+        public TermNumericalExpr(bool sign, ExprCollection<NumericalExpr> exprs) : base(EExprTypeS.Term)
+        {
+            Sign = sign;
+            Exprs = exprs;
+        }
+
+        public TermNumericalExpr(TermNumericalExpr e) : this(e.Sign, e.Exprs) { }
 
         public bool Sign { get; }
         public ExprCollection<NumericalExpr> Exprs { get; }
         //public NumberExpr[] Coe => Exprs.Where(e => !e.IsLiteral).ToArray();
+
+        public TermNumericalExpr Clone() => new TermNumericalExpr(this);
+
+        //public override string ToString() => $"{Number}/{Exp}";
+
+        object ICloneable.Clone() => Clone();
 
     }
 }

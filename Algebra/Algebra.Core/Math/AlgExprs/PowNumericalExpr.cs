@@ -679,12 +679,14 @@ Public License instead of this License.  But first, please read
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
+    [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS} Number : {Number} Exp : {Exp}")]
     public class PowNumericalExpr : NumericalExpr, ICloneable
     {
         public PowNumericalExpr(NumericalExpr num, NumericalExpr exp) : base(EExprTypeS.Rational)
@@ -700,7 +702,25 @@ namespace Algebra.Core.Math.AlgExprs
 
         public PowNumericalExpr Clone() => new PowNumericalExpr(this);
 
-        public override string ToString() => $"{Number}/{Exp}";
+        public override string ToString() => $"{Number}^{Exp}";
+        public override bool Equals(Expr other) => base.Equals(other) && (other is PowNumericalExpr e) && Number == e.Number && Exp == e.Exp;
+        public override int CompareTo(Expr other)
+        {
+            var pCmp = base.CompareTo(other);
+
+            if (other is PowNumericalExpr e)
+            {
+                if (pCmp == 0)
+                {
+                    pCmp = Number.CompareTo(e.Number);
+                    if (pCmp == 0)
+                        pCmp = Exp.CompareTo(e.Exp);
+                }
+            }
+
+            return pCmp;
+        }
+        public override int GetHashCode() => base.GetHashCode() ^ Number.GetHashCode() ^ Exp.GetHashCode();
 
         object ICloneable.Clone() => Clone();
     }

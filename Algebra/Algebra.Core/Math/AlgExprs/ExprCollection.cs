@@ -678,6 +678,7 @@ Public License instead of this License.  But first, please read
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -685,9 +686,108 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    public class ExprCollection<T> where T : Expr
+    public class ExprCollection<T> : ICollection<T> where T : Expr
     {
         private List<T> mExprs;
+
+        public ExprCollection()
+        {
+            mExprs = new List<T>();
+        }
+
+        public ExprCollection(params T[] exprs)
+        {
+            mExprs = new List<T>(exprs);
+        }
+
+        public int Count => mExprs.Count;
+
+        public bool IsReadOnly => false;
+
+        public void Add(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(T item) => mExprs.Contains(item);
+
+        public void CopyTo(T[] array, int arrayIndex) => mExprs.CopyTo(array, arrayIndex);
+
+        public bool SetEquals(ExprCollection<T> other)
+        {
+            //new HashSet<T>().Set;
+            if (Count != other.Count)
+                return false;
+
+            var pQuery1 = this.OrderBy(e => e);
+            var pQuery2 = other.OrderBy(e => e);
+            var pEqual = pQuery1.SequenceEqual(pQuery2);
+
+            return pEqual;
+
+            //var pQuery1 = this.OrderBy(e => e).GetEnumerator();
+            //var pQuery2 = other.OrderBy(e => e).GetEnumerator();
+            //var hasNext = pQuery1.MoveNext() && pQuery2.MoveNext();
+
+            //while (pQuery1.MoveNext() && pQuery2.MoveNext())
+            //{
+            //    var pCmp = pQuery1.Current.CompareTo(pQuery2.Current);
+
+            //    if (pCmp != 0)
+            //        return false;
+            //}
+
+            //return true;
+        }
+
+        public int SetCompareTo(ExprCollection<T> other)
+        {
+            var pQuery1 = this.OrderBy(e => e).GetEnumerator();
+            var pQuery2 = other.OrderBy(e => e).GetEnumerator();
+            var hasNext1 = pQuery1.MoveNext();
+            var hasNext2 = pQuery2.MoveNext();
+
+            while (hasNext1 && hasNext2)
+            {
+                var pCmp = pQuery1.Current.CompareTo(pQuery2.Current);
+
+                if (pCmp == 0)
+                {
+                    hasNext1 = pQuery1.MoveNext();
+                    hasNext2 = pQuery2.MoveNext();
+                }
+                else
+                    return pCmp;
+            }
+
+            return (!hasNext1 && !hasNext2) ? 0 : (!hasNext1) ? -1 : 1;
+        }
+
+        public IEnumerator<T> GetEnumerator() => mExprs.GetEnumerator();
+
+        public bool Remove(T item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            var pQuery1 = this.Select(e => e.ToString());
+            var pStr1 = string.Join(",", pQuery1);
+            var pStr = $"( {pStr1} )";
+
+            return pStr;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class ExprCollection : ExprCollection<Expr>

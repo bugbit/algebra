@@ -719,7 +719,7 @@ namespace Algebra.Test
             }
         }
 
-        [Test]
+        //[Test]
         static void AlgExpr()
         {
             //var n1 = BigDecimal.Parse("20");
@@ -729,6 +729,17 @@ namespace Algebra.Test
 
             //Console.WriteLine($"{n1} = {e1}");
             //Console.WriteLine($"{n2} = {e2}");
+        }
+
+        [Test]
+        static void ExprCollectionTest()
+        {
+            var c1 = new AExpr.ExprCollection<AExpr.IntegerNumberExpr>(new AExpr.IntegerNumberExpr(1));
+            var c2 = new AExpr.ExprCollection<AExpr.IntegerNumberExpr>(new AExpr.IntegerNumberExpr(1));
+            var c1_2_equal = c1.SetEquals(c2);
+            var c1_2_cmp = c1.SetCompareTo(c2);
+
+            Console.WriteLine($"{c1}=={c2} {c1_2_equal} cmp = {c1_2_cmp}");
         }
 
         //[Test]

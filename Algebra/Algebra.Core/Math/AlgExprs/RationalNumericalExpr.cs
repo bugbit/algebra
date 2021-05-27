@@ -701,6 +701,24 @@ namespace Algebra.Core.Math.AlgExprs
         public NumericalExpr Denom { get; }
 
         public RationalNumericalExpr Clone() => new RationalNumericalExpr(this);
+        public override bool Equals(Expr other) => base.Equals(other) && (other is RationalNumericalExpr e) && Numer == e.Numer && Denom == e.Denom;
+        public override int CompareTo(Expr other)
+        {
+            var pCmp = base.CompareTo(other);
+
+            if (other is RationalNumericalExpr e)
+            {
+                if (pCmp == 0)
+                {
+                    pCmp = Numer.CompareTo(e.Numer);
+                    if (pCmp == 0)
+                        pCmp = Denom.CompareTo(e.Denom);
+                }
+            }
+
+            return pCmp;
+        }
+        public override int GetHashCode() => base.GetHashCode() ^ Numer.GetHashCode() ^ Denom.GetHashCode();
 
         public override string ToString() => $"{Numer}/{Denom}";
 

@@ -702,7 +702,20 @@ namespace Algebra.Core.Math.AlgExprs
         public IntegerNumberExpr Clone() => new IntegerNumberExpr(this);
 
         public override string ToString() => Number.ToString();
+        public override bool Equals(Expr other) => base.Equals(other) && (other is IntegerNumberExpr e) && Number == e.Number;
+        public override int CompareTo(Expr other)
+        {
+            var pCmp = base.CompareTo(other);
 
+            if (other is IntegerNumberExpr e)
+            {
+                if (pCmp == 0)
+                    pCmp = Number.CompareTo(e.Number);
+            }
+
+            return pCmp;
+        }
+        public override int GetHashCode() => base.GetHashCode() ^ Number.GetHashCode();
         //public static IntegerNumberExpr operator +(IntegerNumberExpr n1, IntegerNumberExpr n2) => new IntegerNumberExpr(n1.Number + n2.Number);
         //public static IntegerNumberExpr operator -(IntegerNumberExpr n1, IntegerNumberExpr n2) => new IntegerNumberExpr(n1.Number - n2.Number);
         //public static NumberExpr operator *(NumberExpr n1, NumberExpr n2) => new NumberExpr(n1.Number * n2.Number);

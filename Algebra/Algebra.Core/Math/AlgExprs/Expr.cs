@@ -687,7 +687,7 @@ using System.Threading.Tasks;
 namespace Algebra.Core.Math.AlgExprs
 {
     [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS}")]
-    public class Expr : ICloneable
+    public class Expr : ICloneable, IEquatable<Expr>, IComparable<Expr>
     {
         public Expr(EExprTypeP typeP, EExprTypeS typeS, EExprTypeT typet = EExprTypeT.None)
         {
@@ -699,6 +699,43 @@ namespace Algebra.Core.Math.AlgExprs
         public EExprTypeP TypeP { get; }
         public EExprTypeS TypeS { get; }
         public EExprTypeT TypeT { get; }
+
+        public virtual bool Equals(Expr other) => TypeP == other.TypeP && TypeS == other.TypeS && TypeS == other.TypeS;
+
+        public virtual int CompareTo(Expr other)
+        {
+            var pCmp = TypeP.CompareTo(other.TypeP);
+
+            if (pCmp == 0)
+            {
+                pCmp = TypeS.CompareTo(other.TypeS);
+                if (pCmp == 0)
+                {
+                    pCmp = TypeT.CompareTo(other.TypeT);
+                }
+            }
+
+            return pCmp;
+        }
+
+        public override bool Equals(object obj) => (obj is Expr e) && e != null && Equals(e);
+
+        public override int GetHashCode() => TypeP.GetHashCode() ^ TypeS.GetHashCode() ^ TypeS.GetHashCode();
+
+        public static bool operator ==(Expr e1, Expr e2)
+        {
+            var i1 = ReferenceEquals(e1, null);
+            var i2 = ReferenceEquals(e2, null);
+
+            return (i1 || i2) ? i1 == i2 : e1.Equals(e2);
+        }
+        public static bool operator !=(Expr e1, Expr e2)
+        {
+            var i1 = ReferenceEquals(e1, null);
+            var i2 = ReferenceEquals(e2, null);
+
+            return (i1 || i2) ? i1 != i2 : !e1.Equals(e2);
+        }
 
         object ICloneable.Clone() => new Expr(TypeP, TypeS);
     }
