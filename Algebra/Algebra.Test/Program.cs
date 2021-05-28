@@ -739,7 +739,7 @@ namespace Algebra.Test
             var c1_2_equal = c1.SetEquals(c2);
             var c1_2_cmp = c1.SetCompareTo(c2);
 
-            Console.WriteLine($"{c1}=={c2} {c1_2_equal} cmp = {c1_2_cmp}");
+            WriteLine($"{c1}=={c2} {c1_2_equal} cmp = {c1_2_cmp}");
         }
 
         //[Test]

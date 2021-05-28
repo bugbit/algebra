@@ -695,7 +695,9 @@ namespace Algebra.Core.Math.AlgExprs
             mExprs = new List<T>();
         }
 
-        public ExprCollection(params T[] exprs)
+        public ExprCollection(params T[] exprs) : this(exprs.AsEnumerable()) { }
+
+        public ExprCollection(IEnumerable<T> exprs)
         {
             mExprs = new List<T>(exprs);
         }

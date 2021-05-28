@@ -685,6 +685,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Algebra.Core.Extensions;
+using System.Threading;
+
 namespace Algebra.Core.Math.AlgExprs
 {
     [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS} Number : {Number}")]
@@ -721,5 +724,30 @@ namespace Algebra.Core.Math.AlgExprs
         //public static NumberExpr operator *(NumberExpr n1, NumberExpr n2) => new NumberExpr(n1.Number * n2.Number);
 
         object ICloneable.Clone() => Clone();
+
+        // Calcs
+
+        public override IFactorsResult IFactorsResult(CancellationToken cancelToken)
+        {
+            var n = Number;
+            var i = (BigInteger)2d;
+            var max = n.Sqrt();
+            var r = new List<(BigInteger n, BigInteger i)>();
+
+            while (n < max)
+            {
+                if ((n % i) == BigInteger.Zero)
+                {
+                    r.Add((n, i));
+                    n /= i;
+                    continue;
+                }
+                n = BigInteger.NextProbablePrime(n, cancelToken);
+            }
+            if (n > 1)
+                r.Add((n, n));
+
+            return new AlgExprs.IFactorsResult { Result = r.ToArray() };
+        }
     }
 }

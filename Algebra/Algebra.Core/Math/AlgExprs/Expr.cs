@@ -682,6 +682,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
@@ -738,5 +739,50 @@ namespace Algebra.Core.Math.AlgExprs
         }
 
         object ICloneable.Clone() => new Expr(TypeP, TypeS);
+
+        // Calcs
+
+        public CalcResult IFactors(ECalcOptions options, CancellationToken cancelToken)
+        {
+            var ri = IFactorsResult(cancelToken);
+
+            if (ri == null)
+                return null;
+
+            var rr = IFactorsResult(ri);
+            var r = new CalcResult { Result = rr };
+
+            if (options.HasFlag(ECalcOptions.Explain))
+                r.Explain = IFactorsExplain(ri);
+
+            return r;
+        }
+        public virtual IFactorsResult IFactorsResult(CancellationToken cancelToken) => null;
+
+        private Expr IFactorsResult(IFactorsResult ri)
+        {
+            var query =
+                from rr in ri.Result
+                group rr by rr.n into g
+                select new { n = g.Key, e = g.Count() };
+            var query2 =
+                from q in query
+                let n = new IntegerNumberExpr(q.n)
+                select (q.e > 1) ? (NumericalExpr)new PowNumericalExpr(n, new IntegerNumberExpr(q.n)) : n;
+            var r = new TermNumericalExpr(false, new ExprCollection<NumericalExpr>(query2));
+
+            return r;
+        }
+
+        private Explain.CalcExplain IFactorsExplain(IFactorsResult ri)
+        {
+            var latex = new LaTex();
+
+            //latex.Array("r|r")
+
+            var pExplain = new Explain.CalcExplain();
+
+            return pExplain;
+        }
     }
 }
