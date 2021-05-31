@@ -1,0 +1,51 @@
+﻿@page "/primefactors"
+@using System.IO;
+@using System.Threading;
+@using Algebra.Core.Syntax;
+@using Algebra.Core.Math.AlgExprs;
+@inject IStringLocalizer<Resource> localizer
+@inject IJSRuntime JsRuntime;
+<h3>@localizer["MnuNTPrimeFactors"]</h3>
+
+<Prompt Title="Si quiere descomponen en factores primos Introduzca número\nsi quiere calcular el máximo común divisor o el minimo común multiplo introduzca los numeros separados por commas" />
+
+<div>
+    <input @ref="txtn" type="text" @bind="numberStr" />
+    <div style="margin-top:4px">
+        <p>
+            <button @onclick="btnDescomponer_click">Descomponer</button>&nbsp;<button>mcd</button>&nbsp;<button>mcm</button>
+        </p>
+    </div>
+</div>
+
+@code {
+    ElementReference txtn;
+    string numberStr;
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await txtn.FocusAsync();
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void txtn_OnInputEvent(ChangeEventArgs changeEvent)
+    {
+        numberStr = (string)changeEvent.Value;
+    }
+
+    private async Task btnDescomponer_click()
+    {
+        try
+        {
+            using (var stream = new StringReader(numberStr))
+            {
+                var e = await new Parser(stream, CancellationToken.None).Parse();
+            }
+        }
+        catch (Exception ex)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", ex.Message);
+        }
+    }
+}

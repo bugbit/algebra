@@ -689,9 +689,7 @@ namespace Algebra.Core.Math.AlgExprs
     [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS}")]
     public class NumberExpr : NumericalExpr, ICloneable
     {
-        protected NumberExpr(EExprTypeT typet) : base(EExprTypeS.Number, typet) { }
-
-        //public static NumberExpr operator /(NumberExpr e1, NumberExpr e2) => new RationalNumberExpr(e1, e2);
+        protected NumberExpr(EExprTypeT typet) : base(EExprTypeS.Number, typet) { }        
 
         object ICloneable.Clone() => new NumberExpr(TypeT);
     }

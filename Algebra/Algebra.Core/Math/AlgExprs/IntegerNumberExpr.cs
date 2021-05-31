@@ -687,6 +687,7 @@ using System.Threading.Tasks;
 
 using Algebra.Core.Extensions;
 using System.Threading;
+using Algebra.Core.Output;
 
 namespace Algebra.Core.Math.AlgExprs
 {
@@ -703,8 +704,6 @@ namespace Algebra.Core.Math.AlgExprs
         public BigInteger Number { get; }
 
         public IntegerNumberExpr Clone() => new IntegerNumberExpr(this);
-
-        public override string ToString() => Number.ToString();
         public override bool Equals(Expr other) => base.Equals(other) && (other is IntegerNumberExpr e) && Number == e.Number;
         public override int CompareTo(Expr other)
         {
@@ -724,6 +723,12 @@ namespace Algebra.Core.Math.AlgExprs
         //public static NumberExpr operator *(NumberExpr n1, NumberExpr n2) => new NumberExpr(n1.Number * n2.Number);
 
         object ICloneable.Clone() => Clone();
+
+        // Outputs
+
+        public override string ToString() => Number.ToString();
+
+        public override LaTex ToLatex()=> base.ToLatex().Append(Number);
 
         // Calcs
 

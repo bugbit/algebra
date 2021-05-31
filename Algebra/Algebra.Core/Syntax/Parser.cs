@@ -680,10 +680,11 @@ Public License instead of this License.  But first, please read
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Algebra.Core.Math.Expr;
+using Algebra.Core.Math.AlgExprs;
 
 namespace Algebra.Core.Syntax
 {
@@ -705,25 +706,6 @@ namespace Algebra.Core.Syntax
             return pExpr;
         }
 
-        public async Task<Expr[]> ParseLines()
-        {
-            var pExprs = new List<Expr>();
-
-            mTokenizer.IsNewLineEndExpr = true;
-            while (!mTokenizer.EOF)
-            {
-                var pExpr = await ParseInternal();
-
-                if (!!pExpr)
-                    pExprs.Add(pExpr);
-
-                if (mTokenizer.EOL)
-                    mTokenizer.ResetEOL = true;
-            }
-
-            return pExprs.ToArray();
-        }
-
         private async Task<Expr> ParseInternal()
         {
             var pExpr = await ParseExpr();
@@ -733,204 +715,27 @@ namespace Algebra.Core.Syntax
                 if (mTokenizer.EOF || mTokenizer.EOL)
                     return pExpr;
 
-                if (mTokenizer.Token == ETokenType.Equal)
-                    pExpr = await ParseEquation(pExpr);
-                else
-                    throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
+                //if (mTokenizer.Token == ETokenType.Equal)
+                //    pExpr = await ParseEquation(pExpr);
+                //else
+                throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
             }
-        }
-
-        private async Task<Expr> ParseEquation(Expr e)
-        {
-            var pExpr = e;
-
-            do
-            {
-                var pExpr2 = await ParseExpr();
-                var pExprTmp = Expr.Binary(ETypeExpr.Equal, pExpr, pExpr2);
-
-                pExpr = pExprTmp;
-
-                if (mTokenizer.EOF || mTokenizer.EOL)
-                    break;
-            } while (mTokenizer.Token == ETokenType.Equal);
-
-            return pExpr;
         }
 
         private async Task<Expr> ParseExpr()
         {
-            //Expr pExpr = Expr.Null;
-            bool pOpenParens = mTokenizer.Token == ETokenType.OpenParens;
-
-            if (mTokenizer.EOF || mTokenizer.EOL)
-            {
-                if (pOpenParens)
-                    throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.CloseParensChars), mTokenizer.Line, mTokenizer.Position);
-
-                return Expr.Null;
-            }
-
-            var pCells = await Split();
-            Expr pExpr;
-
-            if (pCells.Count == 0)
-                pExpr = Expr.Null;
-            else
-            {
-                var pFirst = pCells.First;
-                var pNext = pFirst.Next;
-
-                pExpr = Merge(pFirst.Value, ref pNext);
-            }
-
-            switch (mTokenizer.Token)
-            {
-                case ETokenType.CloseParens:
-                    if (!pOpenParens)
-                        throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-                    if (!pExpr)
-                        throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-
-                    return pExpr;
-                case ETokenType.Equal:
-                case ETokenType.None:
-                    if (pOpenParens)
-                        throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.CloseParensChars), mTokenizer.Line, mTokenizer.Position);
-
-                    return pExpr;
-                default:
-                    throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-            }
-        }
-
-        /// <summary>
-        /// Splitting (“3 - 2 * 6 - 1”) = [3, ‘-’], [2, ‘*’], [6, ‘-’], [1, ‘’]
-        /// </summary>
-        /// <returns></returns>
-        private async Task<LinkedList<Cell>> Split()
-        {
-            var pCells = new LinkedList<Cell>();
-            Cell pCell = null;
-            var pNegative = false;
-            Expr pExpr;
-
             while (await mTokenizer.NextToken())
             {
-                if (Symbols.DictOperators.TryGetValue(mTokenizer.Token, out ETypeExpr op))
+                switch (mTokenizer.Token)
                 {
-                    if (op == ETypeExpr.Equal)
-                        return pCells;
-
-                    if (pCell != null)
-                    {
-                        if (pNegative)
-                        {
-                            pCell.Expr = Expr.Negative(pCell.Expr);
-                            pNegative = false;
-                        }
-                        pCell.TypeOp = op;
-                        pCell = null;
-                    }
-                    else
-                    {
-                        if (!pNegative)
-                        {
-                            switch (op)
-                            {
-                                case ETypeExpr.Subtract:
-                                    pNegative = true;
-                                    continue;
-                                case ETypeExpr.Add:
-                                    continue;
-                                default:
-                                    throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-                            }
-                        }
+                    case ETokenType.Number:
+                        return Expr.MakeNumber(mTokenizer.Number);
+                    default:
                         throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-                    }
-                }
-                else
-                {
-                    if (Symbols.DictFuncs.TryGetValue(mTokenizer.Token, out ETypeExpr fn))
-                    {
-                        if (!await mTokenizer.NextToken())
-                            throw new STException(string.Format(Properties.Resources.ExpectTokenException, Symbols.OpenParensChar), mTokenizer.Line, mTokenizer.Position);
-
-                        mTokenizer.Back();
-
-                        var pExprArg = await ParseExpr();
-
-                        pExpr = Expr.Function(fn, pExprArg);
-                    }
-                    else
-                        switch (mTokenizer.Token)
-                        {
-                            case ETokenType.CloseParens:
-                                return pCells;
-                            case ETokenType.OpenParens:
-                                pExpr = await ParseExpr();
-                                if (mTokenizer.Token == ETokenType.Equal)
-                                    mTokenizer.Back();
-                                break;
-                            case ETokenType.Number:
-                                pExpr = Expr.Number(mTokenizer.Number);
-                                break;
-                            case ETokenType.Identifier:
-                                pExpr = Expr.Literal(mTokenizer.Identifier);
-                                break;
-                            default:
-                                throw new STException(string.Format(Properties.Resources.NoExpectTokenException, mTokenizer.TokenStr), mTokenizer.Line, mTokenizer.Position);
-                        }
-                    if (pNegative)
-                    {
-                        pExpr = Expr.Negative(pExpr);
-                        pNegative = false;
-                    }
-                    if (pCell != null)
-                        pCell.TypeOp = ETypeExpr.Multiply;
-                    pCell = new Cell(pExpr);
-                    pCells.AddLast(pCell);
                 }
             }
 
-            return pCells;
-        }
-
-        private bool CanMergeCells(Cell l, Cell r) => Expr.GetOperatorPrecedence(l.TypeOp) >= Expr.GetOperatorPrecedence(r.TypeOp);
-
-        private void MergeCells(Cell l, Cell r)
-        {
-            l.Expr = Expr.Binary(l.TypeOp, l.Expr, r.Expr);
-            l.TypeOp = r.TypeOp;
-        }
-
-        /// <summary>
-        /// 3 - 2 * 6 - 1:
-        /// Merging([3, ‘-’], [2, ‘*’], [6, ‘-’], [1, ‘’]) =>
-        /// Merging([3, ‘-’], Merging ([2, ‘*’], [6, ‘-’]), [1, ‘’]) =>
-        /// Merging([3, ‘-’], [12, ‘-’], [1, ‘’]) =>
-        /// Merging([-9, ‘-’], [1, ‘’]) => [-9 - 1, ‘’] = [-10, ‘’]
-        /// </summary>
-        /// <param name="cell"></param>
-        /// <param name="argList"></param>
-        /// <param name="argOneOnly"></param>
-        /// <returns></returns>
-        private Expr Merge(Cell cell, ref LinkedListNode<Cell> argList, bool argOneOnly = false)
-        {
-            while (argList != null)
-            {
-                var next = argList;
-
-                argList = next.Next;
-                while (!CanMergeCells(cell, next.Value))
-                    Merge(next.Value, ref argList, true);
-                MergeCells(cell, next.Value);
-                if (argOneOnly)
-                    return cell.Expr;
-            }
-
-            return cell.Expr;
+            return null;
         }
     }
 }

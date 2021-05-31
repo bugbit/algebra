@@ -843,7 +843,7 @@ namespace Algebra.Test
                     {
                         Console.WriteLine($"{pText} :");
 
-                        var pParser = new ST.Parser(pReader, CancellationToken.None);
+                        var pParser = new ST.Parser2(pReader, CancellationToken.None);
                         var pExpr = await pParser.Parse();
 
                         Console.WriteLine(pExpr);
@@ -887,7 +887,7 @@ namespace Algebra.Test
                     {
                         Console.WriteLine($"{pText} :");
 
-                        var pParser = new ST.Parser(pReader, CancellationToken.None);
+                        var pParser = new ST.Parser2(pReader, CancellationToken.None);
                         var pExprs = await pParser.ParseLines();
 
                         foreach (var e in pExprs)

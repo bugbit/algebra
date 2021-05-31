@@ -677,6 +677,7 @@ Public License instead of this License.  But first, please read
 */
 #endregion
 
+using Deveel.Math;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -684,11 +685,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Algebra.Core.Output;
+using Algebra.Core.Output.Explain;
 
 namespace Algebra.Core.Math.AlgExprs
 {
     [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS}")]
-    public class Expr : ICloneable, IEquatable<Expr>, IComparable<Expr>
+    public class Expr : ICloneable, IEquatable<Expr>, IComparable<Expr>, IToLatex
     {
         public Expr(EExprTypeP typeP, EExprTypeS typeS, EExprTypeT typet = EExprTypeT.None)
         {
@@ -719,9 +722,78 @@ namespace Algebra.Core.Math.AlgExprs
             return pCmp;
         }
 
+        public virtual LaTex ToLatex() => new LaTex();
+
         public override bool Equals(object obj) => (obj is Expr e) && e != null && Equals(e);
 
         public override int GetHashCode() => TypeP.GetHashCode() ^ TypeS.GetHashCode() ^ TypeS.GetHashCode();
+
+        public bool NeedsParentheses(Expr child)
+        {
+            if (child == null)
+                return false;
+
+            var pPre = child.GetOperatorPrecedence();
+            var pPre2 = GetOperatorPrecedence();
+
+            return pPre < pPre2;
+        }
+        public int GetOperatorPrecedence()
+        {
+            switch (TypeS)
+            {
+                case EExprTypeS.Number:
+                    return 6;
+                case EExprTypeS.Pow:
+                    return 5;
+                case EExprTypeS.Rational:
+                case EExprTypeS.Term:
+                    return 3;
+                default:
+                    return 0;
+            }
+        }
+        //public static int GetOperatorPrecedence(ETypeExpr op)
+        //{
+        //    switch (op)
+        //    {
+        //        case ETypeExpr.Number:
+        //        case ETypeExpr.Literal:
+        //            return 6;
+        //        case ETypeExpr.Power:
+        //            return 5;
+        //        case ETypeExpr.Negate:
+        //            return 4;
+        //        case ETypeExpr.Multiply:
+        //        case ETypeExpr.Divide:
+        //            return 3;
+        //        case ETypeExpr.Add:
+        //        case ETypeExpr.Subtract:
+        //            return 2;
+        //        case ETypeExpr.Equal:
+        //            return 1;
+        //        default:
+        //            return 0;
+        //    }
+        //}
+
+        public static NumberExpr MakeNumber(BigInteger number) => new IntegerNumberExpr(number);
+
+        public static NumericalExpr MakeNumber(BigDecimal number)
+        {
+            if (number.Scale == 0)
+                return MakeNumber(number.ToBigInteger());
+
+            return MakeNumber(number.UnscaledValue) / MakeNumber(BigIntegerMath.Pow(BigInteger.Ten, number.Scale));
+        }
+
+        public static Expr operator /(Expr e1, Expr e2)
+        {
+            if ((e1 is NumberExpr n1) && (e2 is NumberExpr n2))
+                return n1 / n2;
+
+            return null;
+        }
 
         public static bool operator ==(Expr e1, Expr e2)
         {
@@ -774,13 +846,13 @@ namespace Algebra.Core.Math.AlgExprs
             return r;
         }
 
-        private Explain.CalcExplain IFactorsExplain(IFactorsResult ri)
+        private CalcExplain IFactorsExplain(IFactorsResult ri)
         {
             var latex = new LaTex();
 
             //latex.Array("r|r")
 
-            var pExplain = new Explain.CalcExplain();
+            var pExplain = new CalcExplain();
 
             return pExplain;
         }

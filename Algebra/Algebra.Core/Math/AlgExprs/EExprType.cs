@@ -687,7 +687,7 @@ namespace Algebra.Core.Math.AlgExprs
 {
     public enum EExprTypeP
     {
-        Numerical, AlgExpr, Term, Polynomial
+        Numerical, AlgExpr //, Term, Polynomial
     }
 
     public enum EExprTypeS

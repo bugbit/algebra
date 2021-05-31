@@ -683,7 +683,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Algebra.Core.Explain
+namespace Algebra.Core.Output.Explain
 {
     public class CalcExplain : List<CalcExplainItem>
     {

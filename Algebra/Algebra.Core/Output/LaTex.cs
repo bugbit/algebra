@@ -677,82 +677,69 @@ Public License instead of this License.  But first, please read
 */
 #endregion
 
-using Algebra.Core.Output;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Algebra.Core.Math.AlgExprs
+namespace Algebra.Core.Output
 {
-    [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS} Number : {Number} Exp : {Exp}")]
-    public class PowNumericalExpr : NumericalExpr, ICloneable
+    public class LaTex
     {
-        public PowNumericalExpr(NumericalExpr num, NumericalExpr exp) : base(EExprTypeS.Rational)
+        private StringBuilder mStr;
+
+        public LaTex()
         {
-            Number = num;
-            Exp = exp;
+            mStr = new StringBuilder();
         }
 
-        public PowNumericalExpr(PowNumericalExpr e) : this(e.Number, e.Exp) { }
+        public override string ToString() => mStr.ToString();
 
-        public NumericalExpr Number { get; }
-        public NumericalExpr Exp { get; }
-
-        public PowNumericalExpr Clone() => new PowNumericalExpr(this);
-
-        public override string ToString() //
-                                          //=> $"{Number}^{Exp}";
+        public LaTex Append(LaTex latex)
         {
-            var str = new StringBuilder($"{Number}^");
-            var parentheesas = Number.NeedsParentheses(Exp);
+            mStr.Append(latex.mStr);
 
-            if (parentheesas)
-                str.Append("(");
-            str.Append(Exp);
-            if (parentheesas)
-                str.Append(")");
-
-            return str.ToString();
+            return this;
         }
 
-        public override LaTex ToLatex()
+        public LaTex Append(IToLatex latex) => Append(latex.ToLatex());
+
+        public LaTex Append(object o)
         {
-            var laTex = base.ToLatex();
-            var parentheesas = Number.NeedsParentheses(Exp);
+            if (o is IToLatex latex)
+                return Append(latex);
 
-            laTex.Append(Number);
-            laTex.Append("^");
-            if (parentheesas)
-                laTex.Append("(");
-            laTex.Append(Exp);
-            if (parentheesas)
-                laTex.Append(")");
+            mStr.Append(Convert.ToString(o));
 
-            return laTex;
+            return this;
         }
 
-        public override bool Equals(Expr other) => base.Equals(other) && (other is PowNumericalExpr e) && Number == e.Number && Exp == e.Exp;
-        public override int CompareTo(Expr other)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c">ex: {r|r}</param>
+        /// <param name="objs"></param>
+        public LaTex Array(string c, IEnumerable<object> objs)
         {
-            var pCmp = base.CompareTo(other);
+            var cols = c.Split('|').Length;
+            var n = 0;
 
-            if (other is PowNumericalExpr e)
+            mStr.Append(@"\begin{array} ");
+            mStr.Append(c);
+            foreach (var o in objs)
             {
-                if (pCmp == 0)
-                {
-                    pCmp = Number.CompareTo(e.Number);
-                    if (pCmp == 0)
-                        pCmp = Exp.CompareTo(e.Exp);
-                }
+                if (n == 0)
+                    n = 1;
+                else
+                    mStr.Append((n == cols) ? @"\\" : " &");
+                Append(o);
+                n++;
             }
+            mStr.Append(@"\\");
 
-            return pCmp;
+            return this;
         }
-        public override int GetHashCode() => base.GetHashCode() ^ Number.GetHashCode() ^ Exp.GetHashCode();
-
-        object ICloneable.Clone() => Clone();
     }
 }

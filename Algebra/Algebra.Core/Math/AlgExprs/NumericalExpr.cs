@@ -689,6 +689,8 @@ namespace Algebra.Core.Math.AlgExprs
     {
         protected NumericalExpr(EExprTypeS typeS, EExprTypeT typet = EExprTypeT.None) : base(EExprTypeP.Numerical, typeS, typet) { }
 
+        public static NumericalExpr operator /(NumericalExpr e1, NumericalExpr e2) => new RationalNumericalExpr(e1, e2);
+
         object ICloneable.Clone() => new NumericalExpr(TypeS);
     }
 }
