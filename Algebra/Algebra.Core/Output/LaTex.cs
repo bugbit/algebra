@@ -683,6 +683,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Algebra.Core.Math.AlgExprs;
 
 namespace Algebra.Core.Output
 {
@@ -716,30 +717,68 @@ namespace Algebra.Core.Output
             return this;
         }
 
+        public LaTex AppendParenthesesIfNeeds(Expr parent, Expr e)
+        {
+            var pNeeds = Expr.NeedsParentheses(parent, e);
+
+            if (pNeeds)
+                Append("(");
+            Append(e);
+            if (pNeeds)
+                Append(")");
+
+            return this;
+        }
+
+        public LaTex AppendBeginBrackets() => Append("{");
+        public LaTex AppendEndBrackets() => Append("}");
+
+        public LaTex AppendBrackets(object a) => AppendBeginBrackets().Append(a).AppendEndBrackets();
+
+        public LaTex AppendFrac(object a, object b) => Append("\frac").AppendBrackets(a).AppendBrackets(b);
+
+        public LaTex AppendBeginArray() => Append(@"\begin{array} ");
+        public LaTex AppendRowArray(params object[] objs)
+        {
+            var ini = true;
+
+            foreach (var o in objs)
+            {
+                if (ini)
+                    ini = false;
+                else
+                    Append(@"& ");
+                Append(o);
+            }
+
+            return Append(@"\\");
+        }
+        public LaTex AppendEndArray() => Append(@"\end{array}");
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="c">ex: {r|r}</param>
         /// <param name="objs"></param>
-        public LaTex Array(string c, IEnumerable<object> objs)
-        {
-            var cols = c.Split('|').Length;
-            var n = 0;
+        //public LaTex AppendArray(string c, IEnumerable<object> objs)
+        //{
+        //    var cols = c.Split('|').Length;
+        //    var n = 0;
 
-            mStr.Append(@"\begin{array} ");
-            mStr.Append(c);
-            foreach (var o in objs)
-            {
-                if (n == 0)
-                    n = 1;
-                else
-                    mStr.Append((n == cols) ? @"\\" : " &");
-                Append(o);
-                n++;
-            }
-            mStr.Append(@"\\");
+        //    AppendBeginArray();
+        //    Append(c);
+        //    foreach (var o in objs)
+        //    {
+        //        if (n == 0)
+        //            n = 1;
+        //        else
+        //            mStr.Append((n == cols) ? @"\\" : " &");
+        //        Append(o);
+        //        n++;
+        //    }
+        //    AppendEndArray();
 
-            return this;
-        }
+        //    return this;
+        //}
     }
 }

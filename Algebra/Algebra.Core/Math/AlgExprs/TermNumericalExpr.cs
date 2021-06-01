@@ -677,6 +677,7 @@ Public License instead of this License.  But first, please read
 */
 #endregion
 
+using Algebra.Core.Output;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -703,7 +704,59 @@ namespace Algebra.Core.Math.AlgExprs
 
         public TermNumericalExpr Clone() => new TermNumericalExpr(this);
 
-        //public override string ToString() => $"{Number}/{Exp}";
+        // Output
+
+        public override string ToString()
+        {
+            if (Exprs.Count <= 0)
+                return string.Empty;
+
+            var e1 = Exprs.First();
+            var str = (Sign) ? "-" : "";
+
+            str += e1.ToString();
+
+            foreach (var e in Exprs.Skip(1))
+            {
+                if (NeedsParentheses(e1, e))
+                    str += $"({e})";
+                else if (e1.TypeS == EExprTypeS.Number && e.TypeS == EExprTypeS.Number)
+                    str += $"*{e}";
+                else
+                    str += e;
+                e1 = e;
+            }
+
+            return str;
+        }
+
+        public override LaTex ToLatex()
+        {
+            var latex = base.ToLatex();
+
+            if (Exprs.Count <= 0)
+                return latex;
+
+            var e1 = Exprs.First();
+
+            if (Sign)
+                latex.Append("-");
+
+            latex.Append(e1);
+
+            foreach (var e in Exprs.Skip(1))
+            {
+                if (NeedsParentheses(e1, e))
+                    latex.Append("(").Append(e).Append(")");
+                else if (e1.TypeS == EExprTypeS.Number && e.TypeS == EExprTypeS.Number)
+                    latex.Append("*").Append(e);
+                else
+                    latex.Append(e);
+                e1 = e;
+            }
+
+            return latex;
+        }
 
         object ICloneable.Clone() => Clone();
 

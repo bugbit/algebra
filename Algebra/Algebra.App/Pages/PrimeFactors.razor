@@ -16,11 +16,25 @@
             <button @onclick="btnDescomponer_click">Descomponer</button>&nbsp;<button>mcd</button>&nbsp;<button>mcm</button>
         </p>
     </div>
+    <h4>La solución es</h4>
+    @if (result != null)
+    {
+        <div>
+            <Equation Value=@(result?.Result?.ToLatex()?.ToString()) TeXDisplay="false"></Equation>
+        </div>
+        @if (result.Explain != null)
+        {
+            <div>
+                <DetailCalc Explain=@(result.Explain)></DetailCalc>
+            </div>
+        }
+    }
 </div>
 
 @code {
     ElementReference txtn;
     string numberStr;
+    CalcResult result;
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -41,6 +55,8 @@
             using (var stream = new StringReader(numberStr))
             {
                 var e = await new Parser(stream, CancellationToken.None).Parse();
+
+                result = await Task.Run(() => e.IFactors(ECalcOptions.Explain, CancellationToken.None));
             }
         }
         catch (Exception ex)

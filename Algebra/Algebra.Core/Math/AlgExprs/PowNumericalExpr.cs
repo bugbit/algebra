@@ -703,36 +703,9 @@ namespace Algebra.Core.Math.AlgExprs
 
         public PowNumericalExpr Clone() => new PowNumericalExpr(this);
 
-        public override string ToString() //
-                                          //=> $"{Number}^{Exp}";
-        {
-            var str = new StringBuilder($"{Number}^");
-            var parentheesas = Number.NeedsParentheses(Exp);
+        public override string ToString() => $"{Number}^{ToStringParenthesesIfNeeds(Number, Exp)}";
 
-            if (parentheesas)
-                str.Append("(");
-            str.Append(Exp);
-            if (parentheesas)
-                str.Append(")");
-
-            return str.ToString();
-        }
-
-        public override LaTex ToLatex()
-        {
-            var laTex = base.ToLatex();
-            var parentheesas = Number.NeedsParentheses(Exp);
-
-            laTex.Append(Number);
-            laTex.Append("^");
-            if (parentheesas)
-                laTex.Append("(");
-            laTex.Append(Exp);
-            if (parentheesas)
-                laTex.Append(")");
-
-            return laTex;
-        }
+        public override LaTex ToLatex() => base.ToLatex().Append(Number).Append("^").AppendBrackets(Exp);
 
         public override bool Equals(Expr other) => base.Equals(other) && (other is PowNumericalExpr e) && Number == e.Number && Exp == e.Exp;
         public override int CompareTo(Expr other)

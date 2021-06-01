@@ -1,0 +1,19 @@
+﻿@using System.Collections;
+@using Algebra.Core.Output;
+@using Algebra.Core.Output.Explain;
+
+@if (Explain != null)
+{
+    @foreach (var e in Explain)
+    {
+        @if (e is LaTex latex)
+        {
+            <Equation Value=@(latex.ToString()) TeXDisplay="false"></Equation>
+        }
+    }
+}
+
+@code {
+    [Parameter]
+    public ArrayList Explain { get; set; }
+}

@@ -682,11 +682,71 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Algebra.Core.Math
 {
     public static class MathEx
-    {         
+    {
+        // Source: http://mjs5.com/2016/01/20/c-biginteger-square-root-function/  Michael Steiner, Jan 2016
+        // Slightly modified to correct error below 6. (thank you M Ktsis D) 
+        public static BigInteger Sqrt(BigInteger number)
+        {
+            if (number < 9)
+            {
+                if (number == 0)
+                    return 0;
+                if (number < 4)
+                    return 1;
+                else
+                    return 2;
+            }
+
+            BigInteger n = 0, p = 0;
+            var high = number >> 1;
+            var low = BigInteger.Zero;
+
+            while (high > low + 1)
+            {
+                n = (high + low) >> 1;
+                p = n * n;
+                if (number < p)
+                {
+                    high = n;
+                }
+                else if (number > p)
+                {
+                    low = n;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return number == p ? n : low;
+        }
+
+        public static (BigInteger n, BigInteger i)[] IFactorsResult(BigInteger n, CancellationToken cancelToken)
+        {
+            var i = (BigInteger)2d;
+            var max = Sqrt(n);
+            var r = new List<(BigInteger n, BigInteger i)>();
+
+            while (i < max)
+            {
+                if ((n % i) == BigInteger.Zero)
+                {
+                    r.Add((n, i));
+                    n /= i;
+                    continue;
+                }
+                i = BigInteger.NextProbablePrime(i, cancelToken);
+            }
+            if (i > 1)
+                r.Add((i, i));
+
+            return r.ToArray();
+        }
     }
 }

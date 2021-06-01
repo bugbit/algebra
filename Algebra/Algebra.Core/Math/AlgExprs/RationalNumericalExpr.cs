@@ -683,6 +683,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Algebra.Core.Output;
 
 namespace Algebra.Core.Math.AlgExprs
 {
@@ -720,7 +721,11 @@ namespace Algebra.Core.Math.AlgExprs
         }
         public override int GetHashCode() => base.GetHashCode() ^ Numer.GetHashCode() ^ Denom.GetHashCode();
 
-        public override string ToString() => $"{Numer}/{Denom}";
+        // output
+
+        public override string ToString() => $"{Numer}/{ToStringParenthesesIfNeeds(Numer, Denom)}";
+
+        public override LaTex ToLatex() => base.ToLatex().Append(Numer).Append("/").AppendBrackets(Denom);
 
         object ICloneable.Clone() => Clone();
     }

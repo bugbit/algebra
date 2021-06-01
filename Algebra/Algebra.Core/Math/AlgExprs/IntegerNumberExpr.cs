@@ -728,31 +728,17 @@ namespace Algebra.Core.Math.AlgExprs
 
         public override string ToString() => Number.ToString();
 
-        public override LaTex ToLatex()=> base.ToLatex().Append(Number);
+        public override LaTex ToLatex() => base.ToLatex().Append(Number);
 
         // Calcs
 
-        public override IFactorsResult IFactorsResult(CancellationToken cancelToken)
+        public override (BigInteger n, BigInteger i)[] IFactorsResult(CancellationToken cancelToken)
         {
-            var n = Number;
-            var i = (BigInteger)2d;
-            var max = n.Sqrt();
-            var r = new List<(BigInteger n, BigInteger i)>();
+            var r = MathEx.IFactorsResult(Number, cancelToken);
 
-            while (n < max)
-            {
-                if ((n % i) == BigInteger.Zero)
-                {
-                    r.Add((n, i));
-                    n /= i;
-                    continue;
-                }
-                n = BigInteger.NextProbablePrime(n, cancelToken);
-            }
-            if (n > 1)
-                r.Add((n, n));
-
-            return new AlgExprs.IFactorsResult { Result = r.ToArray() };
+            return r;
         }
+
+
     }
 }

@@ -687,6 +687,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Algebra.Core.Output;
 using Algebra.Core.Output.Explain;
+using System.Collections;
 
 namespace Algebra.Core.Math.AlgExprs
 {
@@ -722,19 +723,35 @@ namespace Algebra.Core.Math.AlgExprs
             return pCmp;
         }
 
+        // Output
+
         public virtual LaTex ToLatex() => new LaTex();
+
+        public static string ToStringParenthesesIfNeeds(Expr parent, Expr e)
+        {
+            var str = "";
+            var pNeeds = NeedsParentheses(parent, e);
+
+            if (pNeeds)
+                str += "(";
+            str += e.ToString();
+            if (pNeeds)
+                str += ")";
+
+            return str;
+        }
 
         public override bool Equals(object obj) => (obj is Expr e) && e != null && Equals(e);
 
         public override int GetHashCode() => TypeP.GetHashCode() ^ TypeS.GetHashCode() ^ TypeS.GetHashCode();
 
-        public bool NeedsParentheses(Expr child)
+        public static bool NeedsParentheses(Expr parent, Expr e)
         {
-            if (child == null)
+            if (e == null)
                 return false;
 
-            var pPre = child.GetOperatorPrecedence();
-            var pPre2 = GetOperatorPrecedence();
+            var pPre = e.GetOperatorPrecedence();
+            var pPre2 = parent.GetOperatorPrecedence();
 
             return pPre < pPre2;
         }
@@ -829,30 +846,38 @@ namespace Algebra.Core.Math.AlgExprs
 
             return r;
         }
-        public virtual IFactorsResult IFactorsResult(CancellationToken cancelToken) => null;
+        public virtual (BigInteger n, BigInteger i)[] IFactorsResult(CancellationToken cancelToken) => null;
 
-        private Expr IFactorsResult(IFactorsResult ri)
+        private Expr IFactorsResult((BigInteger n, BigInteger i)[] ri)
         {
             var query =
-                from rr in ri.Result
-                group rr by rr.n into g
-                select new { n = g.Key, e = g.Count() };
+                from rr in ri
+                group rr by rr.i into g
+                select new { i = g.Key, e = g.Count() };
             var query2 =
                 from q in query
-                let n = new IntegerNumberExpr(q.n)
-                select (q.e > 1) ? (NumericalExpr)new PowNumericalExpr(n, new IntegerNumberExpr(q.n)) : n;
+                let i = new IntegerNumberExpr(q.i)
+                select (q.e > 1) ? (NumericalExpr)new PowNumericalExpr(i, new IntegerNumberExpr(q.e)) : i;
             var r = new TermNumericalExpr(false, new ExprCollection<NumericalExpr>(query2));
 
             return r;
         }
 
-        private CalcExplain IFactorsExplain(IFactorsResult ri)
+        private ArrayList IFactorsExplain((BigInteger n, BigInteger i)[] ri)
         {
             var latex = new LaTex();
 
-            //latex.Array("r|r")
+            latex.AppendBeginArray();
+            latex.Append("{r|r}");
 
-            var pExplain = new CalcExplain();
+            foreach (var r in ri)
+            {
+                latex.AppendRowArray(r.n, r.i);
+            }
+            latex.AppendRowArray(1);
+            latex.AppendEndArray();
+
+            var pExplain = new ArrayList(new[] { latex });
 
             return pExplain;
         }

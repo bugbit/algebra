@@ -678,6 +678,7 @@ Public License instead of this License.  But first, please read
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -689,6 +690,6 @@ namespace Algebra.Core.Math.AlgExprs
     public class CalcResult
     {
         public Expr Result { get; internal set; }
-        public CalcExplain Explain { get; internal set; }
+        public ArrayList Explain { get; internal set; }
     }
 }
