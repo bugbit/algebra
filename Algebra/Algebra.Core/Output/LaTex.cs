@@ -717,6 +717,22 @@ namespace Algebra.Core.Output
             return this;
         }
 
+        public LaTex AppendJoin(string sep, params object[] objs)
+        {
+            var ini = true;
+
+            foreach (var o in objs)
+            {
+                if (ini)
+                    ini = false;
+                else
+                    Append(sep);
+                Append(o);
+            }
+
+            return this;
+        }
+
         public LaTex AppendParenthesesIfNeeds(Expr parent, Expr e)
         {
             var pNeeds = Expr.NeedsParentheses(parent, e);
@@ -755,30 +771,6 @@ namespace Algebra.Core.Output
         }
         public LaTex AppendEndArray() => Append(@"\end{array}");
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="c">ex: {r|r}</param>
-        /// <param name="objs"></param>
-        //public LaTex AppendArray(string c, IEnumerable<object> objs)
-        //{
-        //    var cols = c.Split('|').Length;
-        //    var n = 0;
-
-        //    AppendBeginArray();
-        //    Append(c);
-        //    foreach (var o in objs)
-        //    {
-        //        if (n == 0)
-        //            n = 1;
-        //        else
-        //            mStr.Append((n == cols) ? @"\\" : " &");
-        //        Append(o);
-        //        n++;
-        //    }
-        //    AppendEndArray();
-
-        //    return this;
-        //}
+        public LaTex AppendEquation(params object[] objs) => AppendJoin("=", objs);
     }
 }

@@ -704,7 +704,7 @@ namespace Algebra.Core.Math.AlgExprs
 
         public int Count => mExprs.Count;
 
-        public bool IsReadOnly => false;
+        public bool IsReadOnly => true;
 
         public void Add(T item)
         {
@@ -772,10 +772,7 @@ namespace Algebra.Core.Math.AlgExprs
 
         public IEnumerator<T> GetEnumerator() => mExprs.GetEnumerator();
 
-        public bool Remove(T item)
-        {
-            throw new NotImplementedException();
-        }
+        bool ICollection<T>.Remove(T item) => throw new NotImplementedException();
 
         public override string ToString()
         {
@@ -785,6 +782,16 @@ namespace Algebra.Core.Math.AlgExprs
 
             return pStr;
         }
+
+        internal T this[int i]
+        {
+            get => mExprs[i];
+            set => mExprs[i] = value;
+        }        
+
+        internal bool Remove(T item) => mExprs.Remove(item);
+
+        internal void RemoveAt(int i) => mExprs.RemoveAt(i);
 
         IEnumerator IEnumerable.GetEnumerator()
         {

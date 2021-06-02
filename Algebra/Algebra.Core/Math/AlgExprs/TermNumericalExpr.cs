@@ -704,6 +704,36 @@ namespace Algebra.Core.Math.AlgExprs
 
         public TermNumericalExpr Clone() => new TermNumericalExpr(this);
 
+        public IOrderedEnumerable<NumericalExpr> OrderByExprOrBasePow() => Exprs.OrderBy(e => (e is PowNumericalExpr) ? ((PowNumericalExpr)e).Number : e);
+
+        // Calcs
+
+        public bool GroupPow()
+        {
+            var pDone = false;
+
+            for (var i = 0; i < Exprs.Count; i++)
+            {
+                Expr e = Exprs[i];
+                Expr n, exp;
+
+                n = exp = null;
+
+                if (e is IntegerNumberExpr ei)
+                {
+                    n = ei;
+                    exp = Expr.One;
+                }
+                else if (e is PowNumericalExpr ep)
+                {
+                    n = ep.Number;
+                    exp = ep.Exp;
+                }
+            }
+
+            return pDone;
+        }
+
         // Output
 
         public override string ToString()

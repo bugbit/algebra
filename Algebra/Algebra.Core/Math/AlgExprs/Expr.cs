@@ -694,7 +694,7 @@ namespace Algebra.Core.Math.AlgExprs
     [DebuggerDisplay("TypeP : {TypeP} TypeS : {TypeS}")]
     public class Expr : ICloneable, IEquatable<Expr>, IComparable<Expr>, IToLatex
     {
-        public Expr(EExprTypeP typeP, EExprTypeS typeS, EExprTypeT typet = EExprTypeT.None)
+        public Expr(EExprTypeP typeP, EExprTypeS typeS = EExprTypeS.None, EExprTypeT typet = EExprTypeT.None)
         {
             TypeP = typeP;
             TypeS = typeS;
@@ -704,6 +704,8 @@ namespace Algebra.Core.Math.AlgExprs
         public EExprTypeP TypeP { get; }
         public EExprTypeS TypeS { get; }
         public EExprTypeT TypeT { get; }
+
+        public static readonly IntegerNumberExpr One = new IntegerNumberExpr(BigInteger.One);
 
         public virtual bool Equals(Expr other) => TypeP == other.TypeP && TypeS == other.TypeS && TypeS == other.TypeS;
 
@@ -757,6 +759,11 @@ namespace Algebra.Core.Math.AlgExprs
         }
         public int GetOperatorPrecedence()
         {
+            switch (TypeP)
+            {
+                case EExprTypeP.SimplyExprs:
+                    return 1;
+            }
             switch (TypeS)
             {
                 case EExprTypeS.Number:
@@ -803,6 +810,12 @@ namespace Algebra.Core.Math.AlgExprs
 
             return MakeNumber(number.UnscaledValue) / MakeNumber(BigIntegerMath.Pow(BigInteger.Ten, number.Scale));
         }
+        public static TermNumericalExpr MakeTerm(bool sign, params BigInteger[] numbers) => MakeTerm(sign, numbers.ToArray());
+
+        public static TermNumericalExpr MakeTerm(bool sign, IEnumerable<BigInteger> numbers) => MakeTerm(sign, numbers.Select(n => new IntegerNumberExpr(n)).ToArray());
+
+        public static TermNumericalExpr MakeTerm(bool sign, params NumericalExpr[] exprs) => MakeTerm(sign, exprs.AsEnumerable());
+        public static TermNumericalExpr MakeTerm(bool sign, IEnumerable<NumericalExpr> exprs) => new TermNumericalExpr(sign, new ExprCollection<NumericalExpr>(exprs));
 
         public static Expr operator /(Expr e1, Expr e2)
         {
@@ -838,8 +851,9 @@ namespace Algebra.Core.Math.AlgExprs
             if (ri == null)
                 return null;
 
-            var rr = IFactorsResult(ri);
-            var r = new CalcResult { Result = rr };
+            var e1 = MakeTerm(false, ri.Select(q => q.i));
+            var e = IFactorsResult(ri);
+            var r = new CalcResult { Result = e };
 
             if (options.HasFlag(ECalcOptions.Explain))
                 r.Explain = IFactorsExplain(ri);
@@ -877,7 +891,7 @@ namespace Algebra.Core.Math.AlgExprs
             latex.AppendRowArray(1);
             latex.AppendEndArray();
 
-            var pExplain = new ArrayList(new[] { latex });
+            var pExplain = new ArrayList(new object[] { "Realizar divisiones entre sus divisores primos hasta que obtengamos un uno en el cociente.", latex });
 
             return pExplain;
         }

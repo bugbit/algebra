@@ -1,0 +1,16 @@
+﻿@using Algebra.Core.Output;
+@using Algebra.Core.Output.Explain;
+
+@if (Item is string str)
+{
+    <p>@str</p>
+}
+else @if (Item is LaTex latex)
+{
+<Equation Value=@(latex.ToString()) TeXDisplay="false"></Equation>
+}
+
+@code {
+    [Parameter]
+    public object Item { get; set; }
+}

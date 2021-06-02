@@ -19,15 +19,23 @@
     <h4>La solución es</h4>
     @if (result != null)
     {
-        <div>
-            <Equation Value=@(result?.Result?.ToLatex()?.ToString()) TeXDisplay="false"></Equation>
-        </div>
-        @if (result.Explain != null)
-        {
-            <div>
-                <DetailCalc Explain=@(result.Explain)></DetailCalc>
-            </div>
-        }
+        <table class="table table-borderless">
+            <tbody>
+                <tr>
+                    <td>
+                        <Equation Value=@(result?.Result?.ToLatex()?.ToString()) TeXDisplay="false"></Equation>
+                    </td>
+                </tr>
+                @if (result.Explain != null)
+                {
+                    <tr>
+                        <td>
+                            <DetailCalc Explain=@(result.Explain)></DetailCalc>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
 </div>
 

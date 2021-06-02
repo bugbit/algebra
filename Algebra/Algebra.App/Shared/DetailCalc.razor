@@ -2,16 +2,22 @@
 @using Algebra.Core.Output;
 @using Algebra.Core.Output.Explain;
 
-@if (Explain != null)
-{
-    @foreach (var e in Explain)
-    {
-        @if (e is LaTex latex)
+<table class="table table-borderless">
+    <tbody>
+
+        @if (Explain != null)
         {
-            <Equation Value=@(latex.ToString()) TeXDisplay="false"></Equation>
+            @foreach (var e in Explain)
+            {
+                <tr>
+                    <td>
+                        <DetailItemCalc Item=@e></DetailItemCalc>
+                    </td>
+                </tr>
+            }
         }
-    }
-}
+    </tbody>
+</table>
 
 @code {
     [Parameter]
