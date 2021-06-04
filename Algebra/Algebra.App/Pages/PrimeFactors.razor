@@ -10,11 +10,20 @@
 <Prompt Title="Si quiere descomponen en factores primos Introduzca número\nsi quiere calcular el máximo común divisor o el minimo común multiplo introduzca los numeros separados por commas" />
 
 <div>
-    <input @ref="txtn" type="text" @bind="numberStr" />
-    <div style="margin-top:4px">
-        <p>
-            <button @onclick="btnDescomponer_click">Descomponer</button>&nbsp;<button>mcd</button>&nbsp;<button>mcm</button>
-        </p>
+    <div class="needs-validation" novalidate>
+        <div class="form-row">
+            <div class="form-group col">
+                <input @ref="txtn" type="text" @bind="numberStr" width="80" class=@classnumstr required />
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            </div>
+        </div>
+        <div class="text-left">
+            <button class="btn btn-primary" @onclick="btnDescomponer_click">Descomponer</button>
+            <button class="btn btn-secondary">mcd</button>
+            <button class="btn btn-secondary">mcm</button>
+        </div>
     </div>
     <h4>La solución es</h4>
     @if (result != null)
@@ -41,6 +50,7 @@
 
 @code {
     ElementReference txtn;
+    string classnumstr = "form-control is-invalid";
     string numberStr;
     CalcResult result;
 
@@ -54,6 +64,7 @@
     private void txtn_OnInputEvent(ChangeEventArgs changeEvent)
     {
         numberStr = (string)changeEvent.Value;
+        classnumstr = (!string.IsNullOrEmpty(numberStr)) ? "form-control is-valid" : "form-control is-invalid";
     }
 
     private async Task btnDescomponer_click()

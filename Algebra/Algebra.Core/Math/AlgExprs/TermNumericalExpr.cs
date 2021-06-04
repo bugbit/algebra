@@ -702,36 +702,93 @@ namespace Algebra.Core.Math.AlgExprs
         public ExprCollection<NumericalExpr> Exprs { get; }
         //public NumberExpr[] Coe => Exprs.Where(e => !e.IsLiteral).ToArray();
 
-        public TermNumericalExpr Clone() => new TermNumericalExpr(this);
+        public override bool HasSign() => Sign;
 
-        public IOrderedEnumerable<NumericalExpr> OrderByExprOrBasePow() => Exprs.OrderBy(e => (e is PowNumericalExpr) ? ((PowNumericalExpr)e).Number : e);
+        public override bool Equals(Expr other) => base.Equals(other) && (other is TermNumericalExpr e) && Sign == e.Sign && Exprs.SetEquals(e.Exprs);
 
-        // Calcs
-
-        public bool GroupPow()
+        public override int CompareTo(Expr other)
         {
-            var pDone = false;
+            var pCmp = base.CompareTo(other);
 
-            for (var i = 0; i < Exprs.Count; i++)
+            if (other is TermNumericalExpr e)
             {
-                Expr e = Exprs[i];
-                Expr n, exp;
-
-                n = exp = null;
-
-                if (e is IntegerNumberExpr ei)
+                if (pCmp == 0)
                 {
-                    n = ei;
-                    exp = Expr.One;
-                }
-                else if (e is PowNumericalExpr ep)
-                {
-                    n = ep.Number;
-                    exp = ep.Exp;
+                    pCmp = Sign.CompareTo(e.Sign);
+
+                    if (pCmp == 0)
+                        pCmp = Exprs.SetCompareTo(e.Exprs);
                 }
             }
 
-            return pDone;
+            return pCmp;
+        }
+
+        public TermNumericalExpr Clone() => new TermNumericalExpr(this);
+
+        // Calcs
+
+        public override Deveel.Math.BigInteger SimplyToInteger()
+        {
+            if (Exprs.Count > 1)
+                return null;
+
+            var num = Exprs.First().SimplyToInteger();
+
+            return num;
+        }
+
+        public TermNumericalExpr SimplyGroupPow()
+        {
+            var exprs = new ExprCollection<NumericalExpr>(Exprs);
+            var pDone = false;
+
+            for (var i = 0; i < exprs.Count; i++)
+            {
+                for (var j = i + 1; j < exprs.Count;)
+                {
+                    var e1 = exprs[i];
+                    var _base = e1.GetPowBase();
+
+                    if (_base is NumericalExpr n1)
+                    {
+                        var e2 = exprs[j];
+                        var n2 = e2.GetPowBase();
+
+                        if (n1 == n2)
+                        {
+                            var exp1 = e1.GetPowExp();
+
+                            if (exp1 != null)
+                            {
+                                var exp2 = e2.GetPowExp();
+
+                                if (exp2 != null)
+                                {
+                                    var nexp = (exp1 + exp2).SimplySumNumericals();
+
+                                    if (nexp != null)
+                                    {
+                                        exprs[i] = MakePow(n1, nexp);
+
+                                        pDone = true;
+                                        exprs.RemoveAt(j);
+
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+
+                        j++;
+                    }
+                }
+            }
+
+            if (!pDone)
+                return null;
+
+            return new TermNumericalExpr(Sign, exprs);
         }
 
         // Output
@@ -750,7 +807,7 @@ namespace Algebra.Core.Math.AlgExprs
             {
                 if (NeedsParentheses(e1, e))
                     str += $"({e})";
-                else if (e1.TypeS == EExprTypeS.Number && e.TypeS == EExprTypeS.Number)
+                else if (e1.TypeS == EExprTypeS.Number && e.TypeS == EExprTypeS.Number || e.HasSign())
                     str += $"*{e}";
                 else
                     str += e;
@@ -778,7 +835,7 @@ namespace Algebra.Core.Math.AlgExprs
             {
                 if (NeedsParentheses(e1, e))
                     latex.Append("(").Append(e).Append(")");
-                else if (e1.TypeS == EExprTypeS.Number && e.TypeS == EExprTypeS.Number)
+                else if (e1.TypeS == EExprTypeS.Number && e.TypeS == EExprTypeS.Number || e.HasSign())
                     latex.Append("*").Append(e);
                 else
                     latex.Append(e);

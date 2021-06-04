@@ -1,5 +1,5 @@
-﻿@using Algebra.Core.Output;
-@using Algebra.Core.Output.Explain;
+﻿@using Algebra.Core.Math.Expr;
+@using Algebra.Core.Output;
 
 @if (Item is string str)
 {
@@ -8,6 +8,10 @@
 else @if (Item is LaTex latex)
 {
 <Equation Value=@(latex.ToString()) TeXDisplay="false"></Equation>
+}
+else @if (Item is IToLatex e)
+{
+<Equation Value=@(e.ToLatex().ToString()) TeXDisplay="false"></Equation>
 }
 
 @code {

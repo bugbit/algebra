@@ -703,10 +703,6 @@ namespace Algebra.Core.Math.AlgExprs
 
         public PowNumericalExpr Clone() => new PowNumericalExpr(this);
 
-        public override string ToString() => $"{Number}^{ToStringParenthesesIfNeeds(Number, Exp)}";
-
-        public override LaTex ToLatex() => base.ToLatex().Append(Number).Append("^").AppendBrackets(Exp);
-
         public override bool Equals(Expr other) => base.Equals(other) && (other is PowNumericalExpr e) && Number == e.Number && Exp == e.Exp;
         public override int CompareTo(Expr other)
         {
@@ -725,6 +721,17 @@ namespace Algebra.Core.Math.AlgExprs
             return pCmp;
         }
         public override int GetHashCode() => base.GetHashCode() ^ Number.GetHashCode() ^ Exp.GetHashCode();
+
+        // Output
+
+        public override string ToString() => $"{Number}^{ToStringParenthesesIfNeeds(Number, Exp)}";
+
+        public override LaTex ToLatex() => base.ToLatex().AppendBrackets(Number).Append("^").AppendBrackets(Exp);
+
+        // Calcs
+
+        public override Expr GetPowBase() => Number;
+        public override Expr GetPowExp() => Exp;
 
         object ICloneable.Clone() => Clone();
     }

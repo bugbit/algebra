@@ -706,7 +706,7 @@ namespace Algebra.Core.Math.AlgExprs
 
         public bool IsReadOnly => true;
 
-        public void Add(T item)
+        void ICollection<T>.Add(T item)
         {
             throw new NotImplementedException();
         }
@@ -787,7 +787,9 @@ namespace Algebra.Core.Math.AlgExprs
         {
             get => mExprs[i];
             set => mExprs[i] = value;
-        }        
+        }
+
+        internal void Add(T item) => mExprs.Add(item);
 
         internal bool Remove(T item) => mExprs.Remove(item);
 
@@ -801,5 +803,16 @@ namespace Algebra.Core.Math.AlgExprs
 
     public class ExprCollection : ExprCollection<Expr>
     {
+        public ExprCollection()
+        {
+        }
+
+        public ExprCollection(params Expr[] exprs) : base(exprs)
+        {
+        }
+
+        public ExprCollection(IEnumerable<Expr> exprs) : base(exprs)
+        {
+        }
     }
 }

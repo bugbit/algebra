@@ -737,6 +737,8 @@ namespace Algebra.Core.Math.AlgExprs
             return r;
         }
 
+        public override BigInteger SimplyToInteger() => Number;
+
         object ICloneable.Clone() => Clone();
     }
 }

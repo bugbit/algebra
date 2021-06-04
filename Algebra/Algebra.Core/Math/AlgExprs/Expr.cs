@@ -707,6 +707,8 @@ namespace Algebra.Core.Math.AlgExprs
 
         public static readonly IntegerNumberExpr One = new IntegerNumberExpr(BigInteger.One);
 
+        public virtual bool HasSign() => false;
+
         public virtual bool Equals(Expr other) => TypeP == other.TypeP && TypeS == other.TypeS && TypeS == other.TypeS;
 
         public virtual int CompareTo(Expr other)
@@ -723,24 +725,6 @@ namespace Algebra.Core.Math.AlgExprs
             }
 
             return pCmp;
-        }
-
-        // Output
-
-        public virtual LaTex ToLatex() => new LaTex();
-
-        public static string ToStringParenthesesIfNeeds(Expr parent, Expr e)
-        {
-            var str = "";
-            var pNeeds = NeedsParentheses(parent, e);
-
-            if (pNeeds)
-                str += "(";
-            str += e.ToString();
-            if (pNeeds)
-                str += ")";
-
-            return str;
         }
 
         public override bool Equals(object obj) => (obj is Expr e) && e != null && Equals(e);
@@ -801,6 +785,70 @@ namespace Algebra.Core.Math.AlgExprs
         //    }
         //}
 
+        // Output
+
+        public virtual LaTex ToLatex() => new LaTex();
+
+        public static string ToStringParenthesesIfNeeds(Expr parent, Expr e)
+        {
+            var str = "";
+            var pNeeds = NeedsParentheses(parent, e);
+
+            if (pNeeds)
+                str += "(";
+            str += e.ToString();
+            if (pNeeds)
+                str += ")";
+
+            return str;
+        }
+
+        // Calcs
+
+        public virtual Expr GetPowBase() => this;
+        public virtual Expr GetPowExp() => One;
+        public virtual NumericalExpr SimplySumNumericals() => null;
+        public virtual BigInteger SimplyToInteger() => null;
+
+        public CalcResult IFactors(ECalcOptions options, CancellationToken cancelToken)
+        {
+            var ri = IFactorsResult(cancelToken);
+
+            if (ri == null)
+                return null;
+
+            var exprs = new ExprCollection();
+
+            var e1 = MakeTerm(false, ri.Select(q => q.i));
+
+            exprs.Add(this);
+            exprs.Add(e1);
+
+            var e2 = e1.SimplyGroupPow();
+
+            if (e2 != null)
+                exprs.Add(e2);
+
+            var r = new CalcResult { Result = exprs.Last() };
+
+            if (options.HasFlag(ECalcOptions.Explain))
+            {
+                var e = MakeSimplies(exprs);
+
+                r.Explain = IFactorsExplain(e, ri);
+            }
+
+            return r;
+        }
+        public virtual (BigInteger n, BigInteger i)[] IFactorsResult(CancellationToken cancelToken) => null;
+
+        public Expr SimplyOrExpr(Func<Expr, Expr> simply, Expr e)
+        {
+            var en = simply(e);
+
+            return en ?? e;
+        }
+
         public static NumberExpr MakeNumber(BigInteger number) => new IntegerNumberExpr(number);
 
         public static NumericalExpr MakeNumber(BigDecimal number)
@@ -816,6 +864,20 @@ namespace Algebra.Core.Math.AlgExprs
 
         public static TermNumericalExpr MakeTerm(bool sign, params NumericalExpr[] exprs) => MakeTerm(sign, exprs.AsEnumerable());
         public static TermNumericalExpr MakeTerm(bool sign, IEnumerable<NumericalExpr> exprs) => new TermNumericalExpr(sign, new ExprCollection<NumericalExpr>(exprs));
+        public static NumericalExpr MakePow(NumericalExpr _base, BigInteger exp) => MakePow(_base, MakeNumber(exp));
+        public static NumericalExpr MakePow(NumericalExpr _base, NumericalExpr exp) => (exp == One) ? _base : new PowNumericalExpr(_base, exp);
+
+        public static Expr MakePow(Expr _base, Expr exp)
+        {
+            if ((_base is NumericalExpr n1) && (exp is NumericalExpr n2))
+                MakePow(n1, n2);
+
+            throw new NotImplementedException();
+        }
+        public static SimplyExprs MakeSimplies(params Expr[] exprs) => MakeSimplies(exprs.AsEnumerable());
+        public static SimplyExprs MakeSimplies(IEnumerable<Expr> exprs) => new SimplyExprs(new ExprCollection(exprs));
+        public static SimplyExprs MakeSimplies(ExprCollection exprs) => new SimplyExprs(exprs);
+        public static SumNumericalExpr MakeSum(ExprCollection<NumericalExpr> exprs) => new SumNumericalExpr(exprs);
 
         public static Expr operator /(Expr e1, Expr e2)
         {
@@ -823,6 +885,14 @@ namespace Algebra.Core.Math.AlgExprs
                 return n1 / n2;
 
             return null;
+        }
+
+        public static Expr operator +(Expr e1, Expr e2)
+        {
+            if ((e1 is NumberExpr n1) && (e2 is NumberExpr n2))
+                return n1 + n2;
+
+            throw new NotImplementedException("Operación de suma no implementado");
         }
 
         public static bool operator ==(Expr e1, Expr e2)
@@ -842,42 +912,7 @@ namespace Algebra.Core.Math.AlgExprs
 
         object ICloneable.Clone() => new Expr(TypeP, TypeS);
 
-        // Calcs
-
-        public CalcResult IFactors(ECalcOptions options, CancellationToken cancelToken)
-        {
-            var ri = IFactorsResult(cancelToken);
-
-            if (ri == null)
-                return null;
-
-            var e1 = MakeTerm(false, ri.Select(q => q.i));
-            var e = IFactorsResult(ri);
-            var r = new CalcResult { Result = e };
-
-            if (options.HasFlag(ECalcOptions.Explain))
-                r.Explain = IFactorsExplain(ri);
-
-            return r;
-        }
-        public virtual (BigInteger n, BigInteger i)[] IFactorsResult(CancellationToken cancelToken) => null;
-
-        private Expr IFactorsResult((BigInteger n, BigInteger i)[] ri)
-        {
-            var query =
-                from rr in ri
-                group rr by rr.i into g
-                select new { i = g.Key, e = g.Count() };
-            var query2 =
-                from q in query
-                let i = new IntegerNumberExpr(q.i)
-                select (q.e > 1) ? (NumericalExpr)new PowNumericalExpr(i, new IntegerNumberExpr(q.e)) : i;
-            var r = new TermNumericalExpr(false, new ExprCollection<NumericalExpr>(query2));
-
-            return r;
-        }
-
-        private ArrayList IFactorsExplain((BigInteger n, BigInteger i)[] ri)
+        private ArrayList IFactorsExplain(SimplyExprs e, (BigInteger n, BigInteger i)[] ri)
         {
             var latex = new LaTex();
 
@@ -891,7 +926,7 @@ namespace Algebra.Core.Math.AlgExprs
             latex.AppendRowArray(1);
             latex.AppendEndArray();
 
-            var pExplain = new ArrayList(new object[] { "Realizar divisiones entre sus divisores primos hasta que obtengamos un uno en el cociente.", latex });
+            var pExplain = new ArrayList(new object[] { "Realizar divisiones entre sus divisores primos hasta que obtengamos un uno en el cociente.", latex, e });
 
             return pExplain;
         }

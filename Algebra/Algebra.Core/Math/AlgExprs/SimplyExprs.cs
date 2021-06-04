@@ -688,14 +688,31 @@ namespace Algebra.Core.Math.AlgExprs
 {
     public class SimplyExprs : Expr, ICloneable
     {
-        public SimplyExprs(ExprCollection<NumericalExpr> exprs) : base(EExprTypeP.SimplyExprs)
+        public SimplyExprs(ExprCollection exprs) : base(EExprTypeP.SimplyExprs)
         {
             Exprs = exprs;
         }
 
         public SimplyExprs(SimplyExprs e) : this(e.Exprs) { }
 
-        public ExprCollection<NumericalExpr> Exprs { get; }
+        public ExprCollection Exprs { get; }
+
+        public override bool Equals(Expr other) => base.Equals(other) && (other is SimplyExprs e) && Exprs.SetEquals(e.Exprs);
+
+        public override int CompareTo(Expr other)
+        {
+            var pCmp = base.CompareTo(other);
+
+            if (other is SimplyExprs e)
+            {
+                if (pCmp == 0)
+                    pCmp = Exprs.SetCompareTo(e.Exprs);
+            }
+
+            return pCmp;
+        }
+
+        public SimplyExprs Clone() => new SimplyExprs(this);
 
         // Output
 
@@ -703,6 +720,6 @@ namespace Algebra.Core.Math.AlgExprs
 
         public override LaTex ToLatex() => base.ToLatex().AppendEquation(Exprs);
 
-        public SimplyExprs Clone() => new SimplyExprs(this);
+        object ICloneable.Clone() => Clone();
     }
 }

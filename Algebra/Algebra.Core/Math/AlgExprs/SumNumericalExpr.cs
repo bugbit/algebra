@@ -677,6 +677,7 @@ Public License instead of this License.  But first, please read
 */
 #endregion
 
+using Algebra.Core.Output;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -685,13 +686,140 @@ using System.Threading.Tasks;
 
 namespace Algebra.Core.Math.AlgExprs
 {
-    public class NumericalExpr : Expr, ICloneable
+    public class SumNumericalExpr : NumericalExpr, ICloneable
     {
-        protected NumericalExpr(EExprTypeS typeS, EExprTypeT typet = EExprTypeT.None) : base(EExprTypeP.Numerical, typeS, typet) { }
+        public SumNumericalExpr(params NumericalExpr[] exprs) : this(new ExprCollection<NumericalExpr>(exprs)) { }
+        public SumNumericalExpr(ExprCollection<NumericalExpr> exprs) : base(EExprTypeS.Sum)
+        {
+            Exprs = exprs;
+        }
 
-        public static NumericalExpr operator /(NumericalExpr e1, NumericalExpr e2) => new RationalNumericalExpr(e1, e2);
-        public static NumericalExpr operator +(NumericalExpr e1, NumericalExpr e2) => new SumNumericalExpr(e1, e2);
+        public SumNumericalExpr(SumNumericalExpr e) : this(e.Exprs) { }
 
-        object ICloneable.Clone() => new NumericalExpr(TypeS);
+        public ExprCollection<NumericalExpr> Exprs { get; }
+
+        public override bool Equals(Expr other) => base.Equals(other) && (other is SumNumericalExpr e) && Exprs.SetEquals(e.Exprs);
+
+        public override int CompareTo(Expr other)
+        {
+            var pCmp = base.CompareTo(other);
+
+            if (other is SumNumericalExpr e)
+            {
+                if (pCmp == 0)
+                    pCmp = Exprs.SetCompareTo(e.Exprs);
+            }
+
+            return pCmp;
+        }
+
+        public SumNumericalExpr Clone() => new SumNumericalExpr(this);
+
+        // Calcs
+
+        public override Deveel.Math.BigInteger SimplyToInteger()
+        {
+            if (Exprs.Count > 1)
+                return null;
+
+            var num = Exprs.First().SimplyToInteger();
+
+            return num;
+        }
+
+        public override NumericalExpr SimplySumNumericals()
+        {
+            var exprs = new ExprCollection<NumericalExpr>(Exprs);
+            var pDone = false;
+
+            for (var i = 0; i < exprs.Count; i++)
+            {
+                var e1 = SimplyOrExpr(e => e.SimplySumNumericals(), exprs[i]);
+                var num1 = e1.SimplyToInteger();
+
+                if (num1 != null)
+                {
+                    var pDone1 = false;
+
+                    for (var j = i + 1; j < exprs.Count;)
+                    {
+                        var e2 = SimplyOrExpr(e => e.SimplySumNumericals(), exprs[j]);
+                        var num2 = e2.SimplyToInteger();
+
+                        if (num2 != null)
+                        {
+                            num1 += num2;
+
+                            pDone = pDone1 = true;
+                            exprs.RemoveAt(j);
+
+                            continue;
+                        }
+                        j++;
+                    }
+
+                    if (pDone1)
+                        exprs[i] = MakeNumber(num1);
+                }
+            }
+
+            return
+                (!pDone)
+                    ? null
+                    : (exprs.Count == 1)
+                        ? exprs.First()
+                        : MakeSum(exprs);
+        }
+
+        // Output
+
+        public override string ToString()
+        {
+            if (Exprs.Count <= 0)
+                return string.Empty;
+
+            var e1 = Exprs.First();
+            var str = e1.ToString();
+
+            foreach (var e in Exprs.Skip(1))
+            {
+                if (NeedsParentheses(e1, e))
+                    str += $"({e})";
+                else if (!e.HasSign())
+                    str += $"+{e}";
+                else
+                    str += e;
+                e1 = e;
+            }
+
+            return str;
+        }
+
+        public override LaTex ToLatex()
+        {
+            var latex = base.ToLatex();
+
+            if (Exprs.Count <= 0)
+                return latex;
+
+            var e1 = Exprs.First();
+
+            latex.Append(e1);
+
+            foreach (var e in Exprs.Skip(1))
+            {
+                if (NeedsParentheses(e1, e))
+                    latex.Append("(").Append(e).Append(")");
+                else if (!e.HasSign())
+                    latex.Append("+").Append(e);
+                else
+                    latex.Append(e);
+                e1 = e;
+            }
+
+            return latex;
+        }
+
+        object ICloneable.Clone() => Clone();
     }
 }

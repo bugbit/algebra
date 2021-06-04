@@ -717,7 +717,9 @@ namespace Algebra.Core.Output
             return this;
         }
 
-        public LaTex AppendJoin(string sep, params object[] objs)
+        public LaTex AppendJoin(string sep, params object[] objs) => AppendJoin(sep, objs.AsEnumerable());
+
+        public LaTex AppendJoin(string sep, IEnumerable<object> objs)
         {
             var ini = true;
 
@@ -771,6 +773,7 @@ namespace Algebra.Core.Output
         }
         public LaTex AppendEndArray() => Append(@"\end{array}");
 
-        public LaTex AppendEquation(params object[] objs) => AppendJoin("=", objs);
+        public LaTex AppendEquation(params object[] objs) => AppendEquation(objs.AsEnumerable());
+        public LaTex AppendEquation(IEnumerable<object> objs) => AppendJoin("=", objs);
     }
 }
