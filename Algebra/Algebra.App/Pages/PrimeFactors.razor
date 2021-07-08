@@ -1,15 +1,25 @@
 ﻿@page "/primefactors"
+@using Microsoft.Extensions.Logging
 @using System.IO;
 @using System.Threading;
 @using Algebra.Core.Syntax;
 @using Algebra.Core.Math.AlgExprs;
 @inject IStringLocalizer<Resource> localizer
 @inject IJSRuntime JsRuntime;
+@inject ILogger<PrimeFactorsModel> Logger
 <h3>@localizer["MnuNTPrimeFactors"]</h3>
 
 <Prompt Title="Si quiere descomponen en factores primos Introduzca número\nsi quiere calcular el máximo común divisor o el minimo común multiplo introduzca los numeros separados por commas" />
 
 <div>
+    <EditForm Model="@primeFactorsModel" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <InputText id="number" @bind-Value="primeFactorsModel.NumberSingleOrList" />
+
+        <button type="submit" @onclick=@(()=>primeFactorsModel.Method=1)>Descomponer</button>
+    </EditForm>
     <div class="needs-validation" novalidate>
         <div class="form-row">
             <div class="form-group col">
@@ -49,6 +59,7 @@
 </div>
 
 @code {
+    private PrimeFactorsModel primeFactorsModel = new();
     ElementReference txtn;
     string classnumstr = "form-control is-invalid";
     string numberStr;
@@ -65,6 +76,11 @@
     {
         numberStr = (string)changeEvent.Value;
         classnumstr = (!string.IsNullOrEmpty(numberStr)) ? "form-control is-valid" : "form-control is-invalid";
+    }
+
+    private void HandleValidSubmit()
+    {
+
     }
 
     private async Task btnDescomponer_click()
