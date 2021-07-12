@@ -49,3 +49,26 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.input,
+.textarea {
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 1px 6px;
+}
+
+.input-wrap .input, ::after, ::before {
+    box-sizing: content-box;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+    .input-wrap .input {
+        position: absolute;
+        width: 100%;
+        left: 0;
+    }
+

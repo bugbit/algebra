@@ -123,4 +123,7 @@
   <data name="MnuNTPrimeFactors" xml:space="preserve">
     <value>Prime factors</value>
   </data>
+  <data name="ReqNumberSingleOrList" xml:space="preserve">
+    <value>El </value>
+  </data>
 </root>

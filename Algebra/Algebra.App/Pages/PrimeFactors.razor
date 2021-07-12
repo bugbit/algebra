@@ -16,14 +16,35 @@
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        <InputText id="number" @bind-Value="primeFactorsModel.NumberSingleOrList" />
-
-        <button type="submit" @onclick=@(()=>primeFactorsModel.Method=1)>Descomponer</button>
+        <div class="form-row">
+            <div class="form-group col">
+                <InputText id="number" @bind-Value="primeFactorsModel.NumberSingleOrList" DisplayName="number o list numbers" />
+            </div>
+        </div>
+        <div class="text-left">
+            <button class="btn btn-primary" type="submit" @onclick=@(()=>primeFactorsModel.Method=1)>Descomponer</button>
+            <button class="btn btn-secondary" type="submit" @onclick=@(()=>primeFactorsModel.Method=2)>mcd</button>
+            <button class="btn btn-secondary" type="submit" @onclick=@(()=>primeFactorsModel.Method=3)>mcm</button>
+        </div>
     </EditForm>
+    <form @onsubmit=@(async ()=>await JsRuntime.InvokeVoidAsync("alert","submit"))>
+        <div class="row">
+            <div class="col">
+                <input class="form-control" type="text" required @bind="numberStr" @oninput=@(e=>numberStr=(string)e.Value) />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="text-left">
+                    <input type="submit" />
+                </div>
+            </div>
+        </div>
+    </form>
     <div class="needs-validation" novalidate>
         <div class="form-row">
             <div class="form-group col">
-                <input @ref="txtn" type="text" @bind="numberStr" width="80" class=@classnumstr required />
+                <input @ref="txtn" type="text" width="80" class=@classnumstr required />
                 <div class="valid-feedback">
                     Looks good!
                 </div>
@@ -67,7 +88,8 @@
 
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        await txtn.FocusAsync();
+        if (firstRender)
+            await txtn.FocusAsync();
 
         await base.OnAfterRenderAsync(firstRender);
     }

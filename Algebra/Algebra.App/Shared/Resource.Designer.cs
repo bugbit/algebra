@@ -77,5 +77,14 @@ namespace Algebra.App.Shared {
                 return ResourceManager.GetString("MnuNTPrimeFactors", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El .
+        /// </summary>
+        public static string ReqNumberSingleOrList {
+            get {
+                return ResourceManager.GetString("ReqNumberSingleOrList", resourceCulture);
+            }
+        }
     }
 }

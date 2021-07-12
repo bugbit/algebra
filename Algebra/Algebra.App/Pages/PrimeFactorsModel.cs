@@ -8,7 +8,7 @@ namespace Algebra.App.Pages
 {
     public class PrimeFactorsModel
     {
-        [Required]
+        [Required(ErrorMessageResourceType = typeof(Shared.Resource), ErrorMessageResourceName = "ReqNumberSingleOrList")]
         public string NumberSingleOrList { get; set; }
         public int Method { get; set; }
     }
